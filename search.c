@@ -433,7 +433,11 @@ read_up_to( pcap_t *p, struct timeval *desired_time )
 		{
 		struct timeval *timestamp;
 
+#ifdef USE_FTELLO
+		pos = ftello( pcap_file( p ) );
+#else
 		pos = ftell( pcap_file( p ) );
+#endif
 		buf = pcap_next( p, &hdr );
 
 		if ( buf == 0 )
@@ -457,12 +461,16 @@ read_up_to( pcap_t *p, struct timeval *desired_time )
 			}
 		}
 
+#ifdef USE_FSEEKO
+	if ( fseeko( pcap_file( p ), pos, 0 ) < 0 )
+		error( "fseeko() failed in read_up_to()" );
+#else
 	if ( fseek( pcap_file( p ), pos, 0 ) < 0 )
 		error( "fseek() failed in read_up_to()" );
+#endif
 
 	return (status);
 	}
-
 
 /* Positions the sf_readfile stream so that the next sf_read() will
  * return the first packet with a time greater than or equal to
@@ -515,7 +523,11 @@ sf_find_packet( pcap_t *p,
 			break;
 			}
 
+#ifdef USE_FTELLO
+		present_pos = ftello( pcap_file( p ) );
+#else
 		present_pos = ftell( pcap_file( p ) );
+#endif
 
 		if ( present_pos <= desired_pos &&
 		     desired_pos - present_pos < STRAIGHT_SCAN_THRESHOLD )
@@ -531,8 +543,13 @@ sf_find_packet( pcap_t *p,
 		if ( desired_pos < min_pos )
 			desired_pos = min_pos;
 
+#ifdef USE_FSEEKO
+		if ( fseeko( pcap_file( p ), desired_pos, 0 ) < 0 )
+			error( "fseeko() failed in sf_find_packet()" );
+#else
 		if ( fseek( pcap_file( p ), desired_pos, 0 ) < 0 )
 			error( "fseek() failed in sf_find_packet()" );
+#endif
 
 		num_bytes_read =
 			fread( (char *) buf, 1, num_bytes, pcap_file( p ) );
@@ -554,8 +571,13 @@ sf_find_packet( pcap_t *p,
 		desired_pos += (hdrpos - buf);
 
 		/* Seek to the beginning of the header. */
+#ifdef USE_FSEEKO
+		if ( fseeko( pcap_file( p ), desired_pos, 0 ) < 0 )
+			error( "fseeko() failed in sf_find_packet()" );
+#else
 		if ( fseek( pcap_file( p ), desired_pos, 0 ) < 0 )
 			error( "fseek() failed in sf_find_packet()" );
+#endif
 
 		if ( sf_timestamp_less_than( &hdr.ts, desired_time ) )
 			{ /* too early in the file */

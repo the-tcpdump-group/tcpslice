@@ -6,11 +6,10 @@ dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
 
+AC_REVISION($Revision$)
 AC_INIT(tcpslice.c)
 
 AC_CANONICAL_SYSTEM
-
-umask 002
 
 if test -z "$PWD" ; then
 	PWD=`pwd`
@@ -20,6 +19,13 @@ AC_LBL_C_INIT(V_CCOPT, V_INCLS)
 
 AC_CHECK_HEADERS(fcntl.h)
 AC_HEADER_TIME
+
+tcpslice_telloseeko=yes
+AC_CHECK_FUNCS(ftello fseeko, ,AC_MSG_WARN(tcpslice may have trouble with dump files larger than 2 gigabytes); tcpslice_telloseeko=no; break)
+if test "${tcpslice_telloseeko}" = "yes" ; then
+	AC_DEFINE(USE_FTELLO)
+	AC_DEFINE(USE_FSEEKO)
+fi
 
 AC_REPLACE_FUNCS(vfprintf)
 

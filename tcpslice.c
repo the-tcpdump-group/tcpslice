@@ -470,7 +470,11 @@ extract_slice(char filename[], char write_file_name[],
 		error( "bad tcpdump file %s: %s", filename, errbuf );
 
 	snaplen = pcap_snapshot( p );
+#ifdef USE_FTELLO
+	start_pos = ftello( pcap_file( p ) );
+#else
 	start_pos = ftell( pcap_file( p ) );
+#endif
 
 	if ( ! dumper )
 		{
@@ -491,7 +495,11 @@ extract_slice(char filename[], char write_file_name[],
 		error( "problems finding end packet of file %s",
 			filename );
 
+#ifdef USE_FTELLO
+	stop_pos = ftello( pcap_file( p ) );
+#else
 	stop_pos = ftell( pcap_file( p ) );
+#endif
 
 
 	/* sf_find_packet() requires that the time it's passed as its last
@@ -620,4 +628,3 @@ usage(void)
 
 	exit(-1);
 }
-
