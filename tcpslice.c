@@ -371,6 +371,8 @@ fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 
 		switch (format_ch) {
 			case 'y':
+				if ( val >= 100 && val < 1970)
+					error("Can't handle year %d\n", val);
 				if ( val > 1900 )
 					val -= 1900;
 				SET_VAL(t->tm_year, val);
