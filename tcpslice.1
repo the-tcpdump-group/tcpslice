@@ -45,7 +45,7 @@ tcpslice \- extract pieces of and/or glue together tcpdump files
 .LP
 .I Tcpslice
 is a program for extracting portions of packet-trace files generated using
-\fItcpdump(l)\fP's
+\fItcpdump(1)\fP's
 .B \-w
 flag.
 It can also be used to glue together several such files, as discussed
@@ -222,18 +222,41 @@ format discussed above.
 .B \-w
 Direct the output to \fIfile\fR rather than \fIstdout\fP.
 .SH "SEE ALSO"
-tcpdump(l)
-.SH AUTHOR
+tcpdump(1)
+.SH AUTHORS
+The original author was:
+.LP
 Vern Paxson, of
 Lawrence Berkeley Laboratory, University of California, Berkeley, CA.
 .LP
-The current version is available via anonymous ftp:
+It is currently being maintained by tcpdump.org.
+.LP
+The current version is available in the ``tcpslice'' module of the CVS
+tree at tcpdump.org; see the tcpdump.org home page at
+.LP
+.RS
+.I http://www.tcpdump.org/
+.RE
+.LP
+for information on anonymous CVS access.
+.LP
+The original distribution is available via anonymous ftp:
 .LP
 .RS
 .I ftp://ftp.ee.lbl.gov/tcpslice.tar.Z
 .RE
 .SH BUGS
-Please send bug reports to tcpslice@ee.lbl.gov.
+Please send problems, bugs, questions, desirable enhancements, etc. to:
+.LP
+.RS
+tcpdump-workers@tcpdump.org
+.RE
+.LP
+Please send source code contributions, etc. to:
+.LP
+.RS
+patches@tcpdump.org
+.RE
 .LP
 An input filename that beings with a digit or a `+' can be confused
 with a start/end time.  Such filenames can be specified with a
