@@ -24,16 +24,14 @@ static const char rcsid[] =
     "@(#) $Header$ (LBL)";
 #endif
 
-#include <sys/types.h>
-
 #include <stdio.h>
-#if __STDC__
 #include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
 #include <pcap.h>
 #include <string.h>
+
+#ifdef TIME_WITH_SYS_TIME
+#include <time.h>
+#endif
 
 #include "gnuc.h"
 #ifdef HAVE_OS_PROTO_H
@@ -44,22 +42,12 @@ static const char rcsid[] =
 
 /* VARARGS */
 void
-#if __STDC__
 error(const char *fmt, ...)
-#else
-error(fmt, va_alist)
-	char *fmt;
-	va_dcl
-#endif
 {
 	va_list ap;
 
 	(void)fprintf(stderr, "tcpslice: ");
-#if __STDC__
 	va_start(ap, fmt);
-#else
-	va_start(ap);
-#endif
 	(void)vfprintf(stderr, fmt, ap);
 	va_end(ap);
 	if (*fmt) {
