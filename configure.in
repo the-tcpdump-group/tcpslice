@@ -27,7 +27,7 @@ if test "${tcpslice_telloseeko}" = "yes" ; then
 	AC_DEFINE(USE_FSEEKO)
 fi
 
-AC_REPLACE_FUNCS(vfprintf)
+AC_REPLACE_FUNCS(vfprintf strlcpy)
 
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
 

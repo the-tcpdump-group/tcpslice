@@ -57,6 +57,9 @@ static const char rcsid[] =
 #include "gmt2local.h"
 #include "machdep.h"
 
+#ifndef HAVE_STRLCPY
+extern size_t strlcpy(char *, const char *, size_t);
+#endif
 
 int tflag = 0;	/* global that util routines are sensitive to */
 
@@ -583,7 +586,7 @@ timestamp_to_string(struct timeval *timestamp)
 
 	    case TIMESTAMP_READABLE:
 		t = localtime((time_t *) &timestamp->tv_sec);
-		strcpy( buf, asctime( t ) );
+		strlcpy(buf, asctime(t), 128);
 		buf[24] = '\0';	/* nuke final newline */
 		break;
 
