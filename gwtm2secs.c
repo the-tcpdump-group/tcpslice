@@ -56,11 +56,12 @@ time_t gwtm2secs( struct tm *tm )
 	 * 2-digit years are either 19xx or 20xx - a simple heuristic
 	 * distinguishes them, since we can't represent any time < 1970.
 	 */
-	if ( year < 100 )
+	if ( year < 100 ) {
 		if ( year >= 70 )
 			year += 1900;
 		else
 			year += 2000;
+	}
 
 	days = 0;
 	for ( i = 1970; i < year; ++i )
