@@ -20,7 +20,7 @@
  */
 #ifndef lint
 static const char rcsid[] =
-    "@(#) $Header$ (LBL)";
+    "@(#) $Header: search.c,v 1.12 96/12/21 19:56:36 leres Exp $ (LBL)";
 #endif
 
 /*

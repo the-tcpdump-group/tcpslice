@@ -1,4 +1,4 @@
-@(#) $Header$ (LBL)
+@(#) $Header: INSTALL,v 1.2 97/01/23 22:25:56 leres Exp $ (LBL)
 
 If you have not built libpcap, do so first.  See the README file in
 this directory for the ftp location.

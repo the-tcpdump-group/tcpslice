@@ -23,7 +23,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Header$ (LBL)";
+    "@(#)$Header: tcpslice.c,v 1.21 97/01/24 13:36:07 leres Exp $ (LBL)";
 #endif
 
 /*

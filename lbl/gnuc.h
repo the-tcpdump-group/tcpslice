@@ -1,4 +1,4 @@
-/* @(#) $Header$ (LBL) */
+/* @(#) $Header: gnuc.h,v 1.3 95/10/09 02:47:01 leres Exp $ (LBL) */
 
 /* Define __P() macro, if necessary */
 #ifndef __P

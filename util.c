@@ -21,7 +21,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-    "@(#) $Header$ (LBL)";
+    "@(#) $Header: util.c,v 1.4 96/12/21 19:56:42 leres Exp $ (LBL)";
 #endif
 
 #include <sys/types.h>

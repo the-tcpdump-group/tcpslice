@@ -1,4 +1,4 @@
-dnl @(#) $Header$ (LBL)
+dnl @(#) $Header: aclocal.m4,v 1.58 97/07/27 22:31:02 leres Exp $ (LBL)
 dnl
 dnl Copyright (c) 1995, 1996, 1997
 dnl	The Regents of the University of California.  All rights reserved.
