@@ -132,12 +132,14 @@ reasonable_header( struct pcap_pkthdr *hdr, time_t first_time, time_t last_time 
 static void
 extract_header( pcap_t *p, u_char *buf, struct pcap_pkthdr *hdr )
 	{
-	struct pcap_sf_pkthdr *sfhdr = (struct pcap_sf_pkthdr *)buf;
+	struct pcap_sf_pkthdr sfhdr;
 
-	hdr->ts.tv_sec = sfhdr->ts.tv_sec;
-	hdr->ts.tv_usec = sfhdr->ts.tv_usec;
-	hdr->caplen = sfhdr->caplen;
-	hdr->len = sfhdr->len;
+	memcpy(&sfhdr, buf, sizeof(sfhdr));
+
+	hdr->ts.tv_sec = sfhdr.ts.tv_sec;
+	hdr->ts.tv_usec = sfhdr.ts.tv_usec;
+	hdr->caplen = sfhdr.caplen;
+	hdr->len = sfhdr.len;
 
 	if ( pcap_is_swapped( p ) )
 		{
