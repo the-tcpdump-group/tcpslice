@@ -50,18 +50,19 @@ time_t gwtm2secs( struct tm *tm )
 	{
 	int i, days, year;
 
-	year = tm->tm_year;
-
-	/* Allow for year being specified with either 2 digits or 4 digits.
-	 * 2-digit years are either 19xx or 20xx - a simple heuristic
-	 * distinguishes them, since we can't represent any time < 1970.
+	/* tm_year is either:
+	 * a) the result from localtime()
+	 * b) a 4-digit year specified on the command line minus 1900
+	 * c) a 2-digit year specified on the command line
+	 * in order to handle years from 2000 to 2069 specified as c), we
+	 * check for years prior to 1970, which we can't handle anyway.
+	 * (actually, for zones west of GMT, there are a few hours at
+	 * the end of 1969, but we assume that nobody has traces taken
+	 * during those hours.)
 	 */
-	if ( year < 100 ) {
-		if ( year >= 70 )
-			year += 1900;
-		else
-			year += 2000;
-	}
+	year = tm->tm_year + 1900;
+	if ( year < 1970 )
+		year += 100;
 
 	days = 0;
 	for ( i = 1970; i < year; ++i )
