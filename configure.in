@@ -1,6 +1,6 @@
 dnl @(#) $Header$ (LBL)
 dnl
-dnl Copyright (c) 1995, 1996
+dnl Copyright (c) 1995, 1996, 1997, 1999
 dnl	The Regents of the University of California.  All rights reserved.
 dnl
 dnl Process this file with autoconf to produce a configure script.
@@ -17,14 +17,19 @@ fi
 
 AC_LBL_C_INIT(V_CCOPT, V_INCLS)
 
+AC_C_STRINGIZE
+
 AC_CHECK_HEADERS(fcntl.h)
 AC_HEADER_TIME
 
 tcpslice_telloseeko=yes
 AC_CHECK_FUNCS(ftello fseeko, ,AC_MSG_WARN(tcpslice may have trouble with dump files larger than 2 gigabytes); tcpslice_telloseeko=no; break)
 if test "${tcpslice_telloseeko}" = "yes" ; then
-	AC_DEFINE(USE_FTELLO)
-	AC_DEFINE(USE_FSEEKO)
+	AC_DEFINE(FTELL, ftello)
+	AC_DEFINE(FSEEK, fseeko)
+else
+	AC_DEFINE(FTELL, ftell)
+	AC_DEFINE(FSEEK, fseek)
 fi
 
 AC_REPLACE_FUNCS(vfprintf strlcpy)

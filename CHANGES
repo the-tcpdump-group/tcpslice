@@ -1,5 +1,18 @@
 @(#) $Header$ (LBL)
 
-v1.1 Thu Jan 23 21:50:50 PST 1997
+v1.2 ...
+
+- Use ftello/fseeko on systems which support it to handle files larger
+  than 2 gigabytes.
+
+- Fix y2k bugs in date parsing.
+
+- Introduce merging based on timestamp instead of simple concatenation
+  new "-l" flag merges based on relative instead of absolute time
+  new "-D" flag allows duplicate packets to come through
+
+  Note that there's no flag to get the original concatenation behavior.
+
+v1.1 Wed Jun 23 17:19:32 PDT 1999
 
 - Initial autoconf based release.

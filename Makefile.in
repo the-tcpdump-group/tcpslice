@@ -1,5 +1,5 @@
-#  Copyright (c) 1993, 1994, 1995, 1996, 1997
-# 	The Regents of the University of California.  All rights reserved.
+#  Copyright (c) 1993, 1994, 1995, 1996, 1997, 1999, 2000
+#	The Regents of the University of California.  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that: (1) source code distributions
@@ -40,12 +40,16 @@ VPATH = @srcdir@
 #
 
 CC = @CC@
+PROG = tcpslice
 CCOPT = @V_CCOPT@
 INCLS = -I. @V_INCLS@
 DEFS = @DEFS@
 
 # Standard CFLAGS
 CFLAGS = $(CCOPT) $(DEFS) $(INCLS)
+
+# Standard LDFLAGS
+LDFLAGS = @LDFLAGS@
 
 # Standard LIBS
 LIBS = @LIBS@
@@ -79,25 +83,24 @@ TAGHDR = \
 
 TAGFILES = $(SRC) $(HDR) $(TAGHDR)
 
-CLEANFILES = $(OBJ) tcpslice $(GENSRC)
+CLEANFILES = $(PROG) $(OBJ) $(GENSRC)
 
-all: tcpslice
+all: $(PROG)
 
-tcpslice: $(OBJ) @V_PCAPDEP@
+$(PROG): $(OBJ) @V_PCAPDEP@
 	@rm -f $@
-	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
 
 version.o: version.c
 version.c: $(srcdir)/VERSION
 	@rm -f $@
 	sed -e 's/.*/char version[] = "&";/' $(srcdir)/VERSION > $@
 
-
 install: force
 	$(INSTALL) -m 555 -o bin -g bin tcpslice $(DESTDIR)$(BINDEST)
 
 install-man: force
-	$(INSTALL) -m 444 -o bin -g bin $(srcdir)/tcpslice.1 \
+	$(INSTALL) -m 444 -o bin -g bin $(srcdir)/$(PROG).1 \
 	    $(DESTDIR)$(MANDEST)/man1
 
 lint: $(GENSRC) force
@@ -116,18 +119,18 @@ tags: $(TAGFILES)
 	ctags -wtd $(TAGFILES)
 
 tar: force
-	@cwd=`pwd` ; dir=`basename $$cwd` ; name=tcpslice-`cat VERSION` ; \
-	    list="" ; tar="tar chFFf" ; \
+	@cwd=`pwd` ; name=$(PROG)-`cat VERSION` ; \
+	    list="" ; tar="tar chf" ; temp="$$name.tar.gz" ; \
 	    for i in `cat FILES` ; do list="$$list $$name/$$i" ; done; \
 	    echo \
-	    "rm -f ../$$name; ln -s $$dir ../$$name" ; \
-	     rm -f ../$$name; ln -s $$dir ../$$name ; \
+	    "rm -f $$name; ln -s . $$name" ; \
+	     rm -f $$name; ln -s . $$name ; \
 	    echo \
-	    "(cd .. ; $$tar - [lots of files]) | compress > /tmp/$$name.tar.Z" ; \
-	     (cd .. ; $$tar - $$list) | compress > /tmp/$$name.tar.Z ; \
+	    "$$tar - [lots of files] | gzip > $$temp" ; \
+	     $$tar - $$list | gzip > $$temp ; \
 	    echo \
-	    "rm -f ../$$name" ; \
-	     rm -f ../$$name
+	    "rm -f $$name" ; \
+	     rm -f $$name
 
 force: /tmp
 depend: $(GENSRC) force
