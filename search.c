@@ -43,12 +43,8 @@ static const char rcsid[] =
 
 #include "tcpslice.h"
 
-#ifdef HAVE_STRINGIZE
 #define	SS(x)	#x
 #define	S(x)	SS(x)
-#else
-#define	S(x)	"fseek"
-#endif
 
 /* Maximum number of seconds that we can conceive of a dump file spanning. */
 #define MAX_REASONABLE_FILE_SPAN (3600*24*366)	/* one year */
