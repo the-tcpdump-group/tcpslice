@@ -30,7 +30,9 @@ static const char rcsid[] =
 #include <sys/types.h>
 
 #include <pcap.h>
+#ifdef HAVE_PCAP_INT_H
 #include <pcap-int.h>		/* because we are directly reading the file */
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,6 +46,18 @@ static const char rcsid[] =
 
 #include "tcpslice.h"
 
+#ifndef HAVE_PCAP_INT_H
+/* If we're building without pcap's internal headers, we have to just
+ * assume that the public pcap_pkthdr is the same as is written to
+ * the file.  This can cause problems on systems with 64-bit longs;
+ * the symptom is that tcpslice can't find any packets to read.
+ * The solution is to build with the pcap-int.h from the installed
+ * version of libpcap.
+ */
+#define	pcap_sf_pkthdr	pcap_pkthdr
+#endif
+
+/* stringify macros, for error reporting. */
 #define	SS(x)	#x
 #define	S(x)	SS(x)
 
