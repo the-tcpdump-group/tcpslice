@@ -1,0 +1,54 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* DO NOT EDIT config.h.in */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you can safely include both <sys/time.h> and <time.h>.  */
+#undef TIME_WITH_SYS_TIME
+
+/* If you have both fseeko and ftello, change both of these. */
+#define FSEEK fseek
+#define FTELL ftell
+
+/* If there is an LBL-supplied header with additional prototypes
+ * for your system, define this.
+ */
+#undef HAVE_OS_PROTO_H
+
+/* If you have <pcap-int.h> that goes with your libpcap, define this. */
+#undef HAVE_PCAP_INT_H
+
+/* Secret configure stuff */
+#undef _HPUX_SOURCE
+
+/* If you don't have sized types, define these to be the correct sizes. */
+#undef int32_t
+#undef u_int32_t
+
+/* Define if you have the fseeko function.  */
+#undef HAVE_FSEEKO
+
+/* Define if you have the ftello function.  */
+#undef HAVE_FTELLO
+
+/* Define if you have the pfopen function.  */
+#undef HAVE_PFOPEN
+
+/* Define if you have the strlcpy function.  */
+#undef HAVE_STRLCPY
+
+/* Define if you have the vfprintf function.  */
+#undef HAVE_VFPRINTF
+
+/* Define if you have the <fcntl.h> header file.  */
+#undef HAVE_FCNTL_H
+
+/* Define if you have the resolv library (-lresolv).  */
+#undef HAVE_LIBRESOLV
+
+/* Define if you have the socket library (-lsocket).  */
+#undef HAVE_LIBSOCKET
+
+/* Define if you have the str library (-lstr).  */
+#undef HAVE_LIBSTR

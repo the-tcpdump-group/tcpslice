@@ -27,6 +27,10 @@ static const char rcsid[] =
  * search.c - supports fast searching through tcpdump files for timestamps
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <sys/types.h>
 
 #include <pcap.h>

@@ -27,6 +27,10 @@ static const char rcsid[] =
  * gwtm2secs.c - convert "tm" structs for Greenwich time to Unix timestamp
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <sys/types.h>
 
 #include <time.h>
