@@ -119,10 +119,8 @@ enum stamp_styles timestamp_style = TIMESTAMP_RAW;
 int is_timestamp( char *str );
 struct timeval parse_time(char *time_string, struct timeval base_time);
 void fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr);
-void get_file_range( char filename[], pcap_t **p,
-			struct timeval *first_time, struct timeval *last_time );
-struct timeval first_packet_time(char filename[], pcap_t **p_addr);
 struct timeval lowest_start_time(struct state *states, int numfiles);
+struct timeval latest_end_time(struct state *states, int numfiles);
 void get_next_packet(struct state *s);
 struct state *open_files(char *filenames[], int numfiles);
 void extract_slice(struct state *states, int numfiles, char *write_file_name,
@@ -130,7 +128,7 @@ void extract_slice(struct state *states, int numfiles, char *write_file_name,
 			int keep_dups, int relative_time_merge,
 			struct timeval *base_time);
 char *timestamp_to_string(struct timeval *timestamp);
-void dump_times(pcap_t **p, char filename[]);
+void dump_times(struct state *states, int numfiles);
 __dead void usage(void)__attribute__((volatile));
 
 
@@ -155,7 +153,6 @@ main(int argc, char **argv)
 	char *stop_time_string = 0;
 	char *write_file_name = "-";	/* default is stdout */
 	struct timeval first_time, start_time, stop_time;
-	pcap_t *pcap;
 	char ebuf[PCAP_ERRBUF_SIZE];
 	struct state *states;
 
@@ -239,18 +236,11 @@ main(int argc, char **argv)
 
 	if (stop_time_string)
 		stop_time = parse_time(stop_time_string, start_time);
-
 	else
-		{
-		stop_time = start_time;
-		stop_time.tv_sec += 86400*3660;	/* + 10 years; "forever" */
-		stop_time.tv_usec = 0;
-		}
-
+		stop_time = latest_end_time(states, numfiles);
 
 	if (report_times) {
-		for (; optind < argc; ++optind)
-			dump_times(&pcap, argv[optind]);
+		dump_times(states, numfiles);
 	}
 
 	if (dump_flag) {
@@ -467,41 +457,6 @@ fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 }
 
 
-/* Return in first_time and last_time the timestamps of the first and
- * last packets in the given file.
- */
-void
-get_file_range( char filename[], pcap_t **p,
-		struct timeval *first_time, struct timeval *last_time )
-{
-	*first_time = first_packet_time( filename, p );
-
-	if ( ! sf_find_end( *p, first_time, last_time ) )
-		error( "couldn't find final packet in file %s", filename );
-}
-
-/* Returns the timestamp of the first packet in the given tcpdump save
- * file, which as a side-effect is initialized for further save-file
- * reading.
- */
-
-struct timeval
-first_packet_time(char filename[], pcap_t **p_addr)
-{
-	struct pcap_pkthdr hdr;
-	pcap_t *p;
-	char errbuf[PCAP_ERRBUF_SIZE];
-
-	p = *p_addr = pcap_open_offline(filename, errbuf);
-	if (! p)
-		error( "bad tcpdump file %s: %s", filename, errbuf );
-
-	if (pcap_next(p, &hdr) == 0)
-		error( "bad status reading first packet in %s", filename );
-
-	return hdr.ts;
-}
-
 
 /* Of all the files, what is the lowest start time. */
 struct timeval
@@ -516,6 +471,21 @@ lowest_start_time(struct state *states, int numfiles)
 		++states;
 	}
 	return min_time;
+}
+
+/* Of all the files, what is the latest end time. */
+struct timeval
+latest_end_time(struct state *states, int numfiles)
+{
+	struct timeval max_time = states->file_start_time;
+
+	while (numfiles--) {
+		if (sf_timestamp_less_than(&max_time, &states->file_stop_time)) {
+			max_time = states->file_stop_time;
+		}
+		++states;
+	}
+	return max_time;
 }
 
 /* Get the next record in a file.  Deal with end of file.
@@ -804,16 +774,14 @@ timestamp_to_string(struct timeval *timestamp)
  */
 
 void
-dump_times(pcap_t **p, char filename[])
+dump_times(struct state *states, int numfiles)
 {
-	struct timeval first_time, last_time;
-
-	get_file_range( filename, p, &first_time, &last_time );
-
-	printf( "%s\t%s\t%s\n",
-		filename,
-		timestamp_to_string( &first_time ),
-		timestamp_to_string( &last_time ) );
+	for (; numfiles--; states++) {
+		printf( "%s\t%s\t%s\n",
+			states->filename,
+			timestamp_to_string( &states->file_start_time ),
+			timestamp_to_string( &states->file_stop_time ) );
+	}
 }
 
 __dead void
