@@ -26,6 +26,14 @@
 #undef int32_t
 #undef u_int32_t
 
+/* Long story short: aclocal.m4 depends on autoconf 2.13
+ * implementation details wrt "const"; newer versions
+ * have different implementation details so for now we
+ * put "const" here.  This may cause duplicate definitions
+ * in config.h but that should be OK since they're the same.
+ */
+#undef const
+
 /* Define if you have the fseeko function.  */
 #undef HAVE_FSEEKO
 
@@ -43,12 +51,3 @@
 
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
-
-/* Define if you have the resolv library (-lresolv).  */
-#undef HAVE_LIBRESOLV
-
-/* Define if you have the socket library (-lsocket).  */
-#undef HAVE_LIBSOCKET
-
-/* Define if you have the str library (-lstr).  */
-#undef HAVE_LIBSTR
