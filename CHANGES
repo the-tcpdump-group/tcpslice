@@ -2,6 +2,8 @@
 
 v1.2 ...
 
+- Use pcap_sf_pkthdr for portable savefiles.
+
 - Use ftello/fseeko on systems which support it to handle files larger
   than 2 gigabytes.
 

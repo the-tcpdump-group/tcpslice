@@ -30,6 +30,7 @@ static const char rcsid[] =
 #include <sys/types.h>
 
 #include <pcap.h>
+#include <pcap-int.h>		/* because we are directly reading the file */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +56,7 @@ static const char rcsid[] =
 /* Size of a packet header in bytes; easier than typing the sizeof() all
  * the time ...
  */
-#define PACKET_HDR_LEN (sizeof( struct pcap_pkthdr ))
+#define PACKET_HDR_LEN (sizeof( struct pcap_sf_pkthdr ))
 
 extern int snaplen;
 
@@ -113,7 +114,12 @@ reasonable_header( struct pcap_pkthdr *hdr, time_t first_time, time_t last_time 
 static void
 extract_header( pcap_t *p, u_char *buf, struct pcap_pkthdr *hdr )
 	{
-	memcpy((char *) hdr, (char *) buf, sizeof(struct pcap_pkthdr));
+	struct pcap_sf_pkthdr *sfhdr = (struct pcap_sf_pkthdr *)buf;
+
+	hdr->ts.tv_sec = sfhdr->ts.tv_sec;
+	hdr->ts.tv_usec = sfhdr->ts.tv_usec;
+	hdr->caplen = sfhdr->caplen;
+	hdr->len = sfhdr->len;
 
 	if ( pcap_is_swapped( p ) )
 		{
@@ -307,7 +313,7 @@ sf_find_end( pcap_t *p, struct timeval *first_timestamp,
 	 * finding a "definite" header and following its chain to the
 	 * end of the file.
 	 */
-	if ( FSEEK( pcap_file( p ), (off_t) -num_bytes, SEEK_END ) < 0 )
+	if ( FSEEK( pcap_file( p ), -(off_t) num_bytes, SEEK_END ) < 0 )
 		return 0;
 
 	buf = (u_char *)malloc((u_int) num_bytes);
@@ -372,7 +378,7 @@ sf_find_end( pcap_t *p, struct timeval *first_timestamp,
 	status = 1;
 
 	/* Seek so that the next read will start at last valid packet. */
-	if ( FSEEK( pcap_file( p ), (off_t) -(bufend - hdrpos), SEEK_END ) < 0 )
+	if ( FSEEK( pcap_file( p ), -(off_t) (bufend - hdrpos), SEEK_END ) < 0 )
 		error( "final " S(FSEEK) "() failed in sf_find_end()" );
 
     done:
