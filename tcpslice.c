@@ -23,7 +23,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997, 1999, 2000\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Id: tcpslice.c,v 1.26 2000/08/04 23:41:33 vern Exp $ (LBL)";
+    "@(#)$Id: tcpslice.c,v 1.27 2002/10/08 22:31:43 vern Exp $ (LBL)";
 #endif
 
 /*
@@ -85,8 +85,7 @@ struct state {
 		stop_pos;	/* seek position corresponding to stop time */
 	struct timeval
 		file_start_time,	/* time of first pkt in file */
-		file_stop_time,		/* time of last pkt in file */
-		last_pkt_time;		/* time of most recently read pkt */
+		file_stop_time;		/* time of last pkt in file */
 	pcap_t	*p;
 	struct pcap_pkthdr hdr;
 	const u_char *pkt;
@@ -518,25 +517,16 @@ lowest_start_time(struct state *states, int numfiles)
 	return min_time;
 }
 
-/* Get the next record in a file.  Deal with end of file.
- *
- * This routine also prevents time from going "backwards"
- * within a single file.
- */
+/* Get the next record in a file.  Deal with end of file.  */
 
 void
 get_next_packet(struct state *s)
 {
-	do {
-		s->pkt = pcap_next(s->p, &s->hdr);
-		if (! s->pkt) {
-			s->done = 1;
-			pcap_close(s->p);
-		}
-	} while ((! s->done) &&
-		 sf_timestamp_less_than(&s->hdr.ts, &s->last_pkt_time));
-
-	s->last_pkt_time = s->hdr.ts;
+	s->pkt = pcap_next(s->p, &s->hdr);
+	if (! s->pkt) {
+		s->done = 1;
+		pcap_close(s->p);
+	}
 }
 
 struct state *
@@ -676,10 +666,6 @@ extract_slice(struct state *states, int numfiles, char *write_file_name,
 	/*
 	 * Now, loop thru all the packets in all the files,
 	 * putting packets out in timestamp order.
-	 *
-	 * Quite often, the files will not have overlapping
-	 * timestamps, so it would be nice to try to deal
-	 * efficiently with that situation. (XXX)
 	 */
 
 	while (1) {

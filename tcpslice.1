@@ -1,4 +1,4 @@
-.\" @(#) $Id: tcpslice.1,v 1.6 2000/08/04 00:00:28 vern Exp $ (LBL)
+.\" @(#) $Id: tcpslice.1,v 1.7 2002/10/08 22:32:26 vern Exp $ (LBL)
 .\"
 .\" Copyright (c) 1991, 1996, 2000
 .\"	The Regents of the University of California.  All rights reserved.
@@ -173,14 +173,14 @@ If more than one input file is specified then
 .I tcpslice
 merges the packets from the various input files into the single
 output file.  Normally, this merge is done based on the
-value of the time stamps in the packets in the individual files.
+value of the timestamps in the packets in the individual files.
 (Tcpslice assumes that
 .I within
-each input file, packets are in time stamp order.)
+each input file, packets are in timestamp order.)
 If the
 .B \-l
-option is used, the value used for ordering is the time stamp of
-a given packet minus the time stamp of the first packet in the
+option is used, the value used for ordering is the timestamp of
+a given packet minus the timestamp of the first packet in the
 input file in which the given packet occurs.
 .LP
 When merging files, by default
@@ -199,6 +199,24 @@ will not discard duplicates in the same trace file.  In addition,
 you can use the
 .B \-D
 option to suppress any discarding of duplicates.
+.LP
+A different issue arises if a file contains timestamps that skip
+backwards.
+.I tcpslice
+will include these in the output, even if they precede the minimum
+time requested.  There should probably be an option to suppress these.
+.LP
+Another problem relating to backwards timestamps is that
+.I tcpslice
+uses random access to seek through a file looking for packets
+corresponding to the desired range of time.  While doing so leads
+to a major performance benefit for very large trace files, it also
+means that in the presence of backwards timestamps
+.I
+tcpslice
+can fail to find the true earliest occurrence of a packet matching
+the time interval criteria.  There should probably be an option
+to specify not to use random access but just read the file linearly.
 .SH OPTIONS
 .LP
 If any of
@@ -229,12 +247,12 @@ format; otherwise, raw format (\fB \-R\fP) is used.
 When merging more than one file, merge on the basis of
 relative time, rather than absolute time.
 Normally, when merging
-files is done, packets are merged based on absolute time stamps.  With
+files is done, packets are merged based on absolute timestamps.  With
 .B \-l
 packets are merged based on the relative time between
-the start of the file in which the packet is found and the time stamp
+the start of the file in which the packet is found and the timestamp
 of the packet itself.
-The time stamp of packets in the output file is calculated
+The timestamp of packets in the output file is calculated
 as the relative time for the packet within its file plus
 .I first time.
 .TP

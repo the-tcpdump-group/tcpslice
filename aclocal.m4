@@ -1,6 +1,6 @@
-dnl @(#) $Header: aclocal.m4,v 1.73 99/08/14 16:50:02 leres Exp $ (LBL)
+dnl @(#) $Id: aclocal.m4,v 1.80 2003/04/07 19:13:48 leres Exp $ (LBL)
 dnl
-dnl Copyright (c) 1995, 1996, 1997, 1998, 1999
+dnl Copyright (c) 1995, 1996, 1997, 1998, 1999, 2002, 2003
 dnl	The Regents of the University of California.  All rights reserved.
 dnl
 dnl Redistribution and use in source and binary forms, with or without
@@ -100,7 +100,7 @@ AC_DEFUN(AC_LBL_C_INIT,
 			    fi
 			    CFLAGS="$savedcflags"
 			    $1="-Aa $$1"
-			    AC_DEFINE(_HPUX_SOURCE)
+			    AC_DEFINE(_HPUX_SOURCE,,[HP-UX ansi compiler])
 			    ;;
 
 		    *)
@@ -132,12 +132,42 @@ AC_DEFUN(AC_LBL_C_INIT,
 			    ac_cv_lbl_cc_const_proto=no))
 		    AC_MSG_RESULT($ac_cv_lbl_cc_const_proto)
 		    if test $ac_cv_lbl_cc_const_proto = no ; then
-			    AC_DEFINE(const,)
+			    AC_DEFINE(const,,[ultrix can't hack const])
 		    fi
 		    ;;
 	    esac
     fi
 ])
+
+AC_LBL_ENABLE_CHECK(brov6 activemapping expire-dfa-states)
+dnl
+dnl This allows us to check for bogus configure enable/disable
+dnl command line options
+dnl
+dnl usage:
+dnl
+dnl	AC_LBL_ENABLE_CHECK(opt ...)
+dnl
+AC_DEFUN(AC_LBL_ENABLE_CHECK,
+    [set |
+	sed -n -e 's/^enable_\([[^=]]*\)=[[^=]]*$/\1/p' |
+	while read var; do
+	    ok=0
+	    for o in $1; do
+		    if test "${o}" = "${var}" ; then
+			    ok=1
+			    break
+		    fi
+	    done
+	    if test ${ok} -eq 0 ; then
+		    # It's hard to kill configure script from subshell!
+		    AC_MSG_ERROR(unknown enable option: ${var})
+		    exit 1
+	    fi
+	done
+	if test $? -ne 0 ; then
+		exit 1
+	fi])
 
 dnl
 dnl Use pfopen.c if available and pfopen() not in standard libraries
@@ -191,13 +221,13 @@ AC_DEFUN(AC_LBL_LIBPCAP,
     done
     if test "x$libpcap" = xFAIL ; then
 	    AC_MSG_RESULT(not found)
-	    unset ac_cv_lbl_lib_pcap_pcap_open_live_
-	    AC_LBL_CHECK_LIB(pcap, pcap_open_live, libpcap="-lpcap")
+	    AC_CHECK_LIB(pcap, pcap_open_live, libpcap="-lpcap")
+	    unset ac_cv_lib_pcap_pcap_open_live
 	    if test "x$libpcap" = xFAIL ; then
-		    unset ac_cv_lbl_lib_pcap_pcap_open_live_
 		    CFLAGS="$CFLAGS -I/usr/local/include"
 		    LIBS="$LIBS -L/usr/local/lib"
-		    AC_LBL_CHECK_LIB(pcap, pcap_open_live, libpcap="-lpcap")
+		    AC_CHECK_LIB(pcap, pcap_open_live, libpcap="-lpcap")
+		    unset ac_cv_lib_pcap_pcap_open_live
 		    if test "x$libpcap" = xFAIL ; then
 			    AC_MSG_ERROR(see the INSTALL doc for more info)
 		    fi
@@ -240,21 +270,21 @@ AC_DEFUN(AC_LBL_TYPE_SIGNAL,
     [AC_BEFORE([$0], [AC_LBL_LIBPCAP])
     AC_TYPE_SIGNAL
     if test "$ac_cv_type_signal" = void ; then
-	    AC_DEFINE(RETSIGVAL,)
+	    AC_DEFINE(RETSIGVAL,,[signal function return value])
     else
 	    AC_DEFINE(RETSIGVAL,(0))
     fi
     case "$target_os" in
 
     irix*)
-	    AC_DEFINE(_BSD_SIGNALS)
+	    AC_DEFINE(_BSD_SIGNALS,,[irix's BSD style signals])
 	    ;;
 
     *)
 	    dnl prefer sigset() to sigaction()
 	    AC_CHECK_FUNCS(sigset)
 	    if test $ac_cv_func_sigset = yes ; then
-		    AC_DEFINE(signal,sigset)
+		    AC_DEFINE(signal,sigset,[use sigset() instead of signal()])
 	    else
 		    AC_CHECK_FUNCS(sigaction)
 	    fi
@@ -397,17 +427,38 @@ dnl
 dnl	HAVE_SOCKADDR_SA_LEN (defined)
 dnl
 AC_DEFUN(AC_LBL_SOCKADDR_SA_LEN,
-    [AC_MSG_CHECKING(if sockaddr struct has sa_len member)
-    AC_CACHE_VAL(ac_cv_lbl_sockaddr_has_sa_len,
-	AC_TRY_COMPILE([
+    [AC_CHECK_MEMBERS(struct sockaddr.sa_len,,,[
 #	include <sys/types.h>
-#	include <sys/socket.h>],
-	[u_int i = sizeof(((struct sockaddr *)0)->sa_len)],
-	ac_cv_lbl_sockaddr_has_sa_len=yes,
-	ac_cv_lbl_sockaddr_has_sa_len=no))
-    AC_MSG_RESULT($ac_cv_lbl_sockaddr_has_sa_len)
-    if test $ac_cv_lbl_sockaddr_has_sa_len = yes ; then
-	    AC_DEFINE(HAVE_SOCKADDR_SA_LEN)
+#	include <sys/socket.h>])])
+
+dnl
+dnl Makes sure socklen_t is defined
+dnl
+dnl usage:
+dnl
+dnl	AC_LBL_SOCKLEN_T
+dnl
+dnl results:
+dnl
+dnl	socklen_t (defined if missing)
+dnl
+AC_DEFUN(AC_LBL_SOCKLEN_T,
+    [AC_MSG_CHECKING(for socklen_t in sys/socket.h using $CC)
+    AC_CACHE_VAL(ac_cv_lbl_socklen_t,
+	AC_TRY_COMPILE([
+#	include "confdefs.h"
+#	include <sys/types.h>
+#	include <sys/socket.h>
+#	if STDC_HEADERS
+#	include <stdlib.h>
+#	include <stddef.h>
+#	endif],
+	[socklen_t i],
+	ac_cv_lbl_socklen_t=yes,
+	ac_cv_lbl_socklen_t=no))
+    AC_MSG_RESULT($ac_cv_lbl_socklen_t)
+    if test $ac_cv_lbl_socklen_t = no ; then
+	    AC_DEFINE(socklen_t, int, [Define socklen_t if missing])
     fi])
 
 dnl
@@ -442,7 +493,7 @@ AC_DEFUN(AC_LBL_IFF_LOOPBACK,
 	ac_cv_lbl_have_iff_loopback=no))
     AC_MSG_RESULT($ac_cv_lbl_have_iff_loopback)
     if test $ac_cv_lbl_have_iff_loopback = yes ; then
-	    AC_DEFINE(HAVE_IFF_LOOPBACK)
+	    AC_DEFINE(HAVE_IFF_LOOPBACK,, [Have IFF_LOOPBACK define/enum])
     fi])
 
 dnl
@@ -497,7 +548,7 @@ AC_DEFUN(AC_LBL_CHECK_TYPE,
 	ac_cv_lbl_have_$1=no))
     AC_MSG_RESULT($ac_cv_lbl_have_$1)
     if test $ac_cv_lbl_have_$1 = no ; then
-	    AC_DEFINE($1, $2)
+	    AC_DEFINE($1, $2, Define $1)
     fi])
 
 dnl
@@ -588,8 +639,9 @@ AC_DEFUN(AC_LBL_CHECK_WALL,
 	    else
 		    AC_MSG_CHECKING(gcc version)
 		    AC_CACHE_VAL(ac_cv_lbl_gcc_vers,
+			# Gag, the gcc folks keep changing the output...
 			ac_cv_lbl_gcc_vers=`$CC --version 2>&1 | \
-			    sed -e 's/\..*//'`)
+			    sed -e '1!d' -e 's/.* //' -e 's/\..*//'`)
 		    AC_MSG_RESULT($ac_cv_lbl_gcc_vers)
 		    if test $ac_cv_lbl_gcc_vers -gt 1 ; then
 			    $1="`echo $$1 | sed -e 's/-O/-O2/'`"
@@ -643,7 +695,7 @@ AC_DEFUN(AC_LBL_DEVEL,
 	    name="lbl/os-$os.h"
 	    if test -f $name ; then
 		    ln -s $name os-proto.h
-		    AC_DEFINE(HAVE_OS_PROTO_H)
+		    AC_DEFINE(HAVE_OS_PROTO_H,,[have os-proto.h])
 	    else
 		    AC_MSG_WARN(can't find $name)
 	    fi
@@ -747,18 +799,18 @@ AC_DEFUN(AC_LBL_LIBRARY_NET, [
     # libraries (i.e. libc):
     AC_CHECK_FUNC(gethostbyname, ,
 	# Some OSes (eg. Solaris) place it in libnsl:
-	AC_LBL_CHECK_LIB(nsl, gethostbyname, , 
+	AC_CHECK_LIB(nsl, gethostbyname, ,
 	    # Some strange OSes (SINIX) have it in libsocket:
-	    AC_LBL_CHECK_LIB(socket, gethostbyname, ,
+	    AC_CHECK_LIB(socket, gethostbyname, ,
 		# Unfortunately libsocket sometimes depends on libnsl.
 		# AC_CHECK_LIB's API is essentially broken so the
 		# following ugliness is necessary:
-		AC_LBL_CHECK_LIB(socket, gethostbyname,
+		AC_CHECK_LIB(socket, gethostbyname,
 		    LIBS="-lsocket -lnsl $LIBS",
 		    AC_CHECK_LIB(resolv, gethostbyname),
 		    -lnsl))))
     AC_CHECK_FUNC(socket, , AC_CHECK_LIB(socket, socket, ,
-	AC_LBL_CHECK_LIB(socket, socket, LIBS="-lsocket -lnsl $LIBS", ,
+	AC_CHECK_LIB(socket, socket, LIBS="-lsocket -lnsl $LIBS", ,
 	    -lnsl)))
     # DLPI needs putmsg under HPUX so test for -lstr while we're at it
     AC_CHECK_LIB(str, putmsg)
