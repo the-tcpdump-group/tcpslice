@@ -1,6 +1,6 @@
 dnl @(#) $Header$ (LBL)
 dnl
-dnl Copyright (c) 1995, 1996, 1997
+dnl Copyright (c) 1995, 1996, 1997, 1998
 dnl	The Regents of the University of California.  All rights reserved.
 dnl
 dnl Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ dnl
 dnl	$1 (copt set)
 dnl	$2 (incls set)
 dnl	CC
+dnl	LDFLAGS
 dnl	ac_cv_lbl_gcc_vers
 dnl	LBL_CFLAGS
 dnl
@@ -50,7 +51,7 @@ AC_DEFUN(AC_LBL_C_INIT,
     $1="-O"
     $2=""
     if test "${srcdir}" != "." ; then
-	    $2="-I\$\(srcdir\)"
+	    $2="-I\$(srcdir)"
     fi
     if test "${CFLAGS+set}" = set; then
 	    LBL_CFLAGS="$CFLAGS"
@@ -80,7 +81,10 @@ AC_DEFUN(AC_LBL_C_INIT,
 		    AC_MSG_CHECKING(gcc version)
 		    AC_CACHE_VAL(ac_cv_lbl_gcc_vers,
 			ac_cv_lbl_gcc_vers=`$CC -v 2>&1 | \
-			    sed -n -e '$s/.* //' -e '$s/\..*//p'`)
+			    sed -e '/^gcc version /!d' \
+				-e 's/^gcc version //' \
+				-e 's/ .*//' -e 's/^[[[^0-9]]]*//' \
+				-e 's/\..*//'`)
 		    AC_MSG_RESULT($ac_cv_lbl_gcc_vers)
 		    if test $ac_cv_lbl_gcc_vers -gt 1 ; then
 			    $1="-O2"
@@ -123,6 +127,7 @@ AC_DEFUN(AC_LBL_C_INIT,
 		    esac
 	    fi
 	    $2="$$2 -I/usr/local/include"
+	    LDFLAGS="$LDFLAGS -L/usr/local/lib"
 
 	    case "$target_os" in
 
@@ -131,7 +136,7 @@ AC_DEFUN(AC_LBL_C_INIT,
 		    ;;
 
 	    osf*)
-		    V_CCOPT="$V_CCOPT -g3"
+		    V_CCOPT="$V_CCOPT -std1 -g3"
 		    ;;
 
 	    ultrix*)
@@ -187,7 +192,7 @@ AC_DEFUN(AC_LBL_LIBPCAP,
     libpcap=FAIL
     lastdir=FAIL
     places=`ls .. | sed -e 's,/$,,' -e 's,^,../,' | \
-	egrep '/libpcap-[[0-9]]*\.[[0-9]]*(\.[[0-9]]*)?([[ab]][[0-9]]*)?$'`
+	egrep '/libpcap-[[0-9]]*.[[0-9]]*(.[[0-9]]*)?([[ab]][[0-9]]*)?$'`
     for dir in $places ../libpcap libpcap ; do
 	    basedir=`echo $dir | sed -e 's/[[ab]][[0-9]]*$//'`
 	    if test $lastdir = $basedir ; then
@@ -195,7 +200,7 @@ AC_DEFUN(AC_LBL_LIBPCAP,
 		    continue;
 	    fi
 	    lastdir=$dir
-	    if test -r $dir/pcap.c ; then
+	    if test -r $dir/libpcap.a ; then
 		    libpcap=$dir/libpcap.a
 		    d=$dir
 		    dnl continue and select the last one that exists
@@ -209,7 +214,13 @@ AC_DEFUN(AC_LBL_LIBPCAP,
 	    fi
     else
 	    $1=$libpcap
-	    $2="-I$d $$2"
+	    if test -r $d/pcap.h; then
+		    $2="-I$d $$2"
+	    elif test -r $srcdir/../libpcap/pcap.h; then
+		    $2="-I$d -I$srcdir/../libpcap $$2"
+	    else
+                    AC_MSG_ERROR(cannot find pcap.h, see INSTALL)
+ 	    fi
 	    AC_MSG_RESULT($libpcap)
     fi
     LIBS="$libpcap $LIBS"
@@ -480,7 +491,8 @@ AC_DEFUN(AC_LBL_UNALIGNED_ACCESS,
     AC_CACHE_VAL(ac_cv_lbl_unaligned_fail,
 	[case "$target_cpu" in
 
-	alpha|hp*|mips|sparc)
+	# XXX: should also check that they don't do weird things (like on arm)
+	alpha*|arm*|hp*|mips|sparc)
 		ac_cv_lbl_unaligned_fail=yes
 		;;
 
@@ -586,13 +598,14 @@ AC_DEFUN(AC_LBL_DEVEL,
     fi])
 
 dnl
-dnl Attempt to determine additional libraries needed for network programs
+dnl Improved version of AC_CHECK_LIB
 dnl
 dnl Thanks to John Hawkinson (jhawk@mit.edu)
 dnl
 dnl usage:
 dnl
-dnl	AC_LBL_LIBRARY_NET
+dnl	AC_LBL_CHECK_LIB(LIBRARY, FUNCTION [, ACTION-IF-FOUND [,
+dnl	    ACTION-IF-NOT-FOUND [, OTHER-LIBRARIES]]])
 dnl
 dnl results:
 dnl
@@ -603,7 +616,7 @@ define(AC_LBL_CHECK_LIB,
 [AC_MSG_CHECKING([for $2 in -l$1])
 dnl Use a cache variable name containing both the library and function name,
 dnl because the test really is for library $1 defining function $2, not
-dnl just for library $1.  Separate tests with the same $1 and different $2s
+dnl just for library $1.  Separate tests with the same $1 and different $2's
 dnl may have different results.
 ac_lib_var=`echo $1['_']$2['_']$5 | sed 'y%./+- %__p__%'`
 AC_CACHE_VAL(ac_cv_lbl_lib_$ac_lib_var,
