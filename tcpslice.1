@@ -1,6 +1,6 @@
-.\" @(#) $Header: tcpslice.1,v 1.4 96/12/21 20:15:27 leres Exp $ (LBL)
+.\" @(#) $Id: tcpslice.1,v 1.6 2000/08/04 00:00:28 vern Exp $ (LBL)
 .\"
-.\" Copyright (c) 1991, 1996
+.\" Copyright (c) 1991, 1996, 2000
 .\"	The Regents of the University of California.  All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -19,14 +19,14 @@
 .\" WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
 .\" MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 .\"
-.TH TCPSLICE 1  "21 December 1996"
+.TH TCPSLICE 1  "24 February 2000"
 .SH NAME
-tcpslice \- extract pieces of and/or glue together tcpdump files
+tcpslice \- extract pieces of and/or merge together tcpdump files
 .SH SYNOPSIS
 .na
 .B tcpslice
 [
-.B \-dRrt
+.B \-DdlRrt
 ] [
 .B \-w
 .I file
@@ -48,7 +48,7 @@ is a program for extracting portions of packet-trace files generated using
 \fItcpdump(l)\fP's
 .B \-w
 flag.
-It can also be used to glue together several such files, as discussed
+It can also be used to merge together several such files, as discussed
 below.
 .LP
 The basic operation of
@@ -59,7 +59,8 @@ all packets from its input file(s) whose timestamps fall
 within a given range.  The starting and ending times of the range
 may be specified on the command line.  All ranges are inclusive.
 The starting time defaults
-to the time of the first packet in the first input file; we call
+to the earliest time of the first packet in
+any of the input files; we call
 this the
 .I first time.
 The ending time defaults to ten years after the starting time.
@@ -112,7 +113,9 @@ Times may also be specified in terms of years (y), months (m), days (d),
 hours (h), minutes (m), seconds (s), and microseconds(u).  For example,
 the Unix timestamp 654321098.7654 discussed above could also be expressed
 as
-.B 90y9m25d20h51m38s765400u.
+.B 1990y9m25d20h51m38s765400u.
+2 or 4 digit years may be used; 2 digits can specify years from 1970 to
+2069.
 .LP
 When specifying times using this style, fields that are omitted default
 as follows.  If the omitted field is a unit
@@ -168,15 +171,34 @@ specifies minutes.
 .LP
 If more than one input file is specified then
 .I tcpslice
-first copies packets lying in the given range from the first file; it
-then increases the starting time of the range to lie just beyond the
-timestamp of the last packet in the first file, repeats the process
-with the second file, and so on.  Thus files with interleaved packets
-are
-.I not
-merged.  For a given file, only packets that are newer than any in the
-preceding files will be considered.  This mechanism avoids any possibility
-of a packet occurring more than once in the output.
+merges the packets from the various input files into the single
+output file.  Normally, this merge is done based on the
+value of the time stamps in the packets in the individual files.
+(Tcpslice assumes that
+.I within
+each input file, packets are in time stamp order.)
+If the
+.B \-l
+option is used, the value used for ordering is the time stamp of
+a given packet minus the time stamp of the first packet in the
+input file in which the given packet occurs.
+.LP
+When merging files, by default
+.I tcpslice
+will discard any
+.I duplicate
+packet it finds in more than one file.  A duplicate is a packet
+that has an identical timestamp (either relative or absolute) and
+identical packet contents (for as much as was captured) as another
+packet previously seen in a different file.  Note that it is possible
+for the network to generate true replicates of packets, and for
+systems that can return the same timestamp for multiple packets,
+these can be mistaken for duplicates and discarded.  Accordingly,
+.I tcpslice
+will not discard duplicates in the same trace file.  In addition,
+you can use the
+.B \-D
+option to suppress any discarding of duplicates.
 .SH OPTIONS
 .LP
 If any of
@@ -189,6 +211,9 @@ are specified then
 reports the timestamps of the first and last packets in each input file
 and exits.  Only one of these three options may be specified.
 .TP
+.B \-D
+Do not discard duplicate packets seen when merging multiple trace files.
+.TP
 .B \-d
 Dump the start and end times specified by the given range and
 exit.  This option is useful for checking that the given range actually
@@ -199,6 +224,19 @@ or
 .B \-t
 has been specified then the times are dumped in the corresponding
 format; otherwise, raw format (\fB \-R\fP) is used.
+.TP
+.B \-l
+When merging more than one file, merge on the basis of
+relative time, rather than absolute time.
+Normally, when merging
+files is done, packets are merged based on absolute time stamps.  With
+.B \-l
+packets are merged based on the relative time between
+the start of the file in which the packet is found and the time stamp
+of the packet itself.
+The time stamp of packets in the output file is calculated
+as the relative time for the packet within its file plus
+.I first time.
 .TP
 .B \-R
 Dump the timestamps of the first and last packets in each input file
@@ -254,7 +292,7 @@ output file via \fB\-w\fP.
 .I tcpslice
 will not work properly on \fItcpdump\fP files spanning more than one year;
 with files containing portions of packets whose original length was
-more than 65,535 bytes; nor with files containing fewer than three packets.
+more than 65,535 bytes; nor with files containing fewer than two packets.
 Such files result in
 the error message: `couldn't find final packet in file'.  These problems
 are due to the interpolation scheme used by
@@ -266,3 +304,19 @@ can efficiently extract slices from the middle of trace files of any
 size, and can also work with truncated trace files (i.e., the final packet
 in the file is only partially present, typically due to \fItcpdump\fP
 being ungracefully killed).
+.LP
+Adding
+.B \-l
+has broken some compatibility with older versions, since
+.I tcpslice
+now merges its input files, rather than (approximately) concatenating
+them together as it did previously.
+.LP
+It would sometimes be convenient if you could specify a clock offset
+to use with the
+.B \-l
+option.
+.LP
+It would be nice if
+.I tcpslice
+supported more general editing of trace files.

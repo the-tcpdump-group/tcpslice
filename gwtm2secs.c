@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1992, 1993, 1995, 1996
+ * Copyright (c) 1992, 1993, 1995, 1996, 2000
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,7 +20,7 @@
  */
 #ifndef lint
 static const char rcsid[] =
-    "@(#) $Header: gwtm2secs.c,v 1.4 96/12/21 19:56:51 leres Exp $ (LBL)";
+    "@(#) $Id: gwtm2secs.c,v 1.6 2000/02/25 07:27:00 leres Exp $ (LBL)";
 #endif
 
 /*
@@ -50,18 +50,7 @@ time_t gwtm2secs( struct tm *tm )
 	{
 	int i, days, year;
 
-	year = tm->tm_year;
-
-	/* Allow for year being specified with either 2 digits or 4 digits.
-	 * 2-digit years are either 19xx or 20xx - a simple heuristic
-	 * distinguishes them, since we can't represent any time < 1970.
-	 */
-	if ( year < 100 )
-		if ( year >= 70 )
-			year += 1900;
-		else
-			year += 2000;
-
+	year = tm->tm_year + 1900;
 	days = 0;
 	for ( i = 1970; i < year; ++i )
 		{

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997
+ * Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997, 1999, 2000
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -20,10 +20,10 @@
  */
 #ifndef lint
 static const char copyright[] =
-    "@(#) Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997\n\
+    "@(#) Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997, 1999, 2000\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Header: tcpslice.c,v 1.21 97/01/24 13:36:07 leres Exp $ (LBL)";
+    "@(#)$Id: tcpslice.c,v 1.26 2000/08/04 23:41:33 vern Exp $ (LBL)";
 #endif
 
 /*
@@ -58,6 +58,42 @@ static const char rcsid[] =
 #include "machdep.h"
 
 
+/* compute a + b, store in c */
+#define	TV_ADD(a,b,c)	{ \
+	(c)->tv_sec = (a)->tv_sec + (b)->tv_sec; \
+	(c)->tv_usec = (a)->tv_usec + (b)->tv_usec; \
+	if ((c)->tv_usec > 1000000) { \
+		(c)->tv_usec -= 1000000; \
+		(c)->tv_sec += 1; \
+	} \
+}
+
+/* compute a - b, store in c */
+#define	TV_SUB(a,b,c)	{ \
+	(c)->tv_sec = (a)->tv_sec - (b)->tv_sec; \
+	if ((a)->tv_usec < (b)->tv_usec) { \
+		(c)->tv_sec -= 1;		/* need to borrow */ \
+		(c)->tv_usec = ((a)->tv_usec + 1000000) - (b)->tv_usec; \
+	} else { \
+		(c)->tv_usec = (a)->tv_usec - (b)->tv_usec; \
+	} \
+}
+
+/* The structure used to keep track of files being merged. */
+struct state {
+	off_t	start_pos,	/* seek position corresponding to start time */
+		stop_pos;	/* seek position corresponding to stop time */
+	struct timeval
+		file_start_time,	/* time of first pkt in file */
+		file_stop_time,		/* time of last pkt in file */
+		last_pkt_time;		/* time of most recently read pkt */
+	pcap_t	*p;
+	struct pcap_pkthdr hdr;
+	const u_char *pkt;
+	char	*filename;
+	int	done;
+};
+
 int tflag = 0;	/* global that util routines are sensitive to */
 
 char *program_name;
@@ -76,8 +112,13 @@ void fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr);
 void get_file_range( char filename[], pcap_t **p,
 			struct timeval *first_time, struct timeval *last_time );
 struct timeval first_packet_time(char filename[], pcap_t **p_addr);
-void extract_slice(char filename[], char write_file_name[],
-			struct timeval *start_time, struct timeval *stop_time);
+struct timeval lowest_start_time(struct state *states, int numfiles);
+void get_next_packet(struct state *s);
+struct state *open_files(char *filenames[], int numfiles);
+void extract_slice(struct state *states, int numfiles, char *write_file_name,
+			struct timeval *start_time, struct timeval *stop_time,
+			int keep_dups, int relative_time_merge,
+			struct timeval *base_time);
 char *timestamp_to_string(struct timeval *timestamp);
 void dump_times(pcap_t **p, char filename[]);
 __dead void usage(void)__attribute__((volatile));
@@ -88,12 +129,17 @@ pcap_dumper_t *dumper = 0;
 extern  char *optarg;
 extern  int optind, opterr;
 
+int snaplen;	/* needed by search.c, extract_slice() */
+
 int
 main(int argc, char **argv)
 {
 	int op;
 	int dump_flag = 0;
+	int keep_dups = 0;
 	int report_times = 0;
+	int relative_time_merge = 0;
+	int numfiles;
 	register char *cp;
 	char *start_time_string = 0;
 	char *stop_time_string = 0;
@@ -101,6 +147,7 @@ main(int argc, char **argv)
 	struct timeval first_time, start_time, stop_time;
 	pcap_t *pcap;
 	char ebuf[PCAP_ERRBUF_SIZE];
+	struct state *states;
 
 	if ((cp = strrchr(argv[0], '/')) != NULL)
 		program_name = cp + 1;
@@ -111,11 +158,19 @@ main(int argc, char **argv)
 			error("%s", ebuf);
 
 	opterr = 0;
-	while ((op = getopt(argc, argv, "dRrtw:")) != EOF)
+	while ((op = getopt(argc, argv, "dDlRrtw:")) != EOF)
 		switch (op) {
 
 		case 'd':
 			dump_flag = 1;
+			break;
+
+		case 'D':
+			keep_dups = 1;
+			break;
+
+		case 'l':
+			relative_time_merge = 1;
 			break;
 
 		case 'R':
@@ -145,7 +200,6 @@ main(int argc, char **argv)
 	if ( report_times > 1 )
 		error( "only one of -R, -r, or -t can be specified" );
 
-
 	if (optind < argc)
 		/* See if the next argument looks like a possible
 		 * start time, and if so assume it is one.
@@ -157,14 +211,16 @@ main(int argc, char **argv)
 		if (isdigit(argv[optind][0]) || argv[optind][0] == '+')
 			stop_time_string = argv[optind++];
 
-
 	if (optind >= argc)
 		error("at least one input file must be given");
 
+	numfiles = argc - optind;
 
-	first_time = first_packet_time(argv[optind], &pcap);
-	pcap_close(pcap);
+	if ( numfiles == 1 )
+		keep_dups = 1;	/* no dups can occur, so don't do the work */
 
+	states = open_files(&argv[optind], numfiles);
+	first_time = lowest_start_time(states, numfiles);
 
 	if (start_time_string)
 		start_time = parse_time(start_time_string, first_time);
@@ -178,6 +234,7 @@ main(int argc, char **argv)
 		{
 		stop_time = start_time;
 		stop_time.tv_sec += 86400*3660;	/* + 10 years; "forever" */
+		stop_time.tv_usec = 0;
 		}
 
 
@@ -197,9 +254,9 @@ main(int argc, char **argv)
 		     isatty( fileno(stdout) ) )
 			error("stdout is a terminal; redirect or use -w");
 
-		for (; optind < argc; ++optind)
-			extract_slice(argv[optind], write_file_name,
-					&start_time, &stop_time);
+		extract_slice(states, numfiles, write_file_name,
+		    &start_time, &stop_time, keep_dups, relative_time_merge,
+		    &first_time);
 	}
 
 	return 0;
@@ -256,16 +313,7 @@ parse_time(char *time_string, struct timeval base_time)
 			result.tv_usec = 0;
 
 		if ( is_delta )
-			{
-			result.tv_sec += base_time.tv_sec;
-			result.tv_usec += base_time.tv_usec;
-
-			if ( result.tv_usec > 1000000 )
-				{
-				result.tv_usec -= 1000000;
-				++result.tv_sec;
-				}
-			}
+			TV_ADD(&result, &base_time, &result);
 
 		return result;
 		}
@@ -367,9 +415,21 @@ fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 			format_ch = tolower( format_ch );
 
 		switch (format_ch) {
+
 			case 'y':
-				if ( val > 1900 )
-					val -= 1900;
+				/*
+				 * Allow for year being specified with
+				 * either 2 digits or 4 digits. 2
+				 * digits specify years from 1970 to 2069.
+				 */
+				if ( val <= 99 ) {
+					if ( val >= 70 )
+						val += 1900;
+					else
+						val += 2000;
+				}
+				/* Convert to struct tm format */
+				val -= 1900;
 				SET_VAL(t->tm_year, val);
 				break;
 
@@ -420,8 +480,6 @@ get_file_range( char filename[], pcap_t **p,
 		error( "couldn't find final packet in file %s", filename );
 }
 
-int snaplen;
-
 /* Returns the timestamp of the first packet in the given tcpdump save
  * file, which as a side-effect is initialized for further save-file
  * reading.
@@ -438,8 +496,6 @@ first_packet_time(char filename[], pcap_t **p_addr)
 	if (! p)
 		error( "bad tcpdump file %s: %s", filename, errbuf );
 
-	snaplen = pcap_snapshot( p );
-
 	if (pcap_next(p, &hdr) == 0)
 		error( "bad status reading first packet in %s", filename );
 
@@ -447,7 +503,93 @@ first_packet_time(char filename[], pcap_t **p_addr)
 }
 
 
-/* Extract from the given file all packets with timestamps between
+/* Of all the files, what is the lowest start time. */
+struct timeval
+lowest_start_time(struct state *states, int numfiles)
+{
+	struct timeval min_time = states->file_start_time;
+
+	while (numfiles--) {
+		if (sf_timestamp_less_than(&states->file_start_time, &min_time)) {
+			min_time = states->file_start_time;
+		}
+		++states;
+	}
+	return min_time;
+}
+
+/* Get the next record in a file.  Deal with end of file.
+ *
+ * This routine also prevents time from going "backwards"
+ * within a single file.
+ */
+
+void
+get_next_packet(struct state *s)
+{
+	do {
+		s->pkt = pcap_next(s->p, &s->hdr);
+		if (! s->pkt) {
+			s->done = 1;
+			pcap_close(s->p);
+		}
+	} while ((! s->done) &&
+		 sf_timestamp_less_than(&s->hdr.ts, &s->last_pkt_time));
+
+	s->last_pkt_time = s->hdr.ts;
+}
+
+struct state *
+open_files(char *filenames[], int numfiles)
+{
+	struct state *states;
+	struct state *s;
+	char errbuf[PCAP_ERRBUF_SIZE];
+	int i, this_snap;
+
+	if (numfiles == 0)
+		error("no input files specified");
+
+	/* allocate memory for all the files */
+	states = (struct state *) malloc(sizeof(struct state) * numfiles);
+	if (! states)
+		error("unable to allocate memory for %d input files", numfiles);
+	memset(states, 0, sizeof(struct state) * numfiles);
+
+	for (i = 0; i < numfiles; ++i) {
+		s = &states[i];
+		s->filename = filenames[i];
+		s->p = pcap_open_offline(s->filename, errbuf);
+		if (! s->p)
+			error( "bad tcpdump file %s: %s", s->filename, errbuf );
+
+		this_snap = pcap_snapshot( s->p );
+		if (this_snap > snaplen) {
+			snaplen = this_snap;
+		}
+
+		s->start_pos = FTELL( pcap_file( s->p ) );
+
+		if (pcap_next(s->p, &s->hdr) == 0)
+			error( "error reading packet in %s: ",
+				s->filename, pcap_geterr( s->p ) );
+
+		s->file_start_time = s->hdr.ts;
+
+		if ( ! sf_find_end( s->p, &s->file_start_time,
+					  &s->file_stop_time ) )
+			error( "problems finding end packet of file %s",
+				s->filename );
+
+		s->stop_pos = FTELL( pcap_file( s->p ) );
+	}
+
+	return states;
+}
+
+
+/*
+ * Extract from a given set of files all packets with timestamps between
  * the two time values given (inclusive).  These packets are written
  * to the save file given by write_file_name.
  *
@@ -456,92 +598,156 @@ first_packet_time(char filename[], pcap_t **p_addr)
  */
 
 void
-extract_slice(char filename[], char write_file_name[],
-		struct timeval *start_time, struct timeval *stop_time)
+extract_slice(struct state *states, int numfiles, char *write_file_name,
+		struct timeval *start_time, struct timeval *stop_time,
+		int keep_dups, int relative_time_merge,
+		struct timeval *base_time)
 {
-	off_t start_pos, stop_pos;
-	struct timeval file_start_time, file_stop_time;
-	struct pcap_pkthdr hdr;
-	pcap_t *p;
-	char errbuf[PCAP_ERRBUF_SIZE];
+	struct state *s, *min_state;
+	pcap_dumper_t *dumper;
+	struct timeval temp1, temp2, relative_start, relative_stop;
+	int i;
 
-	p = pcap_open_offline(filename, errbuf);
-	if (! p)
-		error( "bad tcpdump file %s: %s", filename, errbuf );
+	struct state *last_state;	/* remember the last packet */
+	struct pcap_pkthdr last_hdr;	/* in order to remove duplicates */
+	u_char* last_pkt;
 
-	snaplen = pcap_snapshot( p );
-	start_pos = ftell( pcap_file( p ) );
+	if (numfiles == 0)
+		error("no input files specified");
 
-	if ( ! dumper )
-		{
-		dumper = pcap_dump_open(p, write_file_name);
-		if ( ! dumper )
-			error( "error creating output file %s: ",
-				write_file_name, pcap_geterr( p ) );
+	last_state = 0;
+	last_hdr.ts.tv_sec = last_hdr.ts.tv_usec = 0;
+	last_hdr.caplen = last_hdr.len = 0;
+	last_pkt = (u_char*) malloc(snaplen);
+
+	if (! last_pkt)
+		error("out of memory");
+
+	memset(last_pkt, 0, snaplen);
+
+	TV_SUB(start_time, base_time, &relative_start);
+	TV_SUB(stop_time, base_time, &relative_stop);
+
+	for (i = 0; i < numfiles; ++i) {
+		s = &states[i];
+
+		/* compute the first packet time within *this* file */
+		if (relative_time_merge) {
+			/* relative time within this file */
+			TV_ADD(&s->file_start_time, &relative_start, &temp1);
+		} else {
+			/* absolute time */
+			temp1 = *start_time;
 		}
 
-	if (pcap_next(p, &hdr) == 0)
-		error( "error reading packet in %s: ",
-			filename, pcap_geterr( p ) );
+		/* check if this file has *anything* for us ... */
+		if (sf_timestamp_less_than(&s->file_stop_time, &temp1)) {
+			/* there aren't any packets of interest in this file */
+			s->done = 1;
+			pcap_close(s->p);
+			continue;
+		}
 
-	file_start_time = hdr.ts;
+		/*
+		 * sf_find_packet() requires that the time it's passed as
+		 * its last argument be in the range [min_time, max_time],
+		 * so we enforce that constraint here.
+		 */
+
+		if (sf_timestamp_less_than(&temp1, &s->file_start_time)){
+			temp1 = s->file_start_time;
+		}
+
+		sf_find_packet(s->p, &s->file_start_time, s->start_pos,
+				&s->file_stop_time, s->stop_pos,
+				&temp1);
+
+		/* get first packet for this file */
+		get_next_packet(s);
+	}
+
+	dumper = pcap_dump_open(states->p, write_file_name);
+	if (! dumper) {
+		error( "error creating output file %s: ",
+			write_file_name, pcap_geterr( states->p ) );
+	}
 
 
-	if ( ! sf_find_end( p, &file_start_time, &file_stop_time ) )
-		error( "problems finding end packet of file %s",
-			filename );
-
-	stop_pos = ftell( pcap_file( p ) );
-
-
-	/* sf_find_packet() requires that the time it's passed as its last
-	 * argument be in the range [min_time, max_time], so we enforce
-	 * that constraint here.
+	/*
+	 * Now, loop thru all the packets in all the files,
+	 * putting packets out in timestamp order.
+	 *
+	 * Quite often, the files will not have overlapping
+	 * timestamps, so it would be nice to try to deal
+	 * efficiently with that situation. (XXX)
 	 */
-	if ( sf_timestamp_less_than( start_time, &file_start_time ) )
-		*start_time = file_start_time;
 
-	if ( sf_timestamp_less_than( &file_stop_time, start_time ) )
-		return;	/* there aren't any packets of interest in the file */
+	while (1) {
+		min_state = 0;
+		for (i = 0; i < numfiles; ++i) {
+			s = &states[i];
+			if (! s->done) {
+				if (! min_state)
+					min_state = s;
 
-
-	sf_find_packet( p, &file_start_time, start_pos,
-			&file_stop_time, stop_pos,
-			start_time );
-
-	for ( ; ; )
-		{
-		struct timeval *timestamp;
-		const u_char *pkt = pcap_next( p, &hdr );
-
-		if ( pkt == 0 )
-			{
-#ifdef notdef
-			int status;
-			if ( status != SFERR_EOF )
-				error( "bad status %d reading packet in %s",
-					status, filename );
-#endif
-			break;
-			}
-
-		timestamp = &hdr.ts;
-
-		if ( ! sf_timestamp_less_than( timestamp, start_time ) )
-			{ /* packet is recent enough */
-			if ( sf_timestamp_less_than( stop_time, timestamp ) )
-				/* We've gone beyond the end of the region
-				 * of interest ... We're done with this file.
-				 */
-				break;
-
-			pcap_dump((u_char *) dumper, &hdr, pkt);
-
-			*start_time = *timestamp;
+				if (relative_time_merge) {
+					/* compare *relative* times */
+					TV_SUB(&s->hdr.ts,
+						&s->file_start_time, &temp1);
+					TV_SUB(&min_state->hdr.ts,
+						&min_state->file_start_time, &temp2);
+				} else {
+					/* compare *absolute* times */
+					temp1 = s->hdr.ts;
+					temp2 = min_state->hdr.ts;
+				}
+				if (sf_timestamp_less_than( &temp1, &temp2))
+					min_state = s;
 			}
 		}
 
-	pcap_close( p );
+		if (! min_state)
+			break;	/* didn't find any !done files */
+
+		if (relative_time_merge) {
+			/* relative time w/in this file */
+			TV_ADD(&min_state->file_start_time, &relative_stop, &temp1);
+		} else
+			/* take absolute times */
+			temp1 = *stop_time;
+
+		if (sf_timestamp_less_than(&temp1, &min_state->hdr.ts)) {
+			/* We've gone beyond the end of the region
+			 * of interest ... We're done with this file.
+			 */
+			min_state->done = 1;
+			pcap_close(min_state->p);
+			break;
+		}
+
+		if (relative_time_merge) {
+			TV_SUB(&min_state->hdr.ts, &min_state->file_start_time, &temp1);
+			TV_ADD(&temp1, base_time, &min_state->hdr.ts);
+		}
+
+		/* Dump it, unless it's a duplicate. */
+		if ( keep_dups ||
+		     min_state == last_state ||
+		     memcmp(&last_hdr, &min_state->hdr, sizeof(last_hdr)) ||
+		     memcmp(last_pkt, min_state->pkt, last_hdr.caplen) ) {
+			pcap_dump((u_char *) dumper, &min_state->hdr, min_state->pkt);
+
+			if ( ! keep_dups ) {
+				last_state = min_state;
+				last_hdr = min_state->hdr;
+				memcpy(last_pkt, min_state->pkt, min_state->hdr.caplen);
+			}
+		}
+
+		get_next_packet(min_state);
+	}
+
+	free(last_pkt);
 }
 
 
@@ -565,8 +771,8 @@ timestamp_to_string(struct timeval *timestamp)
 	buf = buffers[buffer_to_use];
 	buffer_to_use = (buffer_to_use + 1) % NUM_BUFFERS;
 
-	switch ( timestamp_style )
-	    {
+	switch ( timestamp_style ) {
+
 	    case TIMESTAMP_RAW:
 		sprintf( buf, "%u.%06u",
 		    (u_int32_t)timestamp->tv_sec,
@@ -581,12 +787,13 @@ timestamp_to_string(struct timeval *timestamp)
 
 	    case TIMESTAMP_PARSEABLE:
 		t = localtime((time_t *) &timestamp->tv_sec);
-		sprintf( buf, "%02dy%02dm%02dd%02dh%02dm%02ds%06uu",
-			t->tm_year, t->tm_mon + 1, t->tm_mday, t->tm_hour,
-			t->tm_min, t->tm_sec, (u_int32_t)timestamp->tv_usec );
+		sprintf( buf, "%04dy%02dm%02dd%02dh%02dm%02ds%06uu",
+			t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
+			t->tm_hour, t->tm_min, t->tm_sec,
+			(u_int32_t)timestamp->tv_usec );
 		break;
 
-	    }
+	}
 
 	return buf;
 }
@@ -616,7 +823,7 @@ usage(void)
 
 	(void)fprintf(stderr, "Version %s\n", version);
 	(void)fprintf(stderr,
-"Usage: tcpslice [-dRrt] [-w file] [start-time [end-time]] file ... \n");
+"Usage: tcpslice [-DdlRrt] [-w file] [start-time [end-time]] file ... \n");
 
 	exit(-1);
 }

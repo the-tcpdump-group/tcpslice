@@ -1,6 +1,6 @@
-dnl @(#) $Header: configure.in,v 1.4 97/07/27 22:34:47 leres Exp $ (LBL)
+dnl @(#) $Header: configure.in,v 1.5 99/06/23 17:30:23 leres Exp $ (LBL)
 dnl
-dnl Copyright (c) 1995, 1996
+dnl Copyright (c) 1995, 1996, 1997, 1999
 dnl	The Regents of the University of California.  All rights reserved.
 dnl
 dnl Process this file with autoconf to produce a configure script.
@@ -22,6 +22,18 @@ AC_CHECK_HEADERS(fcntl.h)
 AC_HEADER_TIME
 
 AC_REPLACE_FUNCS(vfprintf)
+
+AC_CHECK_FUNCS(fseeko ftello)
+if test $ac_cv_func_fseeko = yes ; then
+	AC_DEFINE(FSEEK,fseeko)
+else
+	AC_DEFINE(FSEEK,fseek)
+fi
+if test $ac_cv_func_ftello = yes ; then
+	AC_DEFINE(FTELL,ftello)
+else
+	AC_DEFINE(FTELL,ftell)
+fi
 
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
 
