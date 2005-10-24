@@ -23,7 +23,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997, 1999, 2000\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Id: tcpslice.c,v 1.27 2002/10/08 22:31:43 vern Exp $ (LBL)";
+    "@(#)$Id: tcpslice.c,v 1.28 2005/10/24 22:06:15 leres Exp $ (LBL)";
 #endif
 
 /*
@@ -46,6 +46,7 @@ static const char rcsid[] =
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "gnuc.h"
