@@ -57,7 +57,7 @@ AC_DEFUN(AC_LBL_C_INIT,
 	    LBL_CFLAGS="$CFLAGS"
     fi
     if test -z "$CC" ; then
-	    case "$target_os" in
+	    case "$host_os" in
 
 	    bsdi*)
 		    AC_CHECK_PROG(SHLICC2, shlicc2, yes, no)
@@ -100,7 +100,7 @@ AC_DEFUN(AC_LBL_C_INIT,
 		    ac_cv_lbl_cc_ansi_prototypes=no))
 	    AC_MSG_RESULT($ac_cv_lbl_cc_ansi_prototypes)
 	    if test $ac_cv_lbl_cc_ansi_prototypes = no ; then
-		    case "$target_os" in
+		    case "$host_os" in
 
 		    hpux*)
 			    AC_MSG_CHECKING(for HP-UX ansi compiler ($CC -Aa -D_HPUX_SOURCE))
@@ -129,7 +129,7 @@ AC_DEFUN(AC_LBL_C_INIT,
 	    $2="$$2 -I/usr/local/include"
 	    LDFLAGS="$LDFLAGS -L/usr/local/lib"
 
-	    case "$target_os" in
+	    case "$host_os" in
 
 	    irix*)
 		    V_CCOPT="$V_CCOPT -xansi -signed -O"
@@ -156,6 +156,51 @@ AC_DEFUN(AC_LBL_C_INIT,
 	    esac
     fi
 ])
+
+#
+# Try compiling a sample of the type of code that appears in
+# gencode.c with "inline", "__inline__", and "__inline".
+#
+# Autoconf's AC_C_INLINE, at least in autoconf 2.13, isn't good enough,
+# as it just tests whether a function returning "int" can be inlined;
+# at least some versions of HP's C compiler can inline that, but can't
+# inline a function that returns a struct pointer.
+#
+AC_DEFUN(AC_LBL_C_INLINE,
+    [AC_MSG_CHECKING(for inline)
+    AC_CACHE_VAL(ac_cv_lbl_inline, [
+	ac_cv_lbl_inline=""
+	ac_lbl_cc_inline=no
+	for ac_lbl_inline in inline __inline__ __inline
+	do
+	    AC_TRY_COMPILE(
+		[#define inline $ac_lbl_inline
+		static inline struct iltest *foo(void);
+		struct iltest {
+		    int iltest1;
+		    int iltest2;
+		};
+
+		static inline struct iltest *
+		foo()
+		{
+		    static struct iltest xxx;
+
+		    return &xxx;
+		}],,ac_lbl_cc_inline=yes,)
+	    if test "$ac_lbl_cc_inline" = yes ; then
+		break;
+	    fi
+	done
+	if test "$ac_lbl_cc_inline" = yes ; then
+	    ac_cv_lbl_inline=$ac_lbl_inline
+	fi])
+    if test ! -z "$ac_cv_lbl_inline" ; then
+	AC_MSG_RESULT($ac_cv_lbl_inline)
+    else
+	AC_MSG_RESULT(no)
+    fi
+    AC_DEFINE_UNQUOTED(inline, $ac_cv_lbl_inline, [Define as token for inline if inlining supported])])
 
 dnl
 dnl Use pfopen.c if available and pfopen() not in standard libraries
@@ -191,9 +236,9 @@ AC_DEFUN(AC_LBL_LIBPCAP,
     AC_MSG_CHECKING(for local pcap library)
     libpcap=FAIL
     lastdir=FAIL
-    places=`ls .. | sed -e 's,/$,,' -e 's,^,../,' | \
+    places=`ls $srcdir/.. | sed -e 's,/$,,' -e "s,^,$srcdir/../," | \
 	egrep '/libpcap-[[0-9]]*.[[0-9]]*(.[[0-9]]*)?([[ab]][[0-9]]*)?$'`
-    for dir in $places ../libpcap libpcap ; do
+    for dir in $places $srcdir/../libpcap $srcdir/libpcap ; do
 	    basedir=`echo $dir | sed -e 's/[[ab]][[0-9]]*$//'`
 	    if test $lastdir = $basedir ; then
 		    dnl skip alphas when an actual release is present
@@ -212,6 +257,36 @@ AC_DEFUN(AC_LBL_LIBPCAP,
 	    if test $libpcap = FAIL ; then
 		    AC_MSG_ERROR(see the INSTALL doc for more info)
 	    fi
+	    dnl
+	    dnl Good old Red Hat Linux puts "pcap.h" in
+	    dnl "/usr/include/pcap"; had the LBL folks done so,
+	    dnl that would have been a good idea, but for
+	    dnl the Red Hat folks to do so just breaks source
+	    dnl compatibility with other systems.
+	    dnl
+	    dnl We work around this by assuming that, as we didn't
+	    dnl find a local libpcap, libpcap is in /usr/lib or
+	    dnl /usr/local/lib and that the corresponding header
+	    dnl file is under one of those directories; if we don't
+	    dnl find it in either of those directories, we check to
+	    dnl see if it's in a "pcap" subdirectory of them and,
+	    dnl if so, add that subdirectory to the "-I" list.
+	    dnl
+	    AC_MSG_CHECKING(for extraneous pcap header directories)
+	    if test \( ! -r /usr/local/include/pcap.h \) -a \
+			\( ! -r /usr/include/pcap.h \); then
+		if test -r /usr/local/include/pcap/pcap.h; then
+		    d="/usr/local/include/pcap"
+		elif test -r /usr/include/pcap/pcap.h; then
+		    d="/usr/include/pcap"
+		fi
+	    fi
+	    if test -z "$d" ; then
+		AC_MSG_RESULT(not found)
+	    else
+		$2="-I$d $$2"
+		AC_MSG_RESULT(found -- -I$d added)
+	    fi
     else
 	    $1=$libpcap
 	    places=`ls $srcdir/.. | sed -e 's,/$,,' -e "s,^,$srcdir/../," | \
@@ -226,7 +301,7 @@ AC_DEFUN(AC_LBL_LIBPCAP,
 	    AC_MSG_RESULT($libpcap)
     fi
     LIBS="$libpcap $LIBS"
-    case "$target_os" in
+    case "$host_os" in
 
     aix*)
 	    pseexe="/lib/pse.exp"
@@ -235,8 +310,16 @@ AC_DEFUN(AC_LBL_LIBPCAP,
 		    AC_MSG_RESULT(yes)
 		    LIBS="$LIBS -I:$pseexe"
 	    fi
+	    #
+	    # We need "-lodm" and "-lcfg", as libpcap requires them on
+	    # AIX, and we just build a static libpcap.a and thus can't
+	    # arrange that when you link with libpcap you automatically
+	    # link with those libraries.
+	    #
+	    LIBS="$LIBS -lodm -lcfg"
 	    ;;
-    esac])
+    esac
+])
 
 dnl
 dnl Define RETSIGTYPE and RETSIGVAL
@@ -258,17 +341,17 @@ AC_DEFUN(AC_LBL_TYPE_SIGNAL,
     else
 	    AC_DEFINE(RETSIGVAL,(0))
     fi
-    case "$target_os" in
+    case "$host_os" in
 
     irix*)
 	    AC_DEFINE(_BSD_SIGNALS)
 	    ;;
 
     *)
-	    dnl prefer sigset() to sigaction()
-	    AC_CHECK_FUNCS(sigset)
-	    if test $ac_cv_func_sigset = no ; then
-		    AC_CHECK_FUNCS(sigaction)
+	    dnl prefer sigaction() to sigset()
+	    AC_CHECK_FUNCS(sigaction)
+	    if test $ac_cv_func_sigaction = no ; then
+		    AC_CHECK_FUNCS(sigset)
 	    fi
 	    ;;
     esac])
@@ -448,36 +531,6 @@ AC_DEFUN(AC_LBL_HAVE_RUN_PATH,
     ])
 
 dnl
-dnl Due to the stupid way it's implemented, AC_CHECK_TYPE is nearly useless.
-dnl
-dnl usage:
-dnl
-dnl	AC_LBL_CHECK_TYPE
-dnl
-dnl results:
-dnl
-dnl	int32_t (defined)
-dnl	u_int32_t (defined)
-dnl
-AC_DEFUN(AC_LBL_CHECK_TYPE,
-    [AC_MSG_CHECKING(for $1 using $CC)
-    AC_CACHE_VAL(ac_cv_lbl_have_$1,
-	AC_TRY_COMPILE([
-#	include "confdefs.h"
-#	include <sys/types.h>
-#	if STDC_HEADERS
-#	include <stdlib.h>
-#	include <stddef.h>
-#	endif],
-	[$1 i],
-	ac_cv_lbl_have_$1=yes,
-	ac_cv_lbl_have_$1=no))
-    AC_MSG_RESULT($ac_cv_lbl_have_$1)
-    if test $ac_cv_lbl_have_$1 = no ; then
-	    AC_DEFINE($1, $2)
-    fi])
-
-dnl
 dnl Checks to see if unaligned memory accesses fail
 dnl
 dnl usage:
@@ -491,10 +544,41 @@ dnl
 AC_DEFUN(AC_LBL_UNALIGNED_ACCESS,
     [AC_MSG_CHECKING(if unaligned accesses fail)
     AC_CACHE_VAL(ac_cv_lbl_unaligned_fail,
-	[case "$target_cpu" in
+	[case "$host_cpu" in
 
+	#
+	# These are CPU types where:
+	#
+	#	the CPU faults on an unaligned access, but at least some
+	#	OSes that support that CPU catch the fault and simulate
+	#	the unaligned access (e.g., Alpha/{Digital,Tru64} UNIX) -
+	#	the simulation is slow, so we don't want to use it;
+	#
+	#	the CPU, I infer (from the old
+	#
 	# XXX: should also check that they don't do weird things (like on arm)
-	alpha*|arm*|hp*|mips|ia64|sparc)
+	#
+	#	comment) doesn't fault on unaligned accesses, but doesn't
+	#	do a normal unaligned fetch, either (e.g., presumably, ARM);
+	#
+	#	for whatever reason, the test program doesn't work
+	#	(this has been claimed to be the case for several of those
+	#	CPUs - I don't know what the problem is; the problem
+	#	was reported as "the test program dumps core" for SuperH,
+	#	but that's what the test program is *supposed* to do -
+	#	it dumps core before it writes anything, so the test
+	#	for an empty output file should find an empty output
+	#	file and conclude that unaligned accesses don't work).
+	#
+	# This run-time test won't work if you're cross-compiling, so
+	# in order to support cross-compiling for a particular CPU,
+	# we have to wire in the list of CPU types anyway, as far as
+	# I know, so perhaps we should just have a set of CPUs on
+	# which we know it doesn't work, a set of CPUs on which we
+	# know it does work, and have the script just fail on other
+	# cpu types and update it when such a failure occurs.
+	#
+	alpha*|arm*|hp*|mips*|sh*|sparc*|ia64|nv1)
 		ac_cv_lbl_unaligned_fail=yes
 		;;
 
@@ -549,7 +633,8 @@ EOF
 dnl
 dnl If using gcc and the file .devel exists:
 dnl	Compile with -g (if supported) and -Wall
-dnl	If using gcc 2, do extra prototype checking
+dnl	If using gcc 2 or later, do extra prototype checking and some other
+dnl	checks
 dnl	If an os prototype include exists, symlink os-proto.h to it
 dnl
 dnl usage:
@@ -575,11 +660,11 @@ AC_DEFUN(AC_LBL_DEVEL,
 			    fi
 			    $1="$$1 -Wall"
 			    if test $ac_cv_lbl_gcc_vers -gt 1 ; then
-				    $1="$$1 -Wmissing-prototypes -Wstrict-prototypes"
+				    $1="$$1 -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wpointer-arith -W"
 			    fi
 		    fi
 	    else
-		    case "$target_os" in
+		    case "$host_os" in
 
 		    irix6*)
 			    V_CCOPT="$V_CCOPT -n32"
@@ -589,7 +674,7 @@ AC_DEFUN(AC_LBL_DEVEL,
 			    ;;
 		    esac
 	    fi
-	    os=`echo $target_os | sed -e 's/\([[0-9]][[0-9]]*\)[[^0-9]].*$/\1/'`
+	    os=`echo $host_os | sed -e 's/\([[0-9]][[0-9]]*\)[[^0-9]].*$/\1/'`
 	    name="lbl/os-$os.h"
 	    if test -f $name ; then
 		    ln -s $name os-proto.h
@@ -612,6 +697,11 @@ dnl
 dnl results:
 dnl
 dnl	LIBS
+dnl
+dnl XXX - "AC_LBL_LIBRARY_NET" was redone to use "AC_SEARCH_LIBS"
+dnl rather than "AC_LBL_CHECK_LIB", so this isn't used any more.
+dnl We keep it around for reference purposes in case it's ever
+dnl useful in the future.
 dnl
 
 define(AC_LBL_CHECK_LIB,
@@ -711,3 +801,100 @@ AC_DEFUN(AC_LBL_LIBRARY_NET, [
     # DLPI needs putmsg under HPUX so test for -lstr while we're at it
     AC_SEARCH_LIBS(putmsg, str)
     ])
+
+dnl checks for u_intXX_t
+AC_DEFUN(AC_CHECK_BITTYPES, [
+	$1=yes
+dnl check for u_int8_t
+	AC_MSG_CHECKING(for u_int8_t)
+	AC_CACHE_VAL(ac_cv_u_int8_t,
+	AC_TRY_COMPILE([
+#		include <sys/types.h>],
+		[u_int8_t i],
+		ac_cv_u_int8_t=yes,
+		ac_cv_u_int8_t=no))
+	AC_MSG_RESULT($ac_cv_u_int8_t)
+	if test $ac_cv_u_int8_t = yes; then
+		AC_DEFINE(HAVE_U_INT8_T)
+	else
+		$1=no
+	fi
+dnl check for u_int16_t
+	AC_MSG_CHECKING(for u_int16_t)
+	AC_CACHE_VAL(ac_cv_u_int16_t,
+	AC_TRY_COMPILE([
+#		include <sys/types.h>],
+		[u_int16_t i],
+		ac_cv_u_int16_t=yes,
+		ac_cv_u_int16_t=no))
+	AC_MSG_RESULT($ac_cv_u_int16_t)
+	if test $ac_cv_u_int16_t = yes; then
+		AC_DEFINE(HAVE_U_INT16_T)
+	else
+		$1=no
+	fi
+dnl check for u_int32_t
+	AC_MSG_CHECKING(for u_int32_t)
+	AC_CACHE_VAL(ac_cv_u_int32_t,
+	AC_TRY_COMPILE([
+#		include <sys/types.h>],
+		[u_int32_t i],
+		ac_cv_u_int32_t=yes,
+		ac_cv_u_int32_t=no))
+	AC_MSG_RESULT($ac_cv_u_int32_t)
+	if test $ac_cv_u_int32_t = yes; then
+		AC_DEFINE(HAVE_U_INT32_T)
+	else
+		$1=no
+	fi
+dnl check for u_int64_t
+	AC_MSG_CHECKING(for u_int64_t)
+	AC_CACHE_VAL(ac_cv_u_int64_t,
+	AC_TRY_COMPILE([
+#		include <sys/types.h>],
+		[u_int64_t i],
+		ac_cv_u_int64_t=yes,
+		ac_cv_u_int64_t=no))
+	AC_MSG_RESULT($ac_cv_u_int64_t)
+	if test $ac_cv_u_int64_t = yes; then
+		AC_DEFINE(HAVE_U_INT64_T)
+	else
+		$1=no
+	fi
+])
+
+dnl
+dnl Test for __attribute__
+dnl
+
+AC_DEFUN(AC_C___ATTRIBUTE__, [
+AC_MSG_CHECKING(for __attribute__)
+AC_CACHE_VAL(ac_cv___attribute__, [
+AC_COMPILE_IFELSE(
+  AC_LANG_SOURCE([[
+#include <stdlib.h>
+
+static void foo(void) __attribute__ ((noreturn));
+
+static void
+foo(void)
+{
+  exit(1);
+}
+
+int
+main(int argc, char **argv)
+{
+  foo();
+}
+  ]]),
+ac_cv___attribute__=yes,
+ac_cv___attribute__=no)])
+if test "$ac_cv___attribute__" = "yes"; then
+  AC_DEFINE(HAVE___ATTRIBUTE__, 1, [define if your compiler has __attribute__])
+  V_DEFS="$V_DEFS -D_U_=\"__attribute__((unused))\""
+else
+  V_DEFS="$V_DEFS -D_U_=\"\""
+fi
+AC_MSG_RESULT($ac_cv___attribute__)
+])

@@ -7,18 +7,16 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 
 AC_REVISION($Revision$)
+AC_PREREQ(2.50)
 AC_INIT(tcpslice.c)
-AC_CONFIG_HEADER(config.h)
 
-AC_CANONICAL_SYSTEM
-
-if test -z "$PWD" ; then
-	PWD=`pwd`
-fi
+AC_CANONICAL_HOST
 
 AC_LBL_C_INIT(V_CCOPT, V_INCLS)
+AC_LBL_C_INLINE
+AC_C___ATTRIBUTE__
+AC_CHECK_HEADERS(fcntl.h net/bpf.h)
 
-AC_CHECK_HEADERS(fcntl.h)
 AC_HEADER_TIME
 
 tcpslice_telloseeko=yes
@@ -46,8 +44,64 @@ else
 	AC_MSG_WARN(Try building with a local copy of the libpcap source.)
 fi
 
-AC_LBL_CHECK_TYPE(int32_t, int)
-AC_LBL_CHECK_TYPE(u_int32_t, u_int)
+dnl
+dnl check sizeof basic types.
+dnl They're very likely to be wrong for cross-compiling.
+AC_CHECK_SIZEOF(char, 1)
+AC_CHECK_SIZEOF(short, 2)
+AC_CHECK_SIZEOF(int, 4)
+AC_CHECK_SIZEOF(long, 4)
+AC_CHECK_SIZEOF(long long, 8)
+
+dnl
+dnl Checks for u_intXX_t
+dnl AC_CHECK_BITTYPES(ac_cv_bittypes)
+dnl if test "$ac_cv_bittypes" = no; then
+dnl 	missing_includes=yes
+dnl fi
+
+AC_CHECK_HEADERS(sys/bitypes.h)
+
+AC_CHECK_TYPE([int8_t], ,
+	[AC_DEFINE([int8_t], [signed char],
+	[Define to `signed char' if int8_t not defined.])])
+AC_CHECK_TYPE([u_int8_t], ,
+	[AC_DEFINE([u_int8_t], [unsigned char],
+	[Define to `unsigned char' if u_int8_t not defined.])],
+	[AC_INCLUDES_DEFAULT
+#ifdef HAVE_SYS_BITYPES_H
+#include <sys/bitypes.h>
+#endif])
+AC_CHECK_TYPE([int16_t], ,
+	[AC_DEFINE([int16_t], [short],
+	[Define to `short' if int16_t not defined.])])
+AC_CHECK_TYPE([u_int16_t], ,
+	[AC_DEFINE([u_int16_t], [unsigned short],
+	[Define to `unsigned short' if u_int16_t not defined.])],
+	[AC_INCLUDES_DEFAULT
+#ifdef HAVE_SYS_BITYPES_H
+#include <sys/bitypes.h>
+#endif])
+AC_CHECK_TYPE([int32_t], ,
+	[AC_DEFINE([int32_t], [int],
+	[Define to `int' if int32_t not defined.])])
+AC_CHECK_TYPE([u_int32_t], ,
+	[AC_DEFINE([u_int32_t], [unsigned int],
+	[Define to `unsigned int' if u_int32_t not defined.])],
+	[AC_INCLUDES_DEFAULT
+#ifdef HAVE_SYS_BITYPES_H
+#include <sys/bitypes.h>
+#endif])
+AC_CHECK_TYPE([int64_t], ,
+	[AC_DEFINE([int64_t], [long long],
+	[Define to `long long' if int64_t not defined.])])
+AC_CHECK_TYPE([u_int64_t], ,
+	[AC_DEFINE([u_int64_t], [unsigned long long],
+	[Define to `unsigned long long' if u_int64_t not defined.])],
+	[AC_INCLUDES_DEFAULT
+#ifdef HAVE_SYS_BITYPES_H
+#include <sys/bitypes.h>
+#endif])
 
 AC_LBL_DEVEL(V_CCOPT)
 
@@ -63,14 +117,18 @@ if test -r ${srcdirprefix}lbl/gnuc.h ; then
 fi
 
 AC_SUBST(V_CCOPT)
+AC_SUBST(V_DEFS)
 AC_SUBST(V_INCLS)
 AC_SUBST(V_PCAPDEP)
 
 AC_PROG_INSTALL
 
-AC_OUTPUT(Makefile)
+AC_CONFIG_HEADER(config.h)
 
-if test -f .devel ; then
+AC_OUTPUT_COMMANDS([if test -f .devel; then
+	echo timestamp > stamp-h
+	cat Makefile-devel-adds >> Makefile
 	make depend
-fi
+fi])
+AC_OUTPUT(Makefile)
 exit 0

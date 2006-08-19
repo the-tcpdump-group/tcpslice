@@ -36,7 +36,6 @@ static const char rcsid[] =
 #include <time.h>
 #include <pcap.h>
 
-#include "gnuc.h"
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"
 #endif

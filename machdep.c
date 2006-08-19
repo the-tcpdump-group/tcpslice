@@ -37,7 +37,7 @@ static const char rcsid[] =
 #include "machdep.h"
 
 int
-abort_on_misalignment(char *ebuf)
+abort_on_misalignment(char *ebuf _U_)
 {
 #ifdef __osf__
 	static int buf[2] = { SSIN_UACPROC, UAC_SIGBUS };

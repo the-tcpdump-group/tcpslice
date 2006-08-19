@@ -1,30 +1,23 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.in by autoheader.  */
 /* DO NOT EDIT config.h.in */
-
-/* Define to empty if the keyword does not work.  */
-#undef const
-
-/* Define if you can safely include both <sys/time.h> and <time.h>.  */
-#undef TIME_WITH_SYS_TIME
-
 /* If you have both fseeko and ftello, change both of these. */
-#define FSEEK fseek
-#define FTELL ftell
+#define	FSEEK	fseek
+#define	FTELL	ftell
 
 /* If there is an LBL-supplied header with additional prototypes
  * for your system, define this.
  */
-#undef HAVE_OS_PROTO_H
+#undef	HAVE_OS_PROTO_H
 
 /* If you have <pcap-int.h> that goes with your libpcap, define this. */
-#undef HAVE_PCAP_INT_H
+#undef	HAVE_PCAP_INT_H
 
 /* Secret configure stuff */
-#undef _HPUX_SOURCE
+#undef	_HPUX_SOURCE
 
 /* If you don't have sized types, define these to be the correct sizes. */
-#undef int32_t
-#undef u_int32_t
+#undef	int32_t
+#undef	u_int32_t
 
 /* Long story short: aclocal.m4 depends on autoconf 2.13
  * implementation details wrt "const"; newer versions
@@ -34,20 +27,119 @@
  */
 #undef const
 
-/* Define if you have the fseeko function.  */
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `fseeko' function. */
 #undef HAVE_FSEEKO
 
-/* Define if you have the ftello function.  */
+/* Define to 1 if you have the `ftello' function. */
 #undef HAVE_FTELLO
 
-/* Define if you have the pfopen function.  */
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <net/bpf.h> header file. */
+#undef HAVE_NET_BPF_H
+
+/* Define to 1 if you have the `pfopen' function. */
 #undef HAVE_PFOPEN
 
-/* Define if you have the strlcpy function.  */
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
 
-/* Define if you have the vfprintf function.  */
+/* Define to 1 if you have the <sys/bitypes.h> header file. */
+#undef HAVE_SYS_BITYPES_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `vfprintf' function. */
 #undef HAVE_VFPRINTF
 
-/* Define if you have the <fcntl.h> header file.  */
-#undef HAVE_FCNTL_H
+/* define if your compiler has __attribute__ */
+#undef HAVE___ATTRIBUTE__
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The size of a `char', as computed by sizeof. */
+#undef SIZEOF_CHAR
+
+/* The size of a `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of a `long', as computed by sizeof. */
+#undef SIZEOF_LONG
+
+/* The size of a `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
+
+/* The size of a `short', as computed by sizeof. */
+#undef SIZEOF_SHORT
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* Define as token for inline if inlining supported */
+#undef inline
+
+/* Define to `short' if int16_t not defined. */
+#undef int16_t
+
+/* Define to `int' if int32_t not defined. */
+#undef int32_t
+
+/* Define to `long long' if int64_t not defined. */
+#undef int64_t
+
+/* Define to `signed char' if int8_t not defined. */
+#undef int8_t
+
+/* Define to `unsigned short' if u_int16_t not defined. */
+#undef u_int16_t
+
+/* Define to `unsigned int' if u_int32_t not defined. */
+#undef u_int32_t
+
+/* Define to `unsigned long long' if u_int64_t not defined. */
+#undef u_int64_t
+
+/* Define to `unsigned char' if u_int8_t not defined. */
+#undef u_int8_t

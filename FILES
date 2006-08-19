@@ -5,8 +5,10 @@ INSTALL
 Makefile.in
 README
 VERSION
+acconfig.h
 aclocal.m4
 config.guess
+config.h.in
 config.sub
 configure
 configure.in
@@ -14,7 +16,6 @@ gmt2local.c
 gmt2local.h
 gwtm2secs.c
 install-sh
-lbl/gnuc.h
 lbl/os-solaris2.h
 lbl/os-sunos4.h
 machdep.c

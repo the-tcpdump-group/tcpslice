@@ -27,9 +27,9 @@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 # Pathname of directory to install the binary
-BINDEST = @sbindir@
+sbindir = @sbindir@
 # Pathname of directory to install the man page
-MANDEST = @mandir@
+mandir = @mandir@
 
 # VPATH
 srcdir = @srcdir@
@@ -43,7 +43,7 @@ CC = @CC@
 PROG = tcpslice
 CCOPT = @V_CCOPT@
 INCLS = -I. @V_INCLS@
-DEFS = @DEFS@
+DEFS = @DEFS@ @CPPFLAGS@ @V_DEFS@
 
 # Standard CFLAGS
 CFLAGS = $(CCOPT) $(DEFS) $(INCLS)
@@ -55,6 +55,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 
 INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
 
 # Explicitly define compilation rule since SunOS 4's make doesn't like gcc.
 # Also, gcc does not remove the .o before forking 'as', which can be a
@@ -65,12 +67,13 @@ INSTALL = @INSTALL@
 
 CSRC =	tcpslice.c gmt2local.c gwtm2secs.c machdep.c search.c util.c
 GENSRC = version.c
+LIBOBJS = @LIBOBJS@
 
 SRC =	$(CSRC) $(GENSRC)
 
 # We would like to say "OBJ = $(SRC:.c=.o)" but Ultrix's make cannot
 # hack the extra indirection
-OBJ =	$(CSRC:.c=.o) $(GENSRC:.c=.o) @LIBOBJS@
+OBJ =	$(CSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
 HDR =	tcpslice.h machdep.h
 
 TAGHDR = \
@@ -92,18 +95,25 @@ $(PROG): $(OBJ) @V_PCAPDEP@
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
 
 version.o: version.c
+	$(CC) $(CFLAGS) -c version.c
+
 version.c: $(srcdir)/VERSION
 	@rm -f $@
 	sed -e 's/.*/char version[] = "&";/' $(srcdir)/VERSION > $@
 
-install: force
-	$(INSTALL) -m 555 -o bin -g bin tcpslice $(DESTDIR)$(BINDEST)
+install:
+	[ -d $(DESTDIR)$(sbindir) ] || \
+	    (mkdir -p $(DESTDIR)$(sbindir); chmod 755 $(DESTDIR)$(sbindir))
+	$(INSTALL_PROGRAM) $(PROG) $(DESTDIR)$(sbindir)/$(PROG)
+	[ -d $(DESTDIR)$(mandir)/man1 ] || \
+	    (mkdir -p $(DESTDIR)$(mandir)/man1; chmod 755 $(DESTDIR)$(mandir)/man1)
+	$(INSTALL_DATA) $(srcdir)/$(PROG).1 $(DESTDIR)$(mandir)/man1/$(PROG).1
 
-install-man: force
-	$(INSTALL) -m 444 -o bin -g bin $(srcdir)/$(PROG).1 \
-	    $(DESTDIR)$(MANDEST)/man1
+uninstall:
+	rm -f $(DESTDIR)$(sbindir)/$(PROG)
+	rm -f $(DESTDIR)$(mandir)/man1/$(PROG).1
 
-lint: $(GENSRC) force
+lint: $(GENSRC)
 	lint -hbxn $(SRC) | \
 	    grep -v 'struct/union .* never defined' | \
 	    grep -v 'possible pointer alignment problem'
@@ -113,25 +123,27 @@ clean:
 
 distclean:
 	rm -f $(CLEANFILES) Makefile config.cache config.log config.status \
-	    gnuc.h os-proto.h
+	    config.h gnuc.h os-proto.h stamp-h stamp-h.in
 
 tags: $(TAGFILES)
 	ctags -wtd $(TAGFILES)
 
-tar: force
-	@cwd=`pwd` ; name=$(PROG)-`cat VERSION` ; \
-	    list="" ; tar="tar chf" ; temp="$$name.tar.gz" ; \
+TAGS: $(TAGFILES)
+	etags $(TAGFILES)
+
+tar:
+	@cwd=`pwd` ; dir=`basename $$cwd` ; name=$(PROG)-`cat VERSION` ; \
+	    list="" ; tar="tar chf" ; \
 	    for i in `cat FILES` ; do list="$$list $$name/$$i" ; done; \
 	    echo \
-	    "rm -f $$name; ln -s . $$name" ; \
-	     rm -f $$name; ln -s . $$name ; \
+	    "rm -f ../$$name; ln -s $$dir ../$$name" ; \
+	     rm -f ../$$name; ln -s $$dir ../$$name ; \
 	    echo \
-	    "$$tar - [lots of files] | gzip > $$temp" ; \
-	     $$tar - $$list | gzip > $$temp ; \
+	    "(cd .. ; $$tar - [lots of files]) | compress > /tmp/$$name.tar.Z" ; \
+	     (cd .. ; $$tar - $$list) | compress > /tmp/$$name.tar.Z ; \
 	    echo \
-	    "rm -f $$name" ; \
-	     rm -f $$name
+	    "rm -f ../$$name" ; \
+	     rm -f ../$$name
 
-force: /tmp
-depend: $(GENSRC) force
-	./mkdep -c $(CC) $(DEFS) $(INCLS) $(SRC)
+depend: $(GENSRC)
+	${srcdir}/mkdep -c $(CC) $(DEFS) $(INCLS) $(SRC)

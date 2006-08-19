@@ -55,7 +55,6 @@ static const char rcsid[] =
 #endif
 #include <unistd.h>
 
-#include "gnuc.h"
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"
 #endif
@@ -123,7 +122,8 @@ struct timeval lowest_start_time(struct state *states, int numfiles);
 struct timeval latest_end_time(struct state *states, int numfiles);
 void get_next_packet(struct state *s);
 struct state *open_files(char *filenames[], int numfiles);
-void extract_slice(struct state *states, int numfiles, char *write_file_name,
+static void extract_slice(struct state *states, int numfiles,
+			const char *write_file_name,
 			struct timeval *start_time, struct timeval *stop_time,
 			int keep_dups, int relative_time_merge,
 			struct timeval *base_time);
@@ -151,7 +151,7 @@ main(int argc, char **argv)
 	register char *cp;
 	char *start_time_string = 0;
 	char *stop_time_string = 0;
-	char *write_file_name = "-";	/* default is stdout */
+	const char *write_file_name = "-";	/* default is stdout */
 	struct timeval first_time, start_time, stop_time;
 	char ebuf[PCAP_ERRBUF_SIZE];
 	struct state *states;
@@ -568,7 +568,7 @@ open_files(char *filenames[], int numfiles)
  */
 
 void
-extract_slice(struct state *states, int numfiles, char *write_file_name,
+extract_slice(struct state *states, int numfiles, const char *write_file_name,
 		struct timeval *start_time, struct timeval *stop_time,
 		int keep_dups, int relative_time_merge,
 		struct timeval *base_time)
