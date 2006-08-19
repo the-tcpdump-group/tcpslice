@@ -1,5 +1,6 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
-/* DO NOT EDIT config.h.in */
+/* "generated automatically" means DO NOT MAKE CHANGES TO config.h.in --
+ * make them to acconfig.h and rerun autoheader */
 /* If you have both fseeko and ftello, change both of these. */
 #define	FSEEK	fseek
 #define	FTELL	ftell
@@ -14,10 +15,6 @@
 
 /* Secret configure stuff */
 #undef	_HPUX_SOURCE
-
-/* If you don't have sized types, define these to be the correct sizes. */
-#undef	int32_t
-#undef	u_int32_t
 
 /* Long story short: aclocal.m4 depends on autoconf 2.13
  * implementation details wrt "const"; newer versions
@@ -41,9 +38,6 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define to 1 if you have the <net/bpf.h> header file. */
-#undef HAVE_NET_BPF_H
 
 /* Define to 1 if you have the `pfopen' function. */
 #undef HAVE_PFOPEN

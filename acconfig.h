@@ -1,4 +1,5 @@
-/* DO NOT EDIT config.h.in */
+/* "generated automatically" means DO NOT MAKE CHANGES TO config.h.in --
+ * make them to acconfig.h and rerun autoheader */
 @TOP@
 /* If you have both fseeko and ftello, change both of these. */
 #define	FSEEK	fseek
@@ -14,10 +15,6 @@
 
 /* Secret configure stuff */
 #undef	_HPUX_SOURCE
-
-/* If you don't have sized types, define these to be the correct sizes. */
-#undef	int32_t
-#undef	u_int32_t
 
 /* Long story short: aclocal.m4 depends on autoconf 2.13
  * implementation details wrt "const"; newer versions

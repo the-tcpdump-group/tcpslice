@@ -39,8 +39,6 @@ static const char rcsid[] =
 #include <sys/file.h>
 #include <sys/stat.h>
 
-#include <net/bpf.h>
-
 #include <ctype.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
