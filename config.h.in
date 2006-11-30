@@ -36,8 +36,20 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the `nids' library (-lnids). */
+#undef HAVE_LIBNIDS
+
+/* Define to 1 if you have the `ooh323c' library (-looh323c). */
+#undef HAVE_LIBOOH323C
+
+/* Define to 1 if you have the `osipparser2' library (-losipparser2). */
+#undef HAVE_LIBOSIPPARSER2
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <net/bpf.h> header file. */
+#undef HAVE_NET_BPF_H
 
 /* Define to 1 if you have the `pfopen' function. */
 #undef HAVE_PFOPEN

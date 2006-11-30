@@ -39,6 +39,12 @@ static const char rcsid[] =
 #include <sys/file.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_NET_BPF_H
+# include <net/bpf.h>
+#else
+# include <pcap-bpf.h>
+#endif
+
 #include <ctype.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -60,9 +66,14 @@ static const char rcsid[] =
 #include "tcpslice.h"
 #include "gmt2local.h"
 #include "machdep.h"
+#include "sessions.h"
 
 #ifndef HAVE_STRLCPY
 extern size_t strlcpy(char *, const char *, size_t);
+#endif
+
+#ifndef __dead
+# define __dead
 #endif
 
 /* compute a + b, store in c */
@@ -130,7 +141,7 @@ void dump_times(struct state *states, int numfiles);
 __dead void usage(void)__attribute__((volatile));
 
 
-pcap_dumper_t *dumper = 0;
+pcap_dumper_t *global_dumper = 0;
 
 extern  char *optarg;
 extern  int optind, opterr;
@@ -163,7 +174,7 @@ main(int argc, char **argv)
 			error("%s", ebuf);
 
 	opterr = 0;
-	while ((op = getopt(argc, argv, "dDlRrtw:")) != EOF)
+	while ((op = getopt(argc, argv, "dDe:f:lRrs:tvw:")) != EOF)
 		switch (op) {
 
 		case 'd':
@@ -172,6 +183,14 @@ main(int argc, char **argv)
 
 		case 'D':
 			keep_dups = 1;
+			break;
+
+		case 'e':
+			sessions_expiration_delay = atoi(optarg);
+			break;
+
+		case 'f':
+			sessions_file_format = optarg;
 			break;
 
 		case 'l':
@@ -188,9 +207,18 @@ main(int argc, char **argv)
 			timestamp_style = TIMESTAMP_READABLE;
 			break;
 
+		case 's':
+			timestamp_style = TIMESTAMP_PARSEABLE;
+			sessions_init(optarg);
+			break;
+
 		case 't':
 			++report_times;
 			timestamp_style = TIMESTAMP_PARSEABLE;
+			break;
+
+		case 'v':
+			++verbose;
 			break;
 
 		case 'w':
@@ -499,6 +527,8 @@ get_next_packet(struct state *s)
 		s->pkt = pcap_next(s->p, &s->hdr);
 		if (! s->pkt) {
 			s->done = 1;
+			if (track_sessions)
+				sessions_exit();
 			pcap_close(s->p);
 		}
 	} while ((! s->done) &&
@@ -530,6 +560,8 @@ open_files(char *filenames[], int numfiles)
 		s->p = pcap_open_offline(s->filename, errbuf);
 		if (! s->p)
 			error( "bad tcpdump file %s: %s", s->filename, errbuf );
+		if (track_sessions)
+			sessions_nids_init(s->p);
 
 		this_snap = pcap_snapshot( s->p );
 		if (this_snap > snaplen) {
@@ -572,7 +604,6 @@ extract_slice(struct state *states, int numfiles, const char *write_file_name,
 		struct timeval *base_time)
 {
 	struct state *s, *min_state;
-	pcap_dumper_t *dumper;
 	struct timeval temp1, temp2, relative_start, relative_stop;
 	int i;
 
@@ -634,8 +665,8 @@ extract_slice(struct state *states, int numfiles, const char *write_file_name,
 		get_next_packet(s);
 	}
 
-	dumper = pcap_dump_open(states->p, write_file_name);
-	if (! dumper) {
+	global_dumper = pcap_dump_open(states->p, write_file_name);
+	if (!global_dumper) {
 		error( "error creating output file %s: ",
 			write_file_name, pcap_geterr( states->p ) );
 	}
@@ -685,12 +716,20 @@ extract_slice(struct state *states, int numfiles, const char *write_file_name,
 			temp1 = *stop_time;
 
 		if (sf_timestamp_less_than(&temp1, &min_state->hdr.ts)) {
-			/* We've gone beyond the end of the region
-			 * of interest ... We're done with this file.
-			 */
-			min_state->done = 1;
-			pcap_close(min_state->p);
-			break;
+			if (!sessions_count) {
+				/* We've gone beyond the end of the region
+				 * of interest ... We're done with this file.
+				 */
+				if (track_sessions)
+					sessions_exit();
+				min_state->done = 1;
+				pcap_close(min_state->p);
+				break;
+			} else {
+				/* We need to wait for the sessions to close */
+				bonus_time = 1;
+				*stop_time = min_state->file_stop_time;
+			}
 		}
 
 		if (relative_time_merge) {
@@ -698,19 +737,26 @@ extract_slice(struct state *states, int numfiles, const char *write_file_name,
 			TV_ADD(&temp1, base_time, &min_state->hdr.ts);
 		}
 
-		/* Dump it, unless it's a duplicate. */
-		if ( keep_dups ||
-		     min_state == last_state ||
-		     memcmp(&last_hdr, &min_state->hdr, sizeof(last_hdr)) ||
-		     memcmp(last_pkt, min_state->pkt, last_hdr.caplen) ) {
-			pcap_dump((u_char *) dumper, &min_state->hdr, min_state->pkt);
+#ifdef HAVE_LIBNIDS
+		/* Keep track of sessions, if specified by the user */
+		if (track_sessions)
+			nids_pcap_handler((u_char *)min_state->p, &min_state->hdr, (u_char *)min_state->pkt);
+#endif
 
-			if ( ! keep_dups ) {
-				last_state = min_state;
-				last_hdr = min_state->hdr;
-				memcpy(last_pkt, min_state->pkt, min_state->hdr.caplen);
+		/* Dump it, unless it's a duplicate. */
+		if (!bonus_time)
+			if ( keep_dups ||
+			     min_state == last_state ||
+			     memcmp(&last_hdr, &min_state->hdr, sizeof(last_hdr)) ||
+			     memcmp(last_pkt, min_state->pkt, last_hdr.caplen) ) {
+				pcap_dump((u_char *) global_dumper, &min_state->hdr, min_state->pkt);
+
+				if ( ! keep_dups ) {
+					last_state = min_state;
+					last_hdr = min_state->hdr;
+					memcpy(last_pkt, min_state->pkt, min_state->hdr.caplen);
+				}
 			}
-		}
 
 		get_next_packet(min_state);
 	}
@@ -788,8 +834,10 @@ usage(void)
 	extern char version[];
 
 	(void)fprintf(stderr, "Version %s\n", version);
-	(void)fprintf(stderr,
-"Usage: tcpslice [-DdlRrt] [-w file] [start-time [end-time]] file ... \n");
+        (void)fprintf(stderr,
+		      "Usage: tcpslice [-DdlRrtv] [-w file]\n"
+		      "                [ -s types [ -e seconds ] [ -f format ] ]\n"
+		      "                [start-time [end-time]] file ... \n");
 
 	exit(-1);
 }

@@ -19,15 +19,20 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+#include <time.h>
+#include <sys/types.h>
+#include <pcap.h>
 
-time_t	gwtm2secs( struct tm *tm );
+time_t			gwtm2secs( struct tm *tm );
 
-int	sf_find_end( struct pcap *p, struct timeval *first_timestamp,
-			struct timeval *last_timestamp );
-int	sf_timestamp_less_than( struct timeval *t1, struct timeval *t2 );
-int	sf_find_packet( struct pcap *p,
-		struct timeval *min_time, off_t min_pos,
-		struct timeval *max_time, off_t max_pos,
-		struct timeval *desired_time );
+int			sf_find_end( struct pcap *p, struct timeval *first_timestamp,
+					struct timeval *last_timestamp );
+int			sf_timestamp_less_than( struct timeval *t1, struct timeval *t2 );
+int			sf_find_packet( struct pcap *p,
+				struct timeval *min_time, off_t min_pos,
+				struct timeval *max_time, off_t max_pos,
+				struct timeval *desired_time );
 
-void	error(const char *fmt, ...);
+void			error(const char *fmt, ...);
+
+extern pcap_dumper_t	*global_dumper;

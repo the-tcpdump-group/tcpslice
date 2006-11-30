@@ -26,11 +26,23 @@ tcpslice \- extract pieces of and/or merge together tcpdump files
 .na
 .B tcpslice
 [
-.B \-DdlRrt
+.B \-DdlRrtv
 ] [
 .B \-w
 .I file
 ]
+.br
+.ti +9
+[
+.B \-s
+.I types
+[
+.B \-e
+.I seconds
+] [
+.B \-f
+.I format
+] ]
 .br
 .ti +9
 [
@@ -225,6 +237,23 @@ or
 has been specified then the times are dumped in the corresponding
 format; otherwise, raw format (\fB \-R\fP) is used.
 .TP
+.B \-e
+Specify a number of
+.I seconds
+to wait after the last packet was seen before considering a session
+to be expired (default: 0 = do not expire inactive sessions). This
+is only effective when the
+.B \-s
+option is used to track sessions.
+.TP
+.B \-f
+Specify the name
+.I format
+of PCAP files to which each session will be extracted (default: NULL = do
+ not extract sessions to separate files). This is only effective when the
+.B \-s
+option is used to track sessions.
+.TP
 .B \-l
 When merging more than one file, merge on the basis of
 relative time, rather than absolute time.
@@ -248,6 +277,40 @@ Same as
 except the timestamps are dumped in human-readable format, similar
 to that used by \fI date(1)\fP.
 .TP
+.B \-s
+Enable session tracking for the specified
+.I types
+which is a comma-separated list of the following:
+.RS
+.TP
+.B tcp
+track all TCP connections
+.TP
+.B sip
+track SIP-based VoIP calls, which may enable tracking of TCP
+connections but only the ones that are related to SIP calls.
+This feature only available if tcpslice was linked against
+Aymeric Moizard's GNU oSIP library; if not, install the latest
+version of
+.I libosip2
+from http://www.osip.org/ and recompile tcpslice.
+.TP
+.B h323
+track H.323-based VoIP calls, which may enable tracking of TCP
+connections but only the ones that are related to H.323 calls.
+This feature only available if tcpslice was linked against
+Objective Systems' Open H.323 library for C; if not, install the
+latest version of
+.I libooh323c
+from http://ooh323c.sourceforge.net/ and recompile tcpslice.
+.PP
+Session tracking altogether is only available if tcpslice was linked
+against a recent version (>1.20) of Rafal Wojtczuk's Network Intrusion
+Detection System library; if not, install the latest version of
+.I libnids
+from http://libnids.sourceforge.net/ and recompile tcpslice.
+.RE
+.TP
 .B \-t
 Same as
 .B \-R
@@ -256,6 +319,16 @@ except the timestamps are dumped in
 format, i.e., in the
 .I ymdhmsu
 format discussed above.
+.TP
+.B \-v
+Turn on verbose mode. Currently this only affects session tracking (
+.B \-s
+) messages: if specified at least once, sessions openings and closings
+are displayed regardless of the time (by default the closings are only
+displayed past
+.I end-time
+); if specified at least twice, subsessions (sessions initiated by other
+sessions) openings and closings are also displayed.
 .TP
 .B \-w
 Direct the output to \fIfile\fR rather than \fIstdout\fP.

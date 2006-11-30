@@ -65,7 +65,7 @@ INSTALL_DATA = @INSTALL_DATA@
 	@rm -f $@
 	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
 
-CSRC =	tcpslice.c gmt2local.c gwtm2secs.c machdep.c search.c util.c
+CSRC =	tcpslice.c gmt2local.c gwtm2secs.c machdep.c search.c sessions.c util.c
 GENSRC = version.c
 LIBOBJS = @LIBOBJS@
 
