@@ -19,11 +19,6 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifndef lint
-static const char rcsid[] =
-    "@(#) $Header$ (LBL)";
-#endif
-
 #include <sys/types.h>
 
 #include <stdio.h>

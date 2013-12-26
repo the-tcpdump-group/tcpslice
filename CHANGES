@@ -1,5 +1,3 @@
-@(#) $Header$ (LBL)
-
 v1.2 ...
 
 - Use pcap_sf_pkthdr for portable savefiles.

@@ -18,10 +18,6 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
-#ifndef lint
-static const char rcsid[] =
-    "@(#) $Header$ (LBL)";
-#endif
 
 /*
  * search.c - supports fast searching through tcpdump files for timestamps

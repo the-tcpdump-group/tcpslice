@@ -1,5 +1,3 @@
-dnl @(#) $Header$ (LBL)
-dnl
 dnl Copyright (c) 1995, 1996, 1997, 1998
 dnl	The Regents of the University of California.  All rights reserved.
 dnl

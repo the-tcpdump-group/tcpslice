@@ -18,10 +18,6 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
-#ifndef lint
-static const char rcsid[] =
-    "@(#) $Header$ (LBL)";
-#endif
 
 /*
  * gwtm2secs.c - convert "tm" structs for Greenwich time to Unix timestamp
