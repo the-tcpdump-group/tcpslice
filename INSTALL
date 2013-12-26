@@ -1,11 +1,9 @@
 If you have not built libpcap, do so first.  See the README file in
-this directory for the ftp location.
+this directory for the source code location.
 
 You will need an ANSI C compiler to build tcpslice. The configure
 script will abort if your compiler is not ANSI compliant. If this
-happens, use the GNU C compiler, available via anonymous ftp:
-
-	ftp://prep.ai.mit.edu/pub/gnu/gcc.tar.gz
+happens, use the generally available GNU C compiler (GCC).
 
 After libpcap has been built (either install it with "make install" and
 "make install-incl" or make sure both the libpcap and tcpslice source
