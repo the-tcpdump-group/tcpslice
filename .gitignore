@@ -1,6 +1,5 @@
 version.c
 Makefile
-Makefile-devel.in
 config.status
 config.log
 config.cache
@@ -9,4 +8,6 @@ config.h
 stamp-h
 stamp-h.in
 tcpslice
-autom4te.cache
+autom4te.cache/
+*.o
+*~
