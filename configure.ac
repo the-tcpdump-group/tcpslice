@@ -4,9 +4,9 @@ dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
 
-AC_REVISION($Revision$)
 AC_PREREQ(2.64)
-AC_INIT(tcpslice.c)
+AC_INIT(tcpslice, m4_esyscmd_s([cat VERSION]))
+AC_CONFIG_SRCDIR(tcpslice.c)
 
 AC_CANONICAL_HOST
 
