@@ -24,6 +24,7 @@
 # Top level hierarchy
 prefix = @prefix@
 exec_prefix = @exec_prefix@
+datarootdir = @datarootdir@
 # Pathname of directory to install the binary
 sbindir = @sbindir@
 # Pathname of directory to install the man page
@@ -31,6 +32,7 @@ mandir = @mandir@
 
 # VPATH
 srcdir = @srcdir@
+top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
 #
@@ -38,13 +40,15 @@ VPATH = @srcdir@
 #
 
 CC = @CC@
+MKDEP = @MKDEP@
 PROG = tcpslice
 CCOPT = @V_CCOPT@
 INCLS = -I. @V_INCLS@
 DEFS = @DEFS@ @CPPFLAGS@ @V_DEFS@
 
 # Standard CFLAGS
-CFLAGS = $(CCOPT) $(DEFS) $(INCLS)
+CFLAGS = @CFLAGS@
+FULL_CFLAGS = $(CCOPT) $(DEFS) $(INCLS) $(CFLAGS)
 
 # Standard LDFLAGS
 LDFLAGS = @LDFLAGS@
@@ -56,12 +60,14 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
+DEPENDENCY_CFLAG = @DEPENDENCY_CFLAG@
+
 # Explicitly define compilation rule since SunOS 4's make doesn't like gcc.
 # Also, gcc does not remove the .o before forking 'as', which can be a
 # problem if you don't own the file but can write to the directory.
 .c.o:
 	@rm -f $@
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
+	$(CC) $(FULL_CFLAGS) -c $(srcdir)/$*.c
 
 CSRC =	tcpslice.c gmt2local.c gwtm2secs.c machdep.c search.c sessions.c util.c
 GENSRC = version.c
@@ -86,11 +92,30 @@ TAGFILES = $(SRC) $(HDR) $(TAGHDR)
 
 CLEANFILES = $(PROG) $(OBJ) $(GENSRC)
 
+EXTRA_DIST = \
+	CHANGES \
+	CREDITS \
+	INSTALL \
+	Makefile.in \
+	Makefile-devel-adds \
+	README \
+	VERSION \
+	aclocal.m4 \
+	config.guess \
+	config.h.in \
+	config.sub \
+	configure \
+	configure.ac \
+	install-sh \
+	lbl/os-solaris2.h \
+	lbl/os-sunos4.h \
+	mkdep \
+
 all: $(PROG)
 
 $(PROG): $(OBJ) @V_PCAPDEP@
 	@rm -f $@
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+	$(CC) $(FULL_CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
 
 version.o: version.c
 	$(CC) $(CFLAGS) -c version.c
@@ -99,7 +124,7 @@ version.c: $(srcdir)/VERSION
 	@rm -f $@
 	sed -e 's/.*/char version[] = "&";/' $(srcdir)/VERSION > $@
 
-install:
+install: all
 	[ -d $(DESTDIR)$(sbindir) ] || \
 	    (mkdir -p $(DESTDIR)$(sbindir); chmod 755 $(DESTDIR)$(sbindir))
 	$(INSTALL_PROGRAM) $(PROG) $(DESTDIR)$(sbindir)/$(PROG)
@@ -122,6 +147,7 @@ clean:
 distclean:
 	rm -f $(CLEANFILES) Makefile config.cache config.log config.status \
 	    config.h gnuc.h os-proto.h stamp-h stamp-h.in
+	rm -rf autom4te.cache tests/DIFF tests/NEW
 
 tags: $(TAGFILES)
 	ctags -wtd $(TAGFILES)
@@ -129,19 +155,12 @@ tags: $(TAGFILES)
 TAGS: $(TAGFILES)
 	etags $(TAGFILES)
 
-tar:
-	@cwd=`pwd` ; dir=`basename $$cwd` ; name=$(PROG)-`cat VERSION` ; \
-	    list="" ; tar="tar chf" ; \
-	    for i in `cat FILES` ; do list="$$list $$name/$$i" ; done; \
-	    echo \
-	    "rm -f ../$$name; ln -s $$dir ../$$name" ; \
-	     rm -f ../$$name; ln -s $$dir ../$$name ; \
-	    echo \
-	    "(cd .. ; $$tar - [lots of files]) | compress > /tmp/$$name.tar.Z" ; \
-	     (cd .. ; $$tar - $$list) | compress > /tmp/$$name.tar.Z ; \
-	    echo \
-	    "rm -f ../$$name" ; \
-	     rm -f ../$$name
+releasetar:
+	@name=$(PROG)-`cat VERSION` ; \
+	   mkdir $$name; \
+	   tar cf - $(CSRC) $(HDR) (EXTRA_DIST) | (cd $$name; tar xf -); \
+	   tar -c -z -f $$name.tar.gz $$name; \
+	   rm -rf $$name
 
 depend: $(GENSRC)
-	${srcdir}/mkdep -c $(CC) $(DEFS) $(INCLS) $(SRC)
+	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC) $(LIBNETDISSECT_SRC)
