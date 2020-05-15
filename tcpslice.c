@@ -37,12 +37,6 @@ The Regents of the University of California.  All rights reserved.\n";
 #include <sys/file.h>
 #include <sys/stat.h>
 
-#ifdef HAVE_NET_BPF_H
-# include <net/bpf.h>
-#else
-# include <pcap-bpf.h>
-#endif
-
 #include <ctype.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
