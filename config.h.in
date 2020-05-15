@@ -51,6 +51,9 @@
 /* if there's an os_proto.h for this platform, to use additional prototypes */
 #undef HAVE_OS_PROTO_H
 
+/* Define to 1 if you have the <pcap/pcap-inttypes.h> header file. */
+#undef HAVE_PCAP_PCAP_INTTYPES_H
+
 /* Define to 1 if you have the `pfopen' function. */
 #undef HAVE_PFOPEN
 
@@ -68,9 +71,6 @@
 
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
-
-/* Define to 1 if you have the <sys/bitypes.h> header file. */
-#undef HAVE_SYS_BITYPES_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -102,21 +102,6 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* The size of `char', as computed by sizeof. */
-#undef SIZEOF_CHAR
-
-/* The size of `int', as computed by sizeof. */
-#undef SIZEOF_INT
-
-/* The size of `long', as computed by sizeof. */
-#undef SIZEOF_LONG
-
-/* The size of `long long', as computed by sizeof. */
-#undef SIZEOF_LONG_LONG
-
-/* The size of `short', as computed by sizeof. */
-#undef SIZEOF_SHORT
-
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
@@ -143,26 +128,14 @@
 /* Define as token for inline if inlining supported */
 #undef inline
 
-/* Define to `short' if int16_t not defined. */
-#undef int16_t
-
-/* Define to `int' if int32_t not defined. */
-#undef int32_t
-
-/* Define to `long long' if int64_t not defined. */
-#undef int64_t
-
-/* Define to `signed char' if int8_t not defined. */
-#undef int8_t
-
-/* Define to `unsigned short' if u_int16_t not defined. */
+/* Define to `uint16_t' if u_int16_t not defined. */
 #undef u_int16_t
 
-/* Define to `unsigned int' if u_int32_t not defined. */
+/* Define to `uint32_t' if u_int32_t not defined. */
 #undef u_int32_t
 
-/* Define to `unsigned long long' if u_int64_t not defined. */
+/* Define to `uint64_t' if u_int64_t not defined. */
 #undef u_int64_t
 
-/* Define to `unsigned char' if u_int8_t not defined. */
+/* Define to `uint8_t' if u_int8_t not defined. */
 #undef u_int8_t
