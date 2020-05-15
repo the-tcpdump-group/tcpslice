@@ -46,6 +46,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+
+#include "varattrs.h"
 #include "sessions.h"
 
 /*
