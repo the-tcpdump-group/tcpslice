@@ -1,4 +1,4 @@
-/* config.h.in.  Generated from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.ac by autoheader.  */
 /* "generated automatically" means DO NOT MAKE CHANGES TO config.h.in --
  * make them to acconfig.h and rerun autoheader */
 /* If you have both fseeko and ftello, change both of these. */
@@ -51,6 +51,9 @@
 /* Define to 1 if you have the <net/bpf.h> header file. */
 #undef HAVE_NET_BPF_H
 
+/* if there's an os_proto.h for this platform, to use additional prototypes */
+#undef HAVE_OS_PROTO_H
+
 /* Define to 1 if you have the `pfopen' function. */
 #undef HAVE_PFOPEN
 
@@ -84,9 +87,6 @@
 /* Define to 1 if you have the `vfprintf' function. */
 #undef HAVE_VFPRINTF
 
-/* define if your compiler has __attribute__ */
-#undef HAVE___ATTRIBUTE__
-
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
@@ -99,22 +99,25 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* The size of a `char', as computed by sizeof. */
+/* The size of `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of a `int', as computed by sizeof. */
+/* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of a `long', as computed by sizeof. */
+/* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of a `long long', as computed by sizeof. */
+/* The size of `long long', as computed by sizeof. */
 #undef SIZEOF_LONG_LONG
 
-/* The size of a `short', as computed by sizeof. */
+/* The size of `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
 /* Define to 1 if you have the ANSI C header files. */
@@ -122,6 +125,9 @@
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #undef TIME_WITH_SYS_TIME
+
+/* to handle Ultrix compilers that don't support const in prototypes */
+#undef const
 
 /* Define as token for inline if inlining supported */
 #undef inline

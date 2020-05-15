@@ -5,14 +5,23 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 
 AC_REVISION($Revision$)
-AC_PREREQ(2.50)
+AC_PREREQ(2.64)
 AC_INIT(tcpslice.c)
 
 AC_CANONICAL_HOST
 
+AC_LBL_C_INIT_BEFORE_CC(V_INCLS)
+#
+# Try to enable as many C99 features as we can.
+# At minimum, we want C++/C99-style // comments.
+#
+AC_PROG_CC_C99
+if test "$ac_cv_prog_cc_c99" = "no"; then
+	AC_MSG_WARN([The C compiler does not support C99; there may be compiler errors])
+fi
 AC_LBL_C_INIT(V_CCOPT, V_INCLS)
 AC_LBL_C_INLINE
-AC_C___ATTRIBUTE__
+
 AC_CHECK_HEADERS(fcntl.h net/bpf.h)
 
 AC_HEADER_TIME
