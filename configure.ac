@@ -27,14 +27,12 @@ AC_CHECK_HEADERS(fcntl.h net/bpf.h)
 AC_HEADER_TIME
 
 tcpslice_telloseeko=yes
-AC_CHECK_FUNCS(ftello fseeko, ,AC_MSG_WARN(tcpslice may have trouble with dump files larger than 2 gigabytes); tcpslice_telloseeko=no; break)
-if test "${tcpslice_telloseeko}" = "yes" ; then
-	AC_DEFINE(FTELL, ftello)
-	AC_DEFINE(FSEEK, fseeko)
-else
-	AC_DEFINE(FTELL, ftell)
-	AC_DEFINE(FSEEK, fseek)
-fi
+
+#
+# Try to arrange for large file support.
+#
+AC_SYS_LARGEFILE
+AC_FUNC_FSEEKO
 
 AC_REPLACE_FUNCS(vfprintf strlcpy)
 

@@ -105,7 +105,7 @@ time_t				sessions_expiration_delay = 0;
 
 #ifndef HAVE_LIBNIDS
 
-void				sessions_init(char *types)
+void				sessions_init(char *types _U_)
 {
   fprintf(stderr, "Libnids required for session tracking support, sorry.\n");
   exit(-1);

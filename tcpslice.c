@@ -97,7 +97,7 @@ extern size_t strlcpy(char *, const char *, size_t);
 
 /* The structure used to keep track of files being merged. */
 struct state {
-	off_t	start_pos,	/* seek position corresponding to start time */
+	int64_t	start_pos,	/* seek position corresponding to start time */
 		stop_pos;	/* seek position corresponding to stop time */
 	struct timeval
 		file_start_time,	/* time of first pkt in file */
@@ -573,7 +573,7 @@ open_files(char *filenames[], int numfiles)
 			snaplen = this_snap;
 		}
 
-		s->start_pos = FTELL( pcap_file( s->p ) );
+		s->start_pos = ftell64( pcap_file( s->p ) );
 
 		if (pcap_next(s->p, &s->hdr) == 0)
 			error( "error reading packet in %s: ",
@@ -586,7 +586,7 @@ open_files(char *filenames[], int numfiles)
 			error( "problems finding end packet of file %s",
 				s->filename );
 
-		s->stop_pos = FTELL( pcap_file( s->p ) );
+		s->stop_pos = ftell64( pcap_file( s->p ) );
 	}
 
 	return states;
