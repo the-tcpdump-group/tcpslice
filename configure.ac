@@ -4,6 +4,15 @@ dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
 
+#
+# See
+#
+#	https://ftp.gnu.org/gnu/config/README
+#
+# for the URLs to use to fetch new versions of config.guess and
+# config.sub.
+#
+
 AC_PREREQ(2.64)
 AC_INIT(tcpslice, m4_esyscmd_s([cat VERSION]))
 AC_CONFIG_SRCDIR(tcpslice.c)
@@ -116,7 +125,7 @@ AC_CONFIG_HEADER(config.h)
 
 AC_OUTPUT_COMMANDS([if test -f .devel; then
 	echo timestamp > stamp-h
-	cat Makefile-devel-adds >> Makefile
+	cat $srcdir/Makefile-devel-adds >> Makefile
 	make depend
 fi])
 AC_OUTPUT(Makefile)
