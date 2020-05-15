@@ -78,7 +78,11 @@ SRC =	$(CSRC) $(GENSRC)
 # We would like to say "OBJ = $(SRC:.c=.o)" but Ultrix's make cannot
 # hack the extra indirection
 OBJ =	$(CSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
-HDR =	tcpslice.h machdep.h
+HDR = \
+	compiler-tests.h \
+	machdep.h \
+	tcpslice.h \
+	varattrs.h
 
 TAGHDR = \
 	/usr/include/net/slip.h \
