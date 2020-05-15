@@ -136,7 +136,7 @@ static void extract_slice(struct state *states, int numfiles,
 			struct timeval *base_time);
 char *timestamp_to_string(struct timeval *timestamp);
 void dump_times(struct state *states, int numfiles);
-__dead void usage(void)__attribute__((volatile));
+static void print_usage(void);
 
 
 pcap_dumper_t *global_dumper = 0;
@@ -231,7 +231,8 @@ main(int argc, char **argv)
 			break;
 
 		default:
-			usage();
+			print_usage();
+			exit(-1);
 			/* NOTREACHED */
 		}
 
@@ -833,8 +834,8 @@ dump_times(struct state *states, int numfiles)
 	}
 }
 
-__dead void
-usage(void)
+static void
+print_usage(void)
 {
 	extern char version[];
 
@@ -843,7 +844,5 @@ usage(void)
 		      "Usage: tcpslice [-DdlRrtv] [-w file]\n"
 		      "                [ -s types [ -e seconds ] [ -f format ] ]\n"
 		      "                [start-time [end-time]] file ... \n");
-
-	exit(-1);
 }
 
