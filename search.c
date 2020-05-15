@@ -29,15 +29,16 @@
 
 #include <sys/types.h>
 
-#include <pcap.h>
-#ifdef HAVE_PCAP_INT_H
-#include <pcap-int.h>		/* because we are directly reading the file */
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+
+#include <pcap.h>
+#ifdef HAVE_PCAP_INT_H
+#include <pcap-int.h>		/* because we are directly reading the file */
+#endif
 
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"
