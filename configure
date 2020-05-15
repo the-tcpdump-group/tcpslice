@@ -5310,24 +5310,6 @@ fi
 
 
 saveCPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $V_INCLS"
-ac_fn_c_check_header_mongrel "$LINENO" "pcap-int.h" "ac_cv_header_pcap_int_h" "$ac_includes_default"
-if test "x$ac_cv_header_pcap_int_h" = xyes; then :
-
-fi
-
-
-CPPFLAGS=$saveCPPFLAGS
-if test "$ac_cv_header_pcap_int_h" = "yes"
-then
-	$as_echo "#define HAVE_PCAP_INT_H 1" >>confdefs.h
-
-else
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: No pcap-int.h; tcpslice may not be able to read dump files." >&5
-$as_echo "$as_me: WARNING: No pcap-int.h; tcpslice may not be able to read dump files." >&2;}
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Try building with a local copy of the libpcap source." >&5
-$as_echo "$as_me: WARNING: Try building with a local copy of the libpcap source." >&2;}
-fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nids_pcap_handler in -lnids" >&5
 $as_echo_n "checking for nids_pcap_handler in -lnids... " >&6; }

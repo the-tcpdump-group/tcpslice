@@ -30,9 +30,6 @@
 #include <sys/types.h>
 
 #include <pcap.h>
-#ifdef HAVE_PCAP_INT_H
-#include <pcap-int.h>		/* because we are directly reading the file */
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,16 +42,35 @@
 
 #include "tcpslice.h"
 
-#ifndef HAVE_PCAP_INT_H
-/* If we're building without pcap's internal headers, we have to just
- * assume that the public pcap_pkthdr is the same as is written to
- * the file.  This can cause problems on systems with 64-bit longs;
- * the symptom is that tcpslice can't find any packets to read.
- * The solution is to build with the pcap-int.h from the installed
- * version of libpcap.
+/*
+ * We directly read a pcap file, so declare the per-packet header
+ * ourselves.  It's not platform-dependent or version-dependent;
+ * if the per-packet header doesn't look *exactly* like this, it's
+ * not a valid pcap file.
  */
-#define	pcap_sf_pkthdr	pcap_pkthdr
-#endif
+
+/*
+ * This is a timeval as stored in a savefile.
+ * It has to use the same types everywhere, independent of the actual
+ * `struct timeval'; `struct timeval' has 32-bit tv_sec values on some
+ * platforms and 64-bit tv_sec values on other platforms, and writing
+ * out native `struct timeval' values would mean files could only be
+ * read on systems with the same tv_sec size as the system on which
+ * the file was written.
+ */
+struct pcap_timeval {
+    bpf_int32 tv_sec;		/* seconds */
+    bpf_int32 tv_usec;		/* microseconds */
+};
+
+/*
+ * This is a `pcap_pkthdr' as actually stored in a savefile.
+ */
+struct pcap_sf_pkthdr {
+    struct pcap_timeval ts;	/* time stamp */
+    bpf_u_int32 caplen;		/* length of portion present */
+    bpf_u_int32 len;		/* length this packet (off wire) */
+};
 
 /* stringify macros, for error reporting. */
 #define	SS(x)	#x

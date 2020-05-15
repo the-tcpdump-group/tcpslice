@@ -38,16 +38,6 @@ AC_REPLACE_FUNCS(vfprintf strlcpy)
 
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
 saveCPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $V_INCLS"
-AC_CHECK_HEADER(pcap-int.h)
-CPPFLAGS=$saveCPPFLAGS
-if test "$ac_cv_header_pcap_int_h" = "yes"
-then
-	AC_DEFINE(HAVE_PCAP_INT_H)
-else
-	AC_MSG_WARN(No pcap-int.h; tcpslice may not be able to read dump files.)
-	AC_MSG_WARN(Try building with a local copy of the libpcap source.)
-fi
 
 AC_CHECK_LIB(nids, nids_pcap_handler,,
 	AC_MSG_WARN(Libnids not present or too old; tcpslice won't be able to track sessions!)
