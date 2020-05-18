@@ -430,7 +430,7 @@ fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 
 		while (isdigit(*t_stop))
 			++t_stop;
-		if (! t_stop)
+		if (! (*t_stop))
 			error("bad date format %s, problem starting at %s",
 			      time_string, t_start);
 
