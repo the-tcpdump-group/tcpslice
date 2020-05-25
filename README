@@ -1,16 +1,19 @@
-TCPSLICE 1.1
-Now maintained by tcpdump.org
+TCPSLICE 1.x
+Now maintained by "The Tcpdump Group"
+See             https://www.tcpdump.org
+
 https://github.com/the-tcpdump-group/tcpslice
 
-This directory contains source code for tcpslice, a tool for extracting
-portions of packet trace files generated using tcpdump's -w flag. The
-original LBL distribution is available at:
+formerly from   Lawrence Berkeley National Laboratory
+                ftp://ftp.ee.lbl.gov/old/tcpslice-1.2a2.tar.gz
 
-ftp://ftp.ee.lbl.gov/old/tcpslice-1.2a1.tar.gz
+This directory contains source code for tcpslice, a tool for extracting
+portions of packet trace files generated using tcpdump's -w flag.
 
 Tcpslice uses libpcap, a system-independent interface for user-level
 packet capture.  Before building tcpslice, you must first retrieve and
-build libpcap, also from tcpdump.org.
+build libpcap, also originally from LBL and now being maintained by
+The Tcpdump Group; see https://www.tcpdump.org/.
 
 Once libpcap is built (either install it or make sure it's in ../libpcap),
 you can build tcpslice using the procedure in the INSTALL file.
