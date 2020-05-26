@@ -18,11 +18,6 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
-#ifndef lint
-static const char copyright[] =
-    "@(#) Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997, 1999, 2000\n\
-The Regents of the University of California.  All rights reserved.\n";
-#endif
 
 /*
  * tcpslice - extract pieces of and/or glue together tcpdump files
