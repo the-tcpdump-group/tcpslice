@@ -117,7 +117,7 @@ void				sessions_exit(void)
 {
 }
 
-void				sessions_nids_init(pcap_t *p)
+void				sessions_nids_init(pcap_t *p _U_)
 {
 }
 
