@@ -109,6 +109,9 @@ int			sf_find_packet( struct pcap *p,
 
 int			fseek64(FILE *p, int64_t offset, int whence);
 int64_t			ftell64(FILE *p);
+#ifndef HAVE_STRLCPY
+extern size_t strlcpy(char *, const char *, size_t);
+#endif
 
 void			error(const char *fmt, ...);
 

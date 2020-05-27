@@ -55,10 +55,6 @@
 #include "machdep.h"
 #include "sessions.h"
 
-#ifndef HAVE_STRLCPY
-extern size_t strlcpy(char *, const char *, size_t);
-#endif
-
 #ifndef __dead
 # define __dead
 #endif
