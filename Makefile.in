@@ -163,7 +163,7 @@ TAGS: $(TAGFILES)
 releasetar:
 	@name=$(PROG)-`cat VERSION` ; \
 	   mkdir $$name; \
-	   tar cf - $(CSRC) $(HDR) (EXTRA_DIST) | (cd $$name; tar xf -); \
+	   tar cf - $(CSRC) $(HDR) $(EXTRA_DIST) | (cd $$name; tar xf -); \
 	   tar -c -z -f $$name.tar.gz $$name; \
 	   rm -rf $$name
 
