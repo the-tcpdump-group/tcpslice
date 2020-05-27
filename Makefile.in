@@ -81,8 +81,13 @@ SRC =	$(CSRC) $(GENSRC)
 OBJ =	$(CSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
 HDR = \
 	compiler-tests.h \
+	gmt2local.h \
+	ip.h \
 	machdep.h \
+	sessions.h \
+	tcp.h \
 	tcpslice.h \
+	udp.h \
 	varattrs.h
 
 TAGHDR = \
@@ -100,6 +105,7 @@ CLEANFILES = $(PROG) $(OBJ) $(GENSRC)
 EXTRA_DIST = \
 	CHANGES \
 	CREDITS \
+	FILES \
 	INSTALL \
 	Makefile.in \
 	Makefile-devel-adds \
@@ -115,6 +121,9 @@ EXTRA_DIST = \
 	lbl/os-solaris2.h \
 	lbl/os-sunos4.h \
 	mkdep \
+	strlcpy.c \
+	tcpslice.1 \
+	vfprintf.c
 
 all: $(PROG)
 
