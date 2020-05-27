@@ -334,7 +334,10 @@ sf_find_end( pcap_t *p, struct timeval *first_timestamp,
 		return 0;
 
 	len_file = ftell64( pcap_file (p) );
-	if ( len_file < MAX_BYTES_FOR_DEFINITE_HEADER )
+	if ( len_file < 0 )
+		return 0;
+	/* Casting a non-negative int64_t to uint64_t always works as expected. */
+	if ( (uint64_t) len_file < MAX_BYTES_FOR_DEFINITE_HEADER )
 		num_bytes = len_file;
 	else
 		num_bytes = MAX_BYTES_FOR_DEFINITE_HEADER;
