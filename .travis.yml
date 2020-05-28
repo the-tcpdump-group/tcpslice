@@ -1,0 +1,63 @@
+git:
+  quiet: true
+  depth: 3
+
+os:
+  - linux
+  - osx
+
+dist: bionic
+
+language: c
+
+compiler:
+  - gcc
+  - clang
+
+jobs:
+  fast_finish: true
+  exclude:
+    # GCC is a symlink to Clang in macOS
+    - os: osx
+      compiler: gcc
+  allow_failures:
+    # ./configure fails to detect strlcpy() in Travis CI macOS and enables the
+    # replacement in strlcpy.c, which clashes with the OS implementation and the
+    # build fails.
+    - os: osx
+      compiler: clang
+
+env:
+  global:
+    # Parallel make is currently broken in tcpslice.
+    - MAKEFLAGS='-j 1'
+    - CFLAGS='-Werror'
+
+addons:
+  apt:
+    packages:
+      - libpcap-dev
+
+before_install:
+  - uname -a
+  - date
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then brew update >/dev/null; fi
+  - if [ "$TRAVIS_OS_NAME" = linux ]; then apt list --installed 'lib*-dev'; fi
+
+script:
+  - touch .devel
+  - ./configure --prefix=/tmp
+  - echo '$ cat Makefile [...]'; echo travis_fold:start:script.cat_makefile
+  - cat Makefile | sed -n '1,/DO NOT DELETE THIS LINE -- mkdep uses it/p'
+  - echo -n travis_fold:end:script.cat_makefile
+  - echo '$ cat config.h'; echo travis_fold:start:script.cat_config_h
+  - cat config.h
+  - echo -n travis_fold:end:script.cat_config_h
+  - echo '$ cat config.log'; echo travis_fold:start:script.cat_config_log
+  - cat config.log
+  - echo -n travis_fold:end:script.cat_config_log
+  - make
+  - ./tcpslice -h
+  - make install
+  - make releasetar
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then sleep 10; fi

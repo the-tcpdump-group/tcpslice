@@ -1,0 +1,24 @@
+env:
+  CIRRUS_CLONE_DEPTH: 3
+  IGNORE_OSVERSION: yes
+  # Parallel make is currently broken in tcpslice.
+  MAKEFLAGS: '-j 1'
+  CFLAGS: '-Werror'
+
+task:
+  freebsd_instance:
+    matrix:
+      - image_family: freebsd-11-3-snap
+      - image_family: freebsd-12-1-snap
+      - image_family: freebsd-13-0-snap
+  script:
+    - freebsd-version
+    - pkg update -f
+    - pkg install -qy autoconf
+    - touch .devel
+    - cc --version
+    - ./configure --prefix=/tmp
+    - make
+    - ./tcpslice -h
+    - make install
+    - make releasetar
