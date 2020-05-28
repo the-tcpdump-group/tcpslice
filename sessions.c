@@ -102,7 +102,7 @@ char				*sessions_file_format = NULL;
 time_t				sessions_expiration_delay = 0;
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+# include <config.h>
 #endif
 
 #ifndef HAVE_LIBNIDS
