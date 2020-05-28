@@ -5227,8 +5227,8 @@ _ACEOF
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libosip2 not present or too old; tcpslice won't be able to track SIP calls!" >&5
 $as_echo "$as_me: WARNING: Libosip2 not present or too old; tcpslice won't be able to track SIP calls!" >&2;}
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libosip at http://www.osip.org/" >&5
-$as_echo "$as_me: WARNING: Get the latest version of Libosip at http://www.osip.org/" >&2;}
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libosip at https://www.gnu.org/software/osip/" >&5
+$as_echo "$as_me: WARNING: Get the latest version of Libosip at https://www.gnu.org/software/osip/" >&2;}
 
 fi
 
@@ -5279,8 +5279,8 @@ _ACEOF
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libooh323c not present or too old; tcpslice won't be able to track H.323 calls!" >&5
 $as_echo "$as_me: WARNING: Libooh323c not present or too old; tcpslice won't be able to track H.323 calls!" >&2;}
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libooh323c at http://ooh323c.sourceforge.net/" >&5
-$as_echo "$as_me: WARNING: Get the latest version of Libooh323c at http://ooh323c.sourceforge.net/" >&2;}
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/" >&5
+$as_echo "$as_me: WARNING: Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/" >&2;}
 
 fi
 

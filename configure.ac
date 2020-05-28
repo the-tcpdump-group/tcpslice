@@ -55,12 +55,12 @@ AC_CHECK_LIB(nids, nids_pcap_handler,,
 
 AC_CHECK_LIB(osipparser2, osip_message_parse,,
 	AC_MSG_WARN(Libosip2 not present or too old; tcpslice won't be able to track SIP calls!)
-	AC_MSG_WARN(Get the latest version of Libosip at http://www.osip.org/)
+	AC_MSG_WARN(Get the latest version of Libosip at https://www.gnu.org/software/osip/)
 )
 
 AC_CHECK_LIB(ooh323c, asn1PD_H225RasMessage,,
 	AC_MSG_WARN(Libooh323c not present or too old; tcpslice won't be able to track H.323 calls!)
-	AC_MSG_WARN(Get the latest version of Libooh323c at http://ooh323c.sourceforge.net/)
+	AC_MSG_WARN(Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/)
 )
 
 #
