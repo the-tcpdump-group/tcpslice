@@ -4237,19 +4237,6 @@ $as_echo "#define HAVE_FSEEKO 1" >>confdefs.h
 fi
 
 
-ac_fn_c_check_func "$LINENO" "vfprintf" "ac_cv_func_vfprintf"
-if test "x$ac_cv_func_vfprintf" = xyes; then :
-  $as_echo "#define HAVE_VFPRINTF 1" >>confdefs.h
-
-else
-  case " $LIBOBJS " in
-  *" vfprintf.$ac_objext "* ) ;;
-  *) LIBOBJS="$LIBOBJS vfprintf.$ac_objext"
- ;;
-esac
-
-fi
-
 ac_fn_c_check_func "$LINENO" "strlcpy" "ac_cv_func_strlcpy"
 if test "x$ac_cv_func_strlcpy" = xyes; then :
   $as_echo "#define HAVE_STRLCPY 1" >>confdefs.h

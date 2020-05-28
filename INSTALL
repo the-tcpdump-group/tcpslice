@@ -46,4 +46,3 @@ tcpslice.1	- manual entry
 tcpslice.c	- main program
 tcpslice.h	- global prototypes
 util.c		- utility routines
-vfprintf.c	- emulation routine

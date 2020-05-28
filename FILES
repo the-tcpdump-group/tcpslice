@@ -31,4 +31,3 @@ tcpslice.c
 tcpslice.h
 udp.h
 util.c
-vfprintf.c

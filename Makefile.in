@@ -122,8 +122,7 @@ EXTRA_DIST = \
 	lbl/os-sunos4.h \
 	mkdep \
 	strlcpy.c \
-	tcpslice.1 \
-	vfprintf.c
+	tcpslice.1
 
 all: $(PROG)
 
