@@ -121,7 +121,7 @@ static void extract_slice(struct state *states, int numfiles,
 			struct timeval *base_time);
 char *timestamp_to_string(struct timeval *timestamp);
 void dump_times(struct state *states, int numfiles);
-static void print_usage(void);
+static void print_usage(FILE *);
 
 
 pcap_dumper_t *global_dumper = 0;
@@ -164,7 +164,7 @@ main(int argc, char **argv)
 		error("%s", ebuf);
 
 	opterr = 0;
-	while ((op = getopt(argc, argv, "dDe:f:lRrs:tvw:")) != EOF)
+	while ((op = getopt(argc, argv, "dDe:f:hlRrs:tvw:")) != EOF)
 		switch (op) {
 
 		case 'd':
@@ -181,6 +181,11 @@ main(int argc, char **argv)
 
 		case 'f':
 			sessions_file_format = optarg;
+			break;
+
+		case 'h':
+			print_usage(stdout);
+			exit(0);
 			break;
 
 		case 'l':
@@ -216,7 +221,8 @@ main(int argc, char **argv)
 			break;
 
 		default:
-			print_usage();
+			(void)fprintf(stderr, "Error: invalid command-line option and/or argument!\n");
+			print_usage(stderr);
 			exit(-1);
 			/* NOTREACHED */
 		}
@@ -820,14 +826,27 @@ dump_times(struct state *states, int numfiles)
 }
 
 static void
-print_usage(void)
+print_usage(FILE *f)
 {
 	extern char version[];
+#ifndef HAVE_PCAP_LIB_VERSION
+  #ifdef HAVE_PCAP_VERSION
+	extern char pcap_version[];
+  #else /* HAVE_PCAP_VERSION */
+	static char pcap_version[] = "unknown";
+  #endif /* HAVE_PCAP_VERSION */
+#endif /* HAVE_PCAP_LIB_VERSION */
 
-	(void)fprintf(stderr, "Version %s\n", version);
-        (void)fprintf(stderr,
-		      "Usage: tcpslice [-DdlRrtv] [-w file]\n"
-		      "                [ -s types [ -e seconds ] [ -f format ] ]\n"
-		      "                [start-time [end-time]] file ... \n");
+	(void)fprintf(f, "tcpslice version %s\n", version);
+#ifdef HAVE_PCAP_LIB_VERSION
+	(void)fprintf(f, "%s\n", pcap_lib_version());
+#else /* HAVE_PCAP_LIB_VERSION */
+	(void)fprintf(f, "libpcap version %s\n", pcap_version);
+#endif /* HAVE_PCAP_LIB_VERSION */
+
+	(void)fprintf(f,
+	              "Usage: tcpslice [-DdhlRrtv] [-w file]\n"
+	              "                [ -s types [ -e seconds ] [ -f format ] ]\n"
+	              "                [start-time [end-time]] file ... \n");
 }
 

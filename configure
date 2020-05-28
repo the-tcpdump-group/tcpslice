@@ -5303,6 +5303,17 @@ fi
 
 done
 
+for ac_func in pcap_lib_version
+do :
+  ac_fn_c_check_func "$LINENO" "pcap_lib_version" "ac_cv_func_pcap_lib_version"
+if test "x$ac_cv_func_pcap_lib_version" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PCAP_LIB_VERSION 1
+_ACEOF
+
+fi
+done
+
 CPPFLAGS="$savedcppflags"
 
 #

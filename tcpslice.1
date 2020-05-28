@@ -17,14 +17,14 @@
 .\" WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
 .\" MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 .\"
-.TH TCPSLICE 1  "7 April 2014"
+.TH TCPSLICE 1  "28 May 2020"
 .SH NAME
 tcpslice \- extract pieces of and/or merge together tcpdump files
 .SH SYNOPSIS
 .na
 .B tcpslice
 [
-.B \-DdlRrtv
+.B \-DdlhRrtv
 ] [
 .B \-w
 .I file
@@ -251,6 +251,9 @@ of PCAP files to which each session will be extracted (default: NULL = do
  not extract sessions to separate files). This is only effective when the
 .B \-s
 option is used to track sessions.
+.TP
+.B \-h
+Print the tcpslice and libpcap version strings, print a usage message, and exit.
 .TP
 .B \-l
 When merging more than one file, merge on the basis of

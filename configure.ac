@@ -70,6 +70,7 @@ AC_CHECK_LIB(ooh323c, asn1PD_H225RasMessage,,
 savedcppflags="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $V_INCLS"
 AC_CHECK_HEADERS(pcap/pcap-inttypes.h)
+AC_CHECK_FUNCS(pcap_lib_version)
 CPPFLAGS="$savedcppflags"
 
 #
