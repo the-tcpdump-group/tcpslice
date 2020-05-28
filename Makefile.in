@@ -120,8 +120,8 @@ EXTRA_DIST = \
 	install-sh \
 	lbl/os-solaris2.h \
 	lbl/os-sunos4.h \
+	missing/strlcpy.c \
 	mkdep \
-	strlcpy.c \
 	tcpslice.1
 
 all: $(PROG)
@@ -136,6 +136,9 @@ version.o: version.c
 version.c: $(srcdir)/VERSION
 	@rm -f $@
 	sed -e 's/.*/char version[] = "&";/' $(srcdir)/VERSION > $@
+
+strlcpy.o: $(srcdir)/missing/strlcpy.c
+	$(CC) $(FULL_CFLAGS) -o $@ -c $(srcdir)/missing/strlcpy.c
 
 install: all
 	[ -d $(DESTDIR)$(sbindir) ] || \
