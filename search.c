@@ -567,9 +567,11 @@ sf_find_packet( pcap_t *p,
 			}
 
 		present_pos = ftell64( pcap_file( p ) );
+		if ( present_pos < 0 )
+			error ( S(ftell64) "() failed in sf_find_packet()" );
 
 		if ( present_pos <= desired_pos &&
-		     desired_pos - present_pos < STRAIGHT_SCAN_THRESHOLD )
+		     (uint64_t) (desired_pos - present_pos) < STRAIGHT_SCAN_THRESHOLD )
 			{ /* we're close enough to just blindly read ahead */
 			status = read_up_to( p, desired_time );
 			break;
