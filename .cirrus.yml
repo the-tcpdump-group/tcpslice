@@ -3,7 +3,6 @@ env:
   IGNORE_OSVERSION: yes
   # Parallel make is currently broken in tcpslice.
   MAKEFLAGS: '-j 1'
-  CFLAGS: '-Werror'
 
 task:
   freebsd_instance:
@@ -18,7 +17,7 @@ task:
     - touch .devel
     - cc --version
     - ./configure --prefix=/tmp
-    - make
+    - make CFLAGS=-Werror
     - ./tcpslice -h
     - make install
     - make releasetar
