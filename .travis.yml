@@ -20,12 +20,6 @@ jobs:
     # GCC is a symlink to Clang in macOS
     - os: osx
       compiler: gcc
-  allow_failures:
-    # ./configure fails to detect strlcpy() in Travis CI macOS and enables the
-    # replacement in strlcpy.c, which clashes with the OS implementation and the
-    # build fails.
-    - os: osx
-      compiler: clang
 
 env:
   global:
