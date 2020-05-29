@@ -31,7 +31,6 @@ env:
   global:
     # Parallel make is currently broken in tcpslice.
     - MAKEFLAGS='-j 1'
-    - CFLAGS='-Werror'
 
 addons:
   apt:
@@ -56,7 +55,7 @@ script:
   - echo '$ cat config.log'; echo travis_fold:start:script.cat_config_log
   - cat config.log
   - echo -n travis_fold:end:script.cat_config_log
-  - make
+  - make CFLAGS=-Werror
   - ./tcpslice -h
   - make install
   - make releasetar
