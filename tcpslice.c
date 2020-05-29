@@ -129,7 +129,7 @@ pcap_dumper_t *global_dumper = 0;
 extern  char *optarg;
 extern  int optind, opterr;
 
-int snaplen;	/* needed by search.c, extract_slice() */
+int snaplen = 0;	/* needed by search.c, extract_slice() */
 
 int
 main(int argc, char **argv)
