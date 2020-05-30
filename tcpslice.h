@@ -95,6 +95,7 @@
 
 #include <time.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <pcap.h>
 
 time_t			gwtm2secs( struct tm *tm );
@@ -109,6 +110,8 @@ int			sf_find_packet( struct pcap *p,
 
 int			fseek64(FILE *p, int64_t offset, int whence);
 int64_t			ftell64(FILE *p);
+extern char *timestamp_to_string(struct timeval *timestamp);
+
 #ifndef HAVE_STRLCPY
 extern size_t strlcpy(char *, const char *, size_t);
 #endif

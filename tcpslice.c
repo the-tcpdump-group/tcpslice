@@ -28,7 +28,6 @@
 #endif
 
 #include <sys/types.h>
-#include <sys/time.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 
@@ -48,6 +47,10 @@
 
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"
+#endif
+
+#ifdef HAVE_LIBNIDS
+#include <nids.h>
 #endif
 
 #include "tcpslice.h"
@@ -119,7 +122,6 @@ static void extract_slice(struct state *states, int numfiles,
 			struct timeval *start_time, struct timeval *stop_time,
 			int keep_dups, int relative_time_merge,
 			struct timeval *base_time);
-char *timestamp_to_string(struct timeval *timestamp);
 void dump_times(struct state *states, int numfiles);
 static void print_usage(FILE *);
 
