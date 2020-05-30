@@ -20,29 +20,6 @@
  */
 
 /* Prototypes missing in SunOS 5 */
-int	daemon(int, int);
-int	dn_expand(const u_char *, const u_char *, const u_char *, char *, int);
-int	dn_skipname(const u_char *, const u_char *);
-int	flock(int, int);
-int	getdtablesize(void);
-int	gethostname(char *, int);
-int	getpagesize(void);
-char	*getusershell(void);
-char	*getwd(char *);
-int	iruserok(u_int, int, char *, char *);
-#ifdef __STDC__
-struct	utmp;
-void	login(struct utmp *);
-#endif
-int	logout(const char *);
-int	res_query(const char *, int, int, u_char *, int);
-int	setenv(const char *, const char *, int);
-#if defined(_STDIO_H) && defined(HAVE_SETLINEBUF)
-int	setlinebuf(FILE *);
-#endif
-int	sigblock(int);
-int	sigsetmask(int);
 char    *strerror(int);
 int	snprintf(char *, size_t, const char *, ...);
 int	strcasecmp(const char *, const char *);
-void	unsetenv(const char *);
