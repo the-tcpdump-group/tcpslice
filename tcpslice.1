@@ -55,7 +55,7 @@ tcpslice \- extract pieces of and/or merge together tcpdump files
 .LP
 .I Tcpslice
 is a program for extracting portions of packet-trace files generated using
-\fItcpdump(1)\fP's
+.BR tcpdump (1)'s
 .B \-w
 flag.
 It can also be used to merge together several such files, as discussed
@@ -212,7 +212,7 @@ option to suppress any discarding of duplicates.
 .SH OPTIONS
 .LP
 If any of
-.B \-R,
+.BR \-R ,
 .B \-r
 or
 .B \-t
@@ -228,12 +228,12 @@ Do not discard duplicate packets seen when merging multiple trace files.
 Dump the start and end times specified by the given range and
 exit.  This option is useful for checking that the given range actually
 specifies the times you think it does.  If one of
-.B \-R,
+.BR \-R ,
 .B \-r
 or
 .B \-t
 has been specified then the times are dumped in the corresponding
-format; otherwise, raw format (\fB \-R\fP) is used.
+format; otherwise, raw format (\fB\-R\fP) is used.
 .TP
 .B \-e
 Specify a number of
@@ -248,7 +248,7 @@ option is used to track sessions.
 Specify the name
 .I format
 of PCAP files to which each session will be extracted (default: NULL = do
- not extract sessions to separate files). This is only effective when the
+not extract sessions to separate files). This is only effective when the
 .B \-s
 option is used to track sessions.
 .TP
@@ -276,7 +276,8 @@ as raw timestamps (i.e., in the form \fI sssssssss.uuuuuu\fP).
 Same as
 .B \-R
 except the timestamps are dumped in human-readable format, similar
-to that used by \fI date(1)\fP.
+to that used by
+.BR date (1).
 .TP
 .B \-s
 Enable session tracking for the specified
@@ -322,9 +323,8 @@ format, i.e., in the
 format discussed above.
 .TP
 .B \-v
-Turn on verbose mode. Currently this only affects session tracking (
-.B \-s
-) messages: if specified at least once, sessions openings and closings
+Turn on verbose mode. Currently this only affects session tracking (\fB\-s\fP)
+messages: if specified at least once, sessions openings and closings
 are displayed regardless of the time (by default the closings are only
 displayed past
 .I end-time
@@ -334,7 +334,7 @@ sessions) openings and closings are also displayed.
 .B \-w
 Direct the output to \fIfile\fR rather than \fIstdout\fP.
 .SH "SEE ALSO"
-tcpdump(1)
+.BR tcpdump (1)
 .SH AUTHORS
 The original author was:
 .LP
@@ -376,7 +376,9 @@ to rummage through its input files.
 .LP
 .I tcpslice
 refuses to write to its output if it is a terminal
-(as indicated by \fIisatty(3)\fP).  This is not a bug but a feature,
+(as indicated by
+.BR isatty (3)
+).  This is not a bug but a feature,
 to prevent it from spraying binary data to the user's terminal.
 Note that this means you must either redirect \fIstdout\fP or specify an
 output file via \fB\-w\fP.
