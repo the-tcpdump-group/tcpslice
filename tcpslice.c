@@ -566,7 +566,7 @@ open_files(char *filenames[], int numfiles)
 		s->start_pos = ftell64( pcap_file( s->p ) );
 
 		if (pcap_next(s->p, &s->hdr) == 0)
-			error( "error reading packet in %s: ",
+			error( "error reading packet in %s: %s",
 				s->filename, pcap_geterr( s->p ) );
 
 		s->file_start_time = s->hdr.ts;
@@ -662,7 +662,7 @@ extract_slice(struct state *states, int numfiles, const char *write_file_name,
 
 	global_dumper = pcap_dump_open(states->p, write_file_name);
 	if (!global_dumper) {
-		error( "error creating output file %s: ",
+		error( "error creating output file %s: %s",
 			write_file_name, pcap_geterr( states->p ) );
 	}
 
