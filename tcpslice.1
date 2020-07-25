@@ -19,7 +19,7 @@
 .\"
 .TH TCPSLICE 1  "28 May 2020"
 .SH NAME
-tcpslice \- extract pieces of and/or merge together tcpdump files
+tcpslice \- extract pieces of and/or merge together pcap files
 .SH SYNOPSIS
 .na
 .B tcpslice
@@ -96,7 +96,7 @@ All examples in this manual are given
 for PDT times, but when displaying times and interpreting times symbolically
 as discussed below,
 .I tcpslice
-uses the local timezone, regardless of the timezone in which the \fItcpdump\fP
+uses the local timezone, regardless of the timezone in which the pcap
 file was generated.  The daylight-savings setting used is that which is
 appropriate for the local timezone at the date in question.  For example,
 times associated with summer months will usually include daylight-savings
@@ -384,7 +384,7 @@ Note that this means you must either redirect \fIstdout\fP or specify an
 output file via \fB\-w\fP.
 .LP
 .I tcpslice
-will not work properly on \fItcpdump\fP files spanning more than one year;
+will not work properly on pcap files spanning more than one year;
 with files containing portions of packets whose original length was
 more than 65,535 bytes; nor with files containing fewer than two packets.
 Such files result in

@@ -20,7 +20,7 @@
  */
 
 /*
- * tcpslice - extract pieces of and/or glue together tcpdump files
+ * tcpslice - extract pieces of and/or glue together pcap files
  */
 
 #ifdef HAVE_CONFIG_H
@@ -155,7 +155,7 @@ main(int argc, char **argv)
 	 * On platforms where the CPU doesn't support unaligned loads,
 	 * force unaligned accesses to abort with SIGBUS, rather than
 	 * being fixed up (slowly) by the OS kernel; on those platforms,
-	 * misaligned accesses are bugs, and we want tcpdump to crash so
+	 * misaligned accesses are bugs, and we want tcpslice to crash so
 	 * that the bugs are reported.
 	 */
 	if (abort_on_misalignment(ebuf, sizeof(ebuf)) < 0)
@@ -554,7 +554,7 @@ open_files(char *filenames[], int numfiles)
 		s->filename = filenames[i];
 		s->p = pcap_open_offline(s->filename, errbuf);
 		if (! s->p)
-			error( "bad tcpdump file %s: %s", s->filename, errbuf );
+			error( "bad pcap file %s: %s", s->filename, errbuf );
 		if (track_sessions)
 			sessions_nids_init(s->p);
 
@@ -808,7 +808,7 @@ timestamp_to_string(struct timeval *timestamp)
 }
 
 
-/* Given a tcpdump save filename, reports on the times of the first
+/* Given a pcap save filename, reports on the times of the first
  * and last packets in the file.
  */
 

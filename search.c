@@ -20,7 +20,7 @@
  */
 
 /*
- * search.c - supports fast searching through tcpdump files for timestamps
+ * search.c - supports fast searching through pcap files for timestamps
  */
 
 #ifdef HAVE_CONFIG_H

@@ -638,7 +638,7 @@ AC_DEFUN(AC_LBL_LIBPCAP,
     else
         #
         # We found a local libpcap.  Add it to the dependencies for
-        # tcpdump.
+        # tcpslice.
         #
         $1=$libpcap
 

@@ -4920,7 +4920,7 @@ $as_echo "found -- -I$d added" >&6; }
     else
         #
         # We found a local libpcap.  Add it to the dependencies for
-        # tcpdump.
+        # tcpslice.
         #
         V_PCAPDEP=$libpcap
 

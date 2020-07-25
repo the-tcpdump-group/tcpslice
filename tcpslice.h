@@ -37,7 +37,7 @@
    * Make sure we have VS 2015 or later.
    */
   #if _MSC_VER < 1900
-    #error "Building tcpdump requires VS 2015 or later"
+    #error "Building tcpslice requires VS 2015 or later"
   #endif
 #endif
 
