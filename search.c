@@ -135,8 +135,6 @@ reasonable_header( struct pcap_pkthdr *hdr, time_t first_time, time_t last_time 
 
 #define	SWAPLONG(y) \
 ((((y)&0xff)<<24) | (((y)&0xff00)<<8) | (((y)&0xff0000)>>8) | (((y)>>24)&0xff))
-#define	SWAPSHORT(y) \
-	( (((y)&0xff)<<8) | (((y)&0xff00)>>8) )
 
 /* Given a buffer, extracts a (properly aligned) packet header from it. */
 

@@ -58,10 +58,6 @@
 #include "machdep.h"
 #include "sessions.h"
 
-#ifndef __dead
-# define __dead
-#endif
-
 /* compute a + b, store in c */
 #define	TV_ADD(a,b,c)	{ \
 	(c)->tv_sec = (a)->tv_sec + (b)->tv_sec; \
