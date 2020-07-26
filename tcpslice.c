@@ -106,19 +106,17 @@ enum stamp_styles { TIMESTAMP_RAW, TIMESTAMP_READABLE, TIMESTAMP_PARSEABLE };
 enum stamp_styles timestamp_style = TIMESTAMP_RAW;
 
 
-int is_timestamp( char *str );
-struct timeval parse_time(char *time_string, struct timeval base_time);
-void fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr);
-struct timeval lowest_start_time(struct state *states, int numfiles);
-struct timeval latest_end_time(struct state *states, int numfiles);
-void get_next_packet(struct state *s);
-struct state *open_files(char *filenames[], int numfiles);
+static struct timeval parse_time(char *time_string, struct timeval base_time);
+static void fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr);
+static struct timeval lowest_start_time(struct state *states, int numfiles);
+static struct timeval latest_end_time(struct state *states, int numfiles);
+static struct state *open_files(char *filenames[], int numfiles);
 static void extract_slice(struct state *states, int numfiles,
 			const char *write_file_name,
 			struct timeval *start_time, struct timeval *stop_time,
 			int keep_dups, int relative_time_merge,
 			struct timeval *base_time);
-void dump_times(struct state *states, int numfiles);
+static void dump_times(struct state *states, int numfiles);
 static void print_usage(FILE *);
 
 
@@ -287,7 +285,8 @@ main(int argc, char **argv)
 /* Returns non-zero if a string matches the format for a timestamp,
  * 0 otherwise.
  */
-int is_timestamp( char *str )
+static int
+is_timestamp( char *str )
 	{
 	while ( isdigit(*str) || *str == '.' )
 		++str;
@@ -301,7 +300,7 @@ int is_timestamp( char *str )
  * containing the specified time.
  */
 
-struct timeval
+static struct timeval
 parse_time(char *time_string, struct timeval base_time)
 {
 	struct tm *bt = localtime((time_t *) &base_time.tv_sec);
@@ -401,7 +400,7 @@ parse_time(char *time_string, struct timeval base_time)
  * "time_string".  "usecs_addr" is updated with the specified number
  * of microseconds, if any.
  */
-void
+static void
 fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 {
 	char *t_start, *t_stop, format_ch;
@@ -480,7 +479,7 @@ fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 
 
 /* Of all the files, what is the lowest start time. */
-struct timeval
+static struct timeval
 lowest_start_time(struct state *states, int numfiles)
 {
 	struct timeval min_time = states->file_start_time;
@@ -495,7 +494,7 @@ lowest_start_time(struct state *states, int numfiles)
 }
 
 /* Of all the files, what is the latest end time. */
-struct timeval
+static struct timeval
 latest_end_time(struct state *states, int numfiles)
 {
 	struct timeval max_time = states->file_start_time;
@@ -515,7 +514,7 @@ latest_end_time(struct state *states, int numfiles)
  * within a single file.
  */
 
-void
+static void
 get_next_packet(struct state *s)
 {
 	do {
@@ -532,7 +531,7 @@ get_next_packet(struct state *s)
 	s->last_pkt_time = s->hdr.ts;
 }
 
-struct state *
+static struct state *
 open_files(char *filenames[], int numfiles)
 {
 	struct state *states;
@@ -592,7 +591,7 @@ open_files(char *filenames[], int numfiles)
  * that of the last packet written to the output.
  */
 
-void
+static void
 extract_slice(struct state *states, int numfiles, const char *write_file_name,
 		struct timeval *start_time, struct timeval *stop_time,
 		int keep_dups, int relative_time_merge,
@@ -812,7 +811,7 @@ timestamp_to_string(struct timeval *timestamp)
  * and last packets in the file.
  */
 
-void
+static void
 dump_times(struct state *states, int numfiles)
 {
 	for (; numfiles--; states++) {
