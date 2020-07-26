@@ -96,8 +96,6 @@ struct state {
 
 int tflag = 0;	/* global that util routines are sensitive to */
 
-char *program_name;
-
 /* Style in which to print timestamps; RAW is "secs.usecs"; READABLE is
  * ala the Unix "date" tool; and PARSEABLE is tcpslice's custom format,
  * designed to be easy to parse.  The default is RAW.
@@ -136,18 +134,12 @@ main(int argc, char **argv)
 	int report_times = 0;
 	int relative_time_merge = 0;
 	int numfiles;
-	register char *cp;
 	char *start_time_string = 0;
 	char *stop_time_string = 0;
 	const char *write_file_name = "-";	/* default is stdout */
 	struct timeval first_time, start_time, stop_time;
 	char ebuf[PCAP_ERRBUF_SIZE];
 	struct state *states;
-
-	if ((cp = strrchr(argv[0], '/')) != NULL)
-		program_name = cp + 1;
-	else
-		program_name = argv[0];
 
 	/*
 	 * On platforms where the CPU doesn't support unaligned loads,
