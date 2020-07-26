@@ -31,8 +31,8 @@
  * found by ./configure and H.323 session tracking is available only if
  * Libooh323c was found by ./configure. These libraries can be downloaded from:
  *  - http://libnids.sourceforge.net/
- *  - http://www.osip.org/
- *  - http://ooh323c.sourceforge.net/
+ *  - https://www.gnu.org/software/osip/
+ *  - https://sourceforge.net/projects/ooh323c/
  *
  * There are several entry points (from tcpslice.c) to this file:
  *  - sessions_init() has to be called once before any tracking can be done
