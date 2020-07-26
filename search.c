@@ -260,7 +260,7 @@ find_header( pcap_t *p, u_char *buf, int buf_len,
 				return HEADER_CLASH;
 
 			    default:
-				error( "bad status in find_header()" );
+				error( "bad status in %s()", __func__ );
 			    }
 			}
 
@@ -292,7 +292,7 @@ find_header( pcap_t *p, u_char *buf, int buf_len,
 			    break;
 
 			default:
-			    error( "bad status in find_header()" );
+			    error( "bad status in %s()", __func__ );
 			}
 		    }
 		}
@@ -411,7 +411,7 @@ sf_find_end( pcap_t *p, struct timeval *first_timestamp,
 
 	/* Seek so that the next read will start at last valid packet. */
 	if ( fseek64( pcap_file( p ), -(int64_t) (bufend - hdrpos), SEEK_END ) < 0 )
-		error( "final " S(fseek64) "() failed in sf_find_end()" );
+		error( "final " S(fseek64) "() failed in %s()", __func__ );
 
     done:
 	free( (char *) buf );
@@ -495,7 +495,7 @@ read_up_to( pcap_t *p, struct timeval *desired_time )
 				break;
 				}
 
-			error( "bad status in read_up_to()" );
+			error( "bad status in %s()", __func__ );
 			}
 
 		timestamp = &hdr.ts;
@@ -508,7 +508,7 @@ read_up_to( pcap_t *p, struct timeval *desired_time )
 		}
 
 	if ( fseek64( pcap_file( p ), pos, SEEK_SET ) < 0 )
-		error( S(fseek64) "() failed in read_up_to()" );
+		error( S(fseek64) "() failed in %s()", __func__ );
 
 	return (status);
 	}
@@ -543,7 +543,7 @@ sf_find_packet( pcap_t *p,
 
 	buf = (u_char *) malloc( num_bytes );
 	if ( ! buf )
-		error( "malloc() failured in sf_find_packet()" );
+		error( "malloc() failured in %s()", __func__ );
 
 	min_time_copy = *min_time;
 	min_time = &min_time_copy;
@@ -566,7 +566,7 @@ sf_find_packet( pcap_t *p,
 
 		present_pos = ftell64( pcap_file( p ) );
 		if ( present_pos < 0 )
-			error ( S(ftell64) "() failed in sf_find_packet()" );
+			error ( S(ftell64) "() failed in %s()", __func__ );
 
 		if ( present_pos <= desired_pos &&
 		     (uint64_t) (desired_pos - present_pos) < STRAIGHT_SCAN_THRESHOLD )
@@ -583,7 +583,7 @@ sf_find_packet( pcap_t *p,
 			desired_pos = min_pos;
 
 		if ( fseek64( pcap_file( p ), desired_pos, SEEK_SET ) < 0 )
-			error( S(fseek64) "() failed in sf_find_packet()" );
+			error( S(fseek64) "() failed in %s()", __func__ );
 
 		num_bytes_read =
 			fread( (char *) buf, 1, num_bytes, pcap_file( p ) );
@@ -593,7 +593,7 @@ sf_find_packet( pcap_t *p,
 			 * undershoot, unless the dump file has only a
 			 * couple packets in it ...
 			 */
-			error( "fread() failed in sf_find_packet()" );
+			error( "fread() failed in %s()", __func__ );
 
 		if ( find_header( p, buf, num_bytes, min_time->tv_sec,
 				  max_time->tv_sec, &hdrpos, &hdr ) !=
@@ -606,7 +606,7 @@ sf_find_packet( pcap_t *p,
 
 		/* Seek to the beginning of the header. */
 		if ( fseek64( pcap_file( p ), desired_pos, SEEK_SET ) < 0 )
-			error( S(fseek64) "() failed in sf_find_packet()" );
+			error( S(fseek64) "() failed in %s()", __func__ );
 
 		if ( sf_timestamp_less_than( &hdr.ts, desired_time ) )
 			{ /* too early in the file */
