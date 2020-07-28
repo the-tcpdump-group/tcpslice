@@ -327,8 +327,8 @@ Turn on verbose mode. Currently this only affects session tracking (\fB\-s\fP)
 messages: if specified at least once, sessions openings and closings
 are displayed regardless of the time (by default the closings are only
 displayed past
-.I end-time
-); if specified at least twice, subsessions (sessions initiated by other
+.IR end-time );
+if specified at least twice, subsessions (sessions initiated by other
 sessions) openings and closings are also displayed.
 .TP
 .B \-w
@@ -377,8 +377,8 @@ to rummage through its input files.
 .I tcpslice
 refuses to write to its output if it is a terminal
 (as indicated by
-.BR isatty (3)
-).  This is not a bug but a feature,
+.BR isatty (3)).
+This is not a bug but a feature,
 to prevent it from spraying binary data to the user's terminal.
 Note that this means you must either redirect \fIstdout\fP or specify an
 output file via \fB\-w\fP.
