@@ -94,8 +94,6 @@ struct state {
 	int	done;
 };
 
-int tflag = 0;	/* global that util routines are sensitive to */
-
 /* Style in which to print timestamps; RAW is "secs.usecs"; READABLE is
  * ala the Unix "date" tool; and PARSEABLE is tcpslice's custom format,
  * designed to be easy to parse.  The default is RAW.
