@@ -116,8 +116,24 @@ enum stamp_styles timestamp_style = TIMESTAMP_RAW;
  */
 #define TS_RAW_S_MAX_VALUE      INT32_MAX
 #define TS_RAW_US_MAX_DIGITS    6 /* 000000~999999 */
+#define TS_PARSEABLE_MAX_TOKENS 7 /* ymdhmsu */
+
+struct parseable_token_t {
+	unsigned amount;
+	/* Bigger units must have bigger integer values for validation. */
+	enum {
+		MICROSECOND,
+		SECOND,
+		MINUTE, /* the default for "m" */
+		HOUR,
+		DAY,
+		MONTH, /* potentially after disambiguation */
+		YEAR,
+	} unit;
+};
 
 
+static unsigned char timestamp_input_format_correct(const char *str);
 static struct timeval parse_time(char *time_string, struct timeval base_time);
 static void fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr);
 static struct timeval lowest_start_time(struct state *states, int numfiles);
@@ -232,15 +248,21 @@ main(int argc, char **argv)
 	if ( report_times > 1 )
 		error( "only one of -R, -r, or -t can be specified" );
 
+	/* As far as command-line argument parsing is concerned, iff a string
+	 * conforms to a timestamp format, it is a time argument no matter
+	 * which format and what value.  Whether a parseable time argument
+	 * produces a valid date and a valid time is a different test a bit
+	 * later with an additional input (base time) and a different error
+	 * reporting.  This way, the argument "25h70m80s" should always make
+	 * tcpslice exit with an invalid time argument error instead of trying
+	 * to open a file with that name.
+	 */
 	if (optind < argc)
-		/* See if the next argument looks like a possible
-		 * start time, and if so assume it is one.
-		 */
-		if (isdigit(argv[optind][0]) || argv[optind][0] == '+')
+		if (timestamp_input_format_correct(argv[optind]))
 			start_time_string = argv[optind++];
 
 	if (optind < argc)
-		if (isdigit(argv[optind][0]) || argv[optind][0] == '+')
+		if (timestamp_input_format_correct(argv[optind]))
 			stop_time_string = argv[optind++];
 
 	if (optind >= argc)
@@ -335,6 +357,119 @@ timestamp_raw_format_correct(const char *str)
 		} /* switch (fsm_state) */
 		str++;
 	} /* while (1) */
+}
+
+/* Try to read one complete token (amount, unit) from the given string into
+ * the provided structure by advancing the pointer and consuming characters.
+ * Accept the unit characters in both lowercase and uppercase to be consistent
+ * with the undocumented behaviour of fill_tm().  Do not check whether the
+ * amount is valid for the unit.  Return the advanced pointer on success or
+ * NULL otherwise.
+ */
+static const char *
+parse_token(const char *str, struct parseable_token_t *token)
+{
+	enum { START, AMOUNT, UNIT } fsm_state = START;
+	uint64_t amount;
+	char char_unit;
+
+	while (1) {
+		switch (fsm_state) {
+		case START: /* Have not seen anything yet. */
+			if (! isdigit(*str))
+				return NULL;
+			amount = *str - '0';
+			fsm_state = AMOUNT;
+			break;
+		case AMOUNT: /* Have seen one or more digits for the amount. */
+			if (isalpha(*str)) {
+				token->amount = amount;
+				char_unit = tolower(*str);
+				fsm_state = UNIT;
+				break;
+			}
+			if (! isdigit(*str) ||
+			    (amount = amount * 10 + *str - '0') > INT32_MAX)
+				return NULL;
+			break;
+		case UNIT: /* Have seen a character, could be a valid unit. */
+			switch (char_unit) {
+			case 'y':
+				token->unit = YEAR;
+				break;
+			/* no month */
+			case 'd':
+				token->unit = DAY;
+				break;
+			case 'h':
+				token->unit = HOUR;
+				break;
+			case 'm':
+				token->unit = MINUTE;
+				break;
+			case 's':
+				token->unit = SECOND;
+				break;
+			case 'u':
+				token->unit = MICROSECOND;
+				break;
+			default:
+				return NULL;
+			} /* switch (char_unit) */
+			return str;
+		default:
+			error("invalid FSM state in %s()", __func__);
+		} /* switch (fsm_state) */
+		str++;
+	} /* while (1) */
+}
+
+/* Test if the string conforms to the "ymdhmsu" format (as discussed in the
+ * man page).  Do not test individual amounts to be valid for their time units
+ * or the date to be a valid date or the time to be a valid time.  Return 1 on
+ * good and 0 on bad.
+ */
+static unsigned char
+timestamp_parseable_format_correct(const char *str)
+{
+	struct parseable_token_t token[TS_PARSEABLE_MAX_TOKENS];
+	unsigned numtokens = 0;
+
+	/* Try to tokenize the full string, fail as early as possible. */
+	while (*str != '\0') {
+		if (numtokens == TS_PARSEABLE_MAX_TOKENS ||
+		    (str = parse_token(str, token + numtokens)) == NULL)
+			return 0;
+		numtokens++;
+	}
+
+	if (numtokens > 1) {
+		unsigned i;
+		/* Disambiguate "m". */
+		for (i = 0; i < numtokens - 1; i++)
+			if (token[i].unit == MINUTE && token[i + 1].unit == DAY)
+				token[i].unit = MONTH;
+		/* Require each time unit in the vector to appear at most once
+		 * and in the order of strictly decreasing magnitude.
+		 */
+		for (i = 0; i < numtokens - 1; i++)
+			if (token[i].unit <= token[i + 1].unit)
+				return 0;
+	}
+
+	return numtokens > 0;
+}
+
+/* Test if the string conforms to a valid input time format (with an optional
+ * leading "+").  Return 1 on good and 0 on bad.
+ */
+static unsigned char
+timestamp_input_format_correct(const char *str)
+{
+	if (*str == '+')
+		str++;
+	return timestamp_parseable_format_correct(str) ||
+	       timestamp_raw_format_correct(str);
 }
 
 /* Given a string specifying a time (or a time offset) and a "base time"

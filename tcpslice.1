@@ -17,7 +17,7 @@
 .\" WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
 .\" MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 .\"
-.TH TCPSLICE 1  "28 May 2020"
+.TH TCPSLICE 1  "30 July 2020"
 .SH NAME
 tcpslice \- extract pieces of and/or merge together pcap files
 .SH SYNOPSIS
@@ -137,7 +137,7 @@ the corresponding value taken from either
 (if the ending time is being specified).
 If the omitted field is a unit
 .I less
-than that of the first specified field, then it defaults to zero.
+than that of the first specified field, then it defaults to zero (1 for days).
 For example, suppose that the input file has a
 .I first time
 of the Unix timestamp mentioned above, i.e., 38 seconds and 765,400 microseconds
@@ -365,10 +365,16 @@ tcpdump-workers@lists.tcpdump.org
 Please send source code contributions as git pull requests through the
 project page above.
 .LP
-An input filename that begins with a digit or a `+' can be confused
-with a start/end time.  Such filenames can be specified with a
-leading `./'; for example, specify the file `04Jul76.trace' as
-`./04Jul76.trace'.
+An input filename that exactly matches the
+.I sssssssss.uuuuuu
+or the
+.I ymdhmsu
+format discussed above can be confused with a start/end time (regardless if
+the date and the time are valid in the latter case).  Such filenames can be
+specified with a leading `./'; for example, specify the file `1976y07m04d'
+as `./1976y07m04d' and `00000123' as `./00000123'.  Alternatively, renaming
+the files to `1976y07m04d.pcap' and `00000123.pcap' respectively would
+resolve this ambiguity.
 .LP
 .I tcpslice
 cannot read its input from \fIstdin\fP, since it uses random-access
