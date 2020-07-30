@@ -45,6 +45,13 @@
 #endif
 #include <unistd.h>
 
+#if HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#ifndef INT32_MAX
+#define INT32_MAX (2147483647)
+#endif
+
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"
 #endif
@@ -100,6 +107,15 @@ struct state {
  */
 enum stamp_styles { TIMESTAMP_RAW, TIMESTAMP_READABLE, TIMESTAMP_PARSEABLE };
 enum stamp_styles timestamp_style = TIMESTAMP_RAW;
+
+/* Let's for now define that as far as tcpslice command-line argument parsing
+ * of raw timestamps goes, valid Unix time is the non-negative range of a
+ * 32-bit signed integer.  This way it is possible to validate input without
+ * knowing the size and signedness of the local time_t type.  Someone please
+ * invent a better solution before year 2038.
+ */
+#define TS_RAW_S_MAX_VALUE      INT32_MAX
+#define TS_RAW_US_MAX_DIGITS    6 /* 000000~999999 */
 
 
 static struct timeval parse_time(char *time_string, struct timeval base_time);
@@ -271,19 +287,55 @@ main(int argc, char **argv)
 	return 0;
 }
 
-
-/* Returns non-zero if a string matches the format for a timestamp,
- * 0 otherwise.
+/* Test if the string has a form of "sssssssss" or "sssssssss.uuuuuu" (as
+ * discussed in the man page) and the integer part does not exceed the upper
+ * limit and the fractional part (if any) does not try to specify more
+ * precision than the format allows.  Return 1 on good and 0 on bad.
  */
-static int
-is_timestamp( char *str )
-	{
-	while ( isdigit(*str) || *str == '.' )
-		++str;
+static unsigned char
+timestamp_raw_format_correct(const char *str)
+{
+	enum { START, SECONDS, POINT, MICROSECONDS } fsm_state = START;
+	uint64_t s_value;
+	unsigned us_digits;
 
-	return *str == '\0';
-	}
-
+	while (1) {
+		switch (fsm_state) {
+		case START: /* Have not seen anything yet. */
+			if (! isdigit(*str))
+				return 0;
+			s_value = *str - '0';
+			fsm_state = SECONDS;
+			break;
+		case SECONDS: /* Have seen one or more digits for the seconds. */
+			if (*str == '\0')
+				return 1; /* "uuuuuuuuu" */
+			if (*str == '.') {
+				fsm_state = POINT;
+				break;
+			}
+			if (! isdigit(*str) ||
+			    (s_value = s_value * 10 + *str - '0') > TS_RAW_S_MAX_VALUE)
+				return 0;
+			break;
+		case POINT: /* Have seen the decimal point. */
+			if (! isdigit(*str))
+				return 0;
+			us_digits = 1;
+			fsm_state = MICROSECONDS;
+			break;
+		case MICROSECONDS: /* Have seen one or more digits for the microseconds. */
+			if (*str == '\0')
+				return 1; /* "uuuuuuuuu.ssssss" */
+			if (! isdigit(*str) || ++us_digits > TS_RAW_US_MAX_DIGITS)
+				return 0;
+			break;
+		default:
+			error("invalid FSM state in %s()", __func__);
+		} /* switch (fsm_state) */
+		str++;
+	} /* while (1) */
+}
 
 /* Given a string specifying a time (or a time offset) and a "base time"
  * from which to compute offsets and fill in defaults, returns a timeval
@@ -302,7 +354,7 @@ parse_time(char *time_string, struct timeval base_time)
 	if ( is_delta )
 		++time_string;	/* skip over '+' sign */
 
-	if ( is_timestamp( time_string ) )
+	if (timestamp_raw_format_correct(time_string))
 		{ /* interpret as a raw timestamp or timestamp offset */
 		char *time_ptr;
 
