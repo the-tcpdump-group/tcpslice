@@ -1,3 +1,23 @@
+v1.3 ...
+
+- Update to modern autotools and remove some obsolete code.
+
+- Remove dependency on libpcap pcap-int.h.
+
+- Merge a patch from Fedora package.
+
+- Fix compiling on Solaris.
+
+- Address a number of compiler warnings and add error checks.
+
+- Fix formatting of some error messages.
+
+- Improve printing of the usage message and add a "-h" option.
+
+- Improve handling of time command-line arguments.
+
+- Update documentation files.
+
 v1.2 ...
 
 - Use pcap_sf_pkthdr for portable savefiles.
