@@ -1,23 +1,25 @@
-This file lists people who have contributed to tcpslice:
+This file lists people who have contributed to tcpslice.
 
-The current maintainers:
-	Bill Fenner			<fenner@research.att.com>
-	Assar Westerlund 		<assar@sics.se>
-	Alexey Kuznetsov		<kuznet@ms2.inr.ac.ru>
-	Jun-ichiro itojun Hagino	<itojun@iijlab.net>
-	Guy Harris 			<guy@alum.mit.edu>
-	Torsten Landschoff 		<t.landschoff@gmx.net>
-	Michael Richardson 		<mcr@sandelman.ottawa.on.ca>
-	Sebastien Raveau		<sebastien.raveau@epita.fr>
+The current maintainers (in alphabetical order):
+	Denis Ovsienko			<denis at ovsienko dot info>
+	Francois-Xavier Le Bail		<devel dot fx dot lebail at orange dot fr>
+	Guy Harris			<guy at alum dot mit dot edu>
+	Michael Richardson		<mcr at sandelman dot ottawa dot on dot ca>
 
-Additional people who have contributed patches:
-
-	Bruce Mah			<bmah@freebsd.org>
-	Dave Cornelius			<dc@packetdesign.com>
-	Paul Herman			<pherman@omation.com>
-	Pekka Savola			<pekkas@netcore.fi>
-	Steve Bonds			<store0@hotmail.com>
+Additional people who have contributed patches (in alphabetical order):
+	Bruce Mah			<bmah at freebsd dot org>
+	Dave Cornelius			<dc at packetdesign dot com>
+	Paul Herman			<pherman at omation dot com>
+	Pekka Savola			<pekkas at netcore dot fi>
+	Steve Bonds			<store0 at hotmail dot com>
 
 The original LBL author:
+	Vern Paxson			<vern at ee dot lbl dot gov>
 
-	Vern Paxson			<vern@ee.lbl.gov>
+Past maintainers (in alphabetical order):
+	Alexey Kuznetsov		<kuznet at ms2 dot inr dot ac dot ru>
+	Assar Westerlund		<assar at sics dot se>
+	Bill Fenner			<fenner at research dot att dot com>
+	Jun-ichiro itojun Hagino	<itojun at iijlab dot net>
+	Sebastien Raveau		<sebastien dot raveau at epita dot fr>
+	Torsten Landschoff		<t dot landschoff at gmx dot net>
