@@ -105,7 +105,6 @@ CLEANFILES = $(PROG) $(OBJ) $(GENSRC)
 EXTRA_DIST = \
 	CHANGES \
 	CREDITS \
-	FILES \
 	INSTALL \
 	Makefile.in \
 	Makefile-devel-adds \

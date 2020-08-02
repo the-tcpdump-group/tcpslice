@@ -22,7 +22,6 @@ patches for any modifications you need to make.
 FILES
 -----
 CHANGES         - description of differences between releases
-FILES		- list of files exported as part of the distribution
 INSTALL         - this file
 Makefile.in	- compilation rules (input to the configure script)
 README		- description of distribution
