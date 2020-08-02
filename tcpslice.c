@@ -164,8 +164,8 @@ main(int argc, char **argv)
 	int report_times = 0;
 	int relative_time_merge = 0;
 	int numfiles;
-	char *start_time_string = 0;
-	char *stop_time_string = 0;
+	char *start_time_string = NULL;
+	char *stop_time_string = NULL;
 	const char *write_file_name = "-";	/* default is stdout */
 	struct timeval first_time, start_time, stop_time;
 	char ebuf[PCAP_ERRBUF_SIZE];
