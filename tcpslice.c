@@ -472,6 +472,44 @@ timestamp_input_format_correct(const char *str)
 	       timestamp_raw_format_correct(str);
 }
 
+/* No-op iff the date and the time in the given broken-down time are valid
+ * and the year is within the [1970, 2069] range declared in the man page.
+ */
+static void
+assert_valid_tm(const struct tm t)
+{
+	int year, maxdays;
+
+	/* yy: [70, 99] in tm_year means [1970, 1999]
+	 * yy: [0, 69] in tm_year means [2000, 2069]
+	 * yyyy: [70, 99] in tm_year means [1970, 1999].
+	 * yyyy: [100, 169] in tm_year means [2000, 2069].
+	 */
+	year = 1900 + t.tm_year;
+	if (year < 1970)
+		year += 100;
+	if (year < 1970 || year > 2069)
+		error("year %d is not valid\n", year);
+
+	if (t.tm_mon < 0 || t.tm_mon > 11) /* 11 is December */
+		error("month %d is not valid\n", t.tm_mon + 1);
+
+	maxdays = days_in_month[t.tm_mon];
+	if (t.tm_mon == 1 && IS_LEAP_YEAR(year)) /* 1 is February */
+		maxdays++;
+	if (t.tm_mday < 1 || t.tm_mday > maxdays)
+		error("day %d is not valid\n", t.tm_mday);
+
+	if (t.tm_hour < 0 || t.tm_hour > 23)
+		error("hour %d is not valid\n", t.tm_hour);
+
+	if (t.tm_min < 0 || t.tm_min > 59)
+		error("minute %d is not valid\n", t.tm_min);
+
+	if (t.tm_sec < 0 || t.tm_sec > 59)
+		error("seconds %d is not valid\n", t.tm_sec);
+}
+
 /* Given a string specifying a time (or a time offset) and a "base time"
  * from which to compute offsets and fill in defaults, returns a timeval
  * containing the specified time.
@@ -530,6 +568,7 @@ parse_time(char *time_string, struct timeval base_time)
 			t.tm_year = -1;
 	}
 
+	/* Terminate the program on error. */
 	fill_tm(time_string, is_delta, &t, &usecs);
 
 	/* Now until we reach a field that was specified, fill in the
@@ -564,6 +603,7 @@ parse_time(char *time_string, struct timeval base_time)
 		ZERO_FIELD_IF_NOT_SET(tm_sec,0);
 	}
 
+	assert_valid_tm(t); /* Terminate the program on error. */
 	result.tv_sec = gwtm2secs(&t);
 	result.tv_sec -= gmt2local(result.tv_sec);
 	result.tv_usec = usecs;

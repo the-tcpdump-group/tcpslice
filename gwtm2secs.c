@@ -38,12 +38,9 @@
 
 #include "tcpslice.h"
 
-static int days_in_month[] =
+const int days_in_month[] =
 	/* Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec */
 	{  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-#define IS_LEAP_YEAR(year)	\
-	(year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
 
 time_t gwtm2secs( struct tm *tm )
 	{

@@ -98,6 +98,10 @@
 #include <sys/time.h>
 #include <pcap.h>
 
+#define IS_LEAP_YEAR(year)	\
+	(year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
+
+extern const int days_in_month[];
 time_t			gwtm2secs( struct tm *tm );
 
 int			sf_find_end( struct pcap *p, struct timeval *first_timestamp,
