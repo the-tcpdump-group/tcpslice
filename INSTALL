@@ -24,9 +24,11 @@ FILES
 CHANGES         - description of differences between releases
 INSTALL         - this file
 Makefile.in	- compilation rules (input to the configure script)
+Makefile-devel-adds - additional rules if .devel file exists
 README		- description of distribution
 VERSION		- version of this release
 aclocal.m4	- autoconf macros
+compiler-tests.h - compiler version definitions
 config.guess	- autoconf support
 config.sub	- autoconf support
 configure	- configure script (run this first)
@@ -35,13 +37,17 @@ gmt2local.c	- time conversion routines
 gmt2local.h	- time conversion prototypes
 gwtm2secs.c	- GMT to Unix timestamp conversion
 install-sh	- BSD style install script
-lbl/gnuc.h	- gcc macros and defines
 lbl/os-*.h	- os dependent defines and prototypes
 machdep.c	- machine dependent routines
 machdep.h	- machine dependent definitions
+missing/*	- replacements for missing library functions
 mkdep		- construct Makefile dependency list
 search.c	- fast savefile search routines
+seek-tell.c	- fseek64() and ftell64() routines
+sessions.c	- session tracking routines
+sessions.h	- session tracking prototypes
 tcpslice.1	- manual entry
 tcpslice.c	- main program
 tcpslice.h	- global prototypes
 util.c		- utility routines
+varattrs.h	- compiler attribute definitions
