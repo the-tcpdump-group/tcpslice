@@ -5,7 +5,7 @@ See             https://www.tcpdump.org
 https://github.com/the-tcpdump-group/tcpslice
 
 formerly from   Lawrence Berkeley National Laboratory
-                ftp://ftp.ee.lbl.gov/old/tcpslice-1.2a2.tar.gz
+                ftp://ftp.ee.lbl.gov/tcpslice-1.2a3.tar.gz
 
 This directory contains source code for tcpslice, a tool for extracting
 portions of packet trace files generated using tcpdump's -w flag.
