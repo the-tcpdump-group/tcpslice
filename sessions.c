@@ -202,8 +202,10 @@ struct session
   uint64_t			bytes;
   struct session		*next;
   struct session		*prev;
+# if defined(HAVE_LIBOSIPPARSER2) || defined(HAVE_LIBOOH323C)
   union
   {
+# endif
 # ifdef HAVE_LIBOSIPPARSER2
     struct
     {
@@ -220,7 +222,9 @@ struct session
       char			call_id[16];
     } ras_params;
 # endif
+# if defined(HAVE_LIBOSIPPARSER2) || defined(HAVE_LIBOOH323C)
   } u;
+# endif
 };
 
 /*
@@ -388,7 +392,7 @@ void				sessions_exit(void)
       fprintf(stderr, "%15s:%-5d\t",
 	  inet_ntoa(*((struct in_addr *)&first_session->addr.daddr)),
 	  first_session->addr.dest);
-      fprintf(stderr, "%12d\n", first_session->bytes);
+      fprintf(stderr, "%12" PRIu64 "\n", first_session->bytes);
       dumper_close(first_session->dumper);
       if (NULL != first_session->next) {
 	first_session = first_session->next;
@@ -804,7 +808,6 @@ static int		sip_get_address(osip_message_t *msg, u_int *host, u_short *port)
 static struct session			*sip_callback(struct session *sip, u_char *data, uint32_t len)
 {
   osip_message_t			*msg;
-  struct tuple4				addr;
   struct session			*start;
   struct session			*rtp;
   osip_call_id_t			*call_id;
@@ -899,7 +902,7 @@ static struct session			*sip_callback(struct session *sip, u_char *data, uint32_
   return sip;
 }
 # else
-static struct session			*sip_callback(struct session *sip, u_char *data, uint32_t len)
+static struct session			*sip_callback(struct session *sip, u_char *data _U_, uint32_t len _U_)
 {
   return sip;
 }
@@ -1030,12 +1033,12 @@ static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint
 }
 
 # else
-static struct session			*h225_ras_callback(struct session *ras, u_char *data, uint32_t len)
+static struct session			*h225_ras_callback(struct session *ras, u_char *data _U_, uint32_t len _U_)
 {
   return ras;
 }
 
-static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint32_t len)
+static struct session			*h225_cs_callback(struct session *cs, u_char *data _U_, uint32_t len _U_)
 {
   return cs;
 }
