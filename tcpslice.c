@@ -1058,6 +1058,14 @@ print_usage(FILE *f)
 	(void)fprintf(f, "libpcap version %s\n", pcap_version);
 #endif /* HAVE_PCAP_LIB_VERSION */
 
+#ifdef HAVE_LIBNIDS
+	(void)fprintf(f, "libnids version %u.%u\n", NIDS_MAJOR, NIDS_MINOR);
+#endif /* HAVE_LIBNIDS */
+
+#ifdef HAVE_LIBOSIPPARSER2
+	(void)fprintf(f, "libosip2 unknown version\n");
+#endif /* HAVE_LIBOSIPPARSER2 */
+
 	(void)fprintf(f,
 	              "Usage: tcpslice [-DdhlRrtv] [-w file]\n"
 	              "                [ -s types [ -e seconds ] [ -f format ] ]\n"
