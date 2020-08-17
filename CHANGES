@@ -8,6 +8,8 @@ v1.3 ...
 
 - Fix compiling on Solaris.
 
+- Fix compile errors with libosip2 4.1.0.
+
 - Address a number of compiler warnings and add error checks.
 
 - Fix formatting of some error messages.

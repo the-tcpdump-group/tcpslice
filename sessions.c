@@ -777,10 +777,10 @@ static int		sip_get_address(osip_message_t *msg, u_int *host, u_short *port)
     return 0;
   if (osip_strcasecmp(ctt->subtype, "sdp"))
     return 0;
-  for (i = 0; !osip_list_eol(msg->bodies, i); ++i) {
+  for (i = 0; !osip_list_eol(&msg->bodies, i); ++i) {
     sdp = NULL;
     sdp_message_init(&sdp);
-    tmp = ((osip_body_t *)osip_list_get(msg->bodies, i))->body;
+    tmp = ((osip_body_t *)osip_list_get(&msg->bodies, i))->body;
     if (sdp_message_parse(sdp, tmp)) {
       sdp_message_free(sdp);
       continue;
