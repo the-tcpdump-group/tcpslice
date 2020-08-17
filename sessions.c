@@ -281,9 +281,9 @@ static unsigned int		dumper_fd_count = 0;
  * ITU's H.225 Registration Admission Status and H.225 Call Signaling (both
  * part of H.323) data.
  */
-static struct session		*sessions_add(enum type t, struct tuple4 *addr, struct session *parent);
+static struct session		*sessions_add(uint8_t t, struct tuple4 *addr, struct session *parent);
 static void			sessions_del(struct session *elt);
-static struct session		*sessions_find(struct session *start, enum type t, uint32_t parent_id, struct tuple4 *addr);
+static struct session		*sessions_find(struct session *start, uint8_t t, uint32_t parent_id, struct tuple4 *addr);
 static struct shared_dumper	*dumper_open(enum type t, uint32_t id);
 static void			dumper_too_many_open_files(struct shared_dumper **d);
 static void			dumper_close(struct shared_dumper *d);
@@ -422,7 +422,7 @@ void				sessions_nids_init(pcap_t *p)
   nids_register_tcp(tcp_callback);
 }
 
-static struct session		*sessions_add(enum type t, struct tuple4 *addr, struct session *parent)
+static struct session		*sessions_add(uint8_t t, struct tuple4 *addr, struct session *parent)
 {
   struct session		*elt;
   static uint32_t		counter = 0;
@@ -514,7 +514,7 @@ static void			sessions_del(struct session *elt)
   free(elt);
 }
 
-static struct session		*sessions_find(struct session *start, enum type t, uint32_t parent_id, struct tuple4 *addr)
+static struct session		*sessions_find(struct session *start, uint8_t t, uint32_t parent_id, struct tuple4 *addr)
 {
   struct session		*elt;
 
