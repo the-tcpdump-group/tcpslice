@@ -82,12 +82,9 @@ OBJ =	$(CSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
 HDR = \
 	compiler-tests.h \
 	gmt2local.h \
-	ip.h \
 	machdep.h \
 	sessions.h \
-	tcp.h \
 	tcpslice.h \
-	udp.h \
 	varattrs.h
 
 TAGHDR = \

@@ -135,9 +135,12 @@ void				sessions_nids_init(pcap_t *p _U_)
 #  include <printHandler.h>
 # endif
 # include "tcpslice.h"
-# include "ip.h"
-# include "udp.h"
-# include "tcp.h"
+# include <netinet/ip.h>
+# define IPHDRLEN sizeof(struct ip)
+# include <netinet/udp.h>
+# define UDPHDRLEN sizeof(struct udphdr)
+# include <netinet/tcp.h>
+# define TCPHDRLEN sizeof(struct tcphdr)
 
 /*
  * Session type identifiers, used as bitmasks for
@@ -290,9 +293,9 @@ static void			dumper_close(struct shared_dumper *d);
 static void			dump_frame(u_char *data, int len, struct shared_dumper *output);
 static enum type		parse_type(const char *str);
 static const char		*type2string(enum type t, int upper);
-static void			ip_callback(struct rfc_ip *ip, int len);
+static void			ip_callback(struct ip *ip, int len);
 static void			tcp_callback(struct tcp_stream *tcp, void **user);
-static void			udp_callback(struct tuple4 *addr, u_char *data, int len, struct rfc_ip *ip);
+static void			udp_callback(struct tuple4 *addr, u_char *data, int len, struct ip *ip);
 static struct session		*sip_callback(struct session *elt, u_char *data, uint32_t len);
 static struct session		*h225_ras_callback(struct session *elt, u_char *data, uint32_t len);
 static struct session		*h225_cs_callback(struct session *elt, u_char *data, uint32_t len);
@@ -647,10 +650,10 @@ static void			dump_frame(u_char *data, int len, struct shared_dumper *output)
  * mobilize resources, we give TCP sessions 60 seconds to complete
  * the TCP handshake or else they are considered to be closed.
  */
-static void			ip_callback(struct rfc_ip *ip, int len)
+static void			ip_callback(struct ip *ip, int len)
 {
   struct tuple4			addr;
-  struct rfc_tcp		*tcp;
+  struct tcphdr			*tcp;
   struct session		*elt;
   struct session		*elt_next;
   unsigned int			ip_data_offset = IPHDRLEN;
@@ -660,15 +663,15 @@ static void			ip_callback(struct rfc_ip *ip, int len)
     if (elt->timeout && (nids_last_pcap_header->ts.tv_sec >= elt->timeout))
       sessions_del(elt);
   }
-  if ((ip->ihl > 5) && ((ip->ihl * 4) <= len))
-    ip_data_offset = ip->ihl * 4;
-  if ((ip->protocol != 6) || (len < (ip_data_offset + TCPHDRLEN)))
+  if ((ip->ip_hl > 5) && ((ip->ip_hl * 4) <= len))
+    ip_data_offset = ip->ip_hl * 4;
+  if ((ip->ip_p != 6) || (len < (ip_data_offset + TCPHDRLEN)))
     return; /* not TCP or too short */
-  tcp = (struct rfc_tcp *)((char *)ip + ip_data_offset);
-  addr.saddr = *((u_int *)&ip->saddr);
-  addr.daddr = *((u_int *)&ip->daddr);
-  addr.source = ntohs(tcp->sport);
-  addr.dest = ntohs(tcp->dport);
+  tcp = (struct tcphdr *)((char *)ip + ip_data_offset);
+  addr.saddr = *((u_int *)&ip->ip_src);
+  addr.daddr = *((u_int *)&ip->ip_dst);
+  addr.source = ntohs(tcp->th_sport);
+  addr.dest = ntohs(tcp->th_dport);
   if (NULL != (elt = sessions_find(first_session, TYPE_TCP, 0, &addr))) {
     dump_frame((u_char *)ip, len, elt->dumper);
     if (sessions_expiration_delay)
@@ -676,7 +679,7 @@ static void			ip_callback(struct rfc_ip *ip, int len)
     elt->lastseen = nids_last_pcap_header->ts;
     return;
   }
-  if (!tcp->syn || bonus_time)
+  if (!(tcp->th_flags & TH_SYN) || bonus_time)
     return;
   if (addr.source == 5060 || addr.dest == 5060)
     elt = sessions_add(TYPE_TCP | TYPE_SIP, &addr, NULL);
@@ -689,7 +692,7 @@ static void			ip_callback(struct rfc_ip *ip, int len)
   /* 60 seconds to complete TCP handshake */
 }
 
-static void			udp_callback(struct tuple4 *addr, u_char *udp_data, int udp_data_len, struct rfc_ip *ip)
+static void			udp_callback(struct tuple4 *addr, u_char *udp_data, int udp_data_len, struct ip *ip)
 {
   struct session		*elt;
   unsigned int			udp_data_offset = IPHDRLEN + UDPHDRLEN;
@@ -715,8 +718,8 @@ static void			udp_callback(struct tuple4 *addr, u_char *udp_data, int udp_data_l
    * a new session object (`elt') might be created by the callback,
    * with a pointer to a different PCAP file.
    */
-  if ((ip->ihl > 5) && ((ip->ihl * 4) < (udp_data_offset + udp_data_len)))
-    udp_data_offset = ip->ihl * 4 + UDPHDRLEN;
+  if ((ip->ip_hl > 5) && ((ip->ip_hl * 4) < (udp_data_offset + udp_data_len)))
+    udp_data_offset = ip->ip_hl * 4 + UDPHDRLEN;
   dump_frame((u_char *)ip, udp_data_offset + udp_data_len, elt->dumper);
 }
 
