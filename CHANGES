@@ -1,5 +1,7 @@
 v1.4 ...
 
+- Install into bindir, not sbindir.
+
 v1.3 Wed 19 Aug 19:00:47 BST 2020
 
 - Update to modern autotools and remove some obsolete code.
