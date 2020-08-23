@@ -319,7 +319,6 @@ static enum type		parse_type(const char *str)
 void				sessions_init(char *types)
 {
   char				*comma;
-  struct session		*elt;
 
   bonus_time = 0;
   sessions_track_types = TYPE_NONE;
@@ -330,7 +329,7 @@ void				sessions_init(char *types)
   }
   sessions_track_types |= parse_type(types);
   while (sessions_count) {
-    elt = first_session;
+    struct session *elt = first_session;
     first_session = first_session->next;
     --sessions_count;
     dumper_close(elt->dumper);
@@ -772,7 +771,6 @@ static int		sip_get_address(osip_message_t *msg, u_int *host, u_short *port)
 {
   osip_content_type_t	*ctt;
   sdp_message_t		*sdp;
-  char			*tmp;
   int			i;
   int			j;
 
@@ -787,7 +785,7 @@ static int		sip_get_address(osip_message_t *msg, u_int *host, u_short *port)
   for (i = 0; !osip_list_eol(&msg->bodies, i); ++i) {
     sdp = NULL;
     sdp_message_init(&sdp);
-    tmp = ((osip_body_t *)osip_list_get(&msg->bodies, i))->body;
+    char *tmp = ((osip_body_t *)osip_list_get(&msg->bodies, i))->body;
     if (sdp_message_parse(sdp, tmp)) {
       sdp_message_free(sdp);
       continue;

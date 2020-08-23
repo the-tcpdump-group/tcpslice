@@ -475,7 +475,6 @@ static int
 read_up_to( pcap_t *p, struct timeval *desired_time )
 	{
 	struct pcap_pkthdr hdr;
-	const u_char *buf;
 	int64_t pos;
 	int status;
 
@@ -484,9 +483,8 @@ read_up_to( pcap_t *p, struct timeval *desired_time )
 		struct timeval *timestamp;
 
 		pos = ftell64( pcap_file( p ) );
-		buf = pcap_next( p, &hdr );
 
-		if ( buf == 0 )
+		if ( pcap_next( p, &hdr ) == NULL )
 			{
 			if ( feof( pcap_file( p ) ) )
 				{
@@ -536,8 +534,6 @@ sf_find_packet( pcap_t *p,
 	int status = 1;
 	struct timeval min_time_copy, max_time_copy;
 	u_int num_bytes = MAX_BYTES_FOR_DEFINITE_HEADER;
-	int num_bytes_read;
-	int64_t desired_pos, present_pos;
 	u_char *buf, *hdrpos;
 	struct pcap_pkthdr hdr;
 
@@ -553,7 +549,7 @@ sf_find_packet( pcap_t *p,
 
 	for ( ; ; )	/* loop until positioned correctly */
 		{
-		desired_pos =
+		int64_t desired_pos =
 			interpolated_position( min_time, min_pos,
 					       max_time, max_pos,
 					       desired_time );
@@ -564,7 +560,7 @@ sf_find_packet( pcap_t *p,
 			break;
 			}
 
-		present_pos = ftell64( pcap_file( p ) );
+		int64_t present_pos = ftell64( pcap_file( p ) );
 		if ( present_pos < 0 )
 			error ( S(ftell64) "() failed in %s()", __func__ );
 
@@ -585,7 +581,7 @@ sf_find_packet( pcap_t *p,
 		if ( fseek64( pcap_file( p ), desired_pos, SEEK_SET ) < 0 )
 			error( S(fseek64) "() failed in %s()", __func__ );
 
-		num_bytes_read =
+		int num_bytes_read =
 			fread( (char *) buf, 1, num_bytes, pcap_file( p ) );
 
 		if ( num_bytes_read == 0 )

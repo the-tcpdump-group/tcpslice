@@ -620,8 +620,7 @@ parse_time(char *time_string, struct timeval base_time)
 static void
 fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 {
-	char *t_start, *t_stop, format_ch;
-	int val;
+	char *t_start, *t_stop;
 
 #define SET_VAL(lhs,rhs)	\
 	if (is_delta)		\
@@ -645,9 +644,9 @@ fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 			error("bad date format %s, problem starting at %s",
 			      time_string, t_start);
 
-		val = atoi(t_start);
+		int val = atoi(t_start);
 
-		format_ch = *t_stop;
+		char format_ch = *t_stop;
 		if ( isupper( format_ch ) )
 			format_ch = tolower( format_ch );
 
@@ -754,7 +753,7 @@ open_files(char *filenames[], int numfiles)
 	struct state *states;
 	struct state *s;
 	char errbuf[PCAP_ERRBUF_SIZE];
-	int i, this_snap;
+	int i;
 
 	if (numfiles == 0)
 		error("no input files specified");
@@ -774,7 +773,7 @@ open_files(char *filenames[], int numfiles)
 		if (track_sessions)
 			sessions_nids_init(s->p);
 
-		this_snap = pcap_snapshot( s->p );
+		int this_snap = pcap_snapshot( s->p );
 		if (this_snap > snaplen) {
 			snaplen = this_snap;
 		}
