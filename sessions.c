@@ -141,6 +141,8 @@ void				sessions_nids_init(pcap_t *p _U_)
 # define UDPHDRLEN sizeof(struct udphdr)
 # include <netinet/tcp.h>
 # define TCPHDRLEN sizeof(struct tcphdr)
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 /*
  * Session type identifiers, used as bitmasks for
