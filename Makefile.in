@@ -126,9 +126,6 @@ $(PROG): $(OBJ) @V_PCAPDEP@
 	@rm -f $@
 	$(CC) $(FULL_CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
 
-version.o: version.c
-	$(CC) $(CFLAGS) -c version.c
-
 version.c: $(srcdir)/VERSION
 	@rm -f $@
 	sed -e 's/.*/char version[] = "&";/' $(srcdir)/VERSION > $@
