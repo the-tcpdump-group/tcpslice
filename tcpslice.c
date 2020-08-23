@@ -507,7 +507,7 @@ assert_valid_tm(const struct tm t)
 		error("minute %d is not valid\n", t.tm_min);
 
 	if (t.tm_sec < 0 || t.tm_sec > 59)
-		error("seconds %d is not valid\n", t.tm_sec);
+		error("second %d is not valid\n", t.tm_sec);
 }
 
 /* Given a string specifying a time (or a time offset) and a "base time"
