@@ -383,10 +383,10 @@ void				sessions_exit(void)
    */
   if (sessions_count) {
     fprintf(stderr,
-	    "%d unclosed %s (id, type, last, source, destination, bytes):\n",
+	    "%u unclosed %s (id, type, last, source, destination, bytes):\n",
 	    sessions_count, sessions_count > 1 ? "sessions" : "session");
     while (NULL != first_session) {
-      fprintf(stderr, "#%d\t", first_session->id);
+      fprintf(stderr, "#%u\t", first_session->id);
       fprintf(stderr, "%s\t", type2string(first_session->type, 1));
       fprintf(stderr, "%s\t", timestamp_to_string(&first_session->lastseen));
       fprintf(stderr, "%15s:%-5d\t",
@@ -461,7 +461,7 @@ static struct session		*sessions_add(uint8_t t, struct tuple4 *addr, struct sess
   first_session = elt;
   ++sessions_count;
   if (verbose && (!elt->parent_id || verbose > 1))
-    printf("Session #%d (%s) opened at %s (active sessions total: %d)\n",
+    printf("Session #%u (%s) opened at %s (active sessions total: %u)\n",
 	elt->parent_id ? elt->parent_id : elt->id,
 	type2string(t, 1),
 	timestamp_to_string(&nids_last_pcap_header->ts),
@@ -477,7 +477,7 @@ static void			sessions_del(struct session *elt)
     return;
   --sessions_count;
   if ((bonus_time || verbose) && (!elt->parent_id || verbose > 1))
-    printf("Session #%d (%s) closed at %s (active sessions total: %d)\n",
+    printf("Session #%u (%s) closed at %s (active sessions total: %u)\n",
 	elt->parent_id ? elt->parent_id : elt->id,
 	type2string(elt->type, 1),
 	timestamp_to_string(&nids_last_pcap_header->ts),
