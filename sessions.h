@@ -28,7 +28,7 @@
 #ifndef TCPSLICE_SESSIONS_H
 # define TCPSLICE_SESSIONS_H
 
-# include <inttypes.h>
+# include "tcpslice.h" /* <inttypes.h> can be complicated. */
 # include <sys/types.h>
 # include <pcap.h>
 

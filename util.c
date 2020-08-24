@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <pcap.h>
 #include <string.h>
 
 #ifdef TIME_WITH_SYS_TIME

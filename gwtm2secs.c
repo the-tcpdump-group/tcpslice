@@ -30,7 +30,6 @@
 #include <sys/types.h>
 
 #include <time.h>
-#include <pcap.h>
 
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"
