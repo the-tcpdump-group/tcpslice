@@ -25,8 +25,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _TCPSLICE_SESSIONS_H
-# define _TCPSLICE_SESSIONS_H
+#ifndef TCPSLICE_SESSIONS_H
+# define TCPSLICE_SESSIONS_H
 
 # include <inttypes.h>
 # include <sys/types.h>
@@ -43,4 +43,4 @@ void				sessions_init(char *types);
 void				sessions_exit(void);
 void				sessions_nids_init(pcap_t *p);
 
-#endif
+#endif /* TCPSLICE_SESSIONS_H */

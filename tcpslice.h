@@ -19,6 +19,9 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+#ifndef TCPSLICE_H
+#define TCPSLICE_H
+
 #include "compiler-tests.h"
 
 #include "varattrs.h"
@@ -123,3 +126,4 @@ extern size_t strlcpy(char *, const char *, size_t);
 void			error(const char *fmt, ...);
 
 extern pcap_dumper_t	*global_dumper;
+#endif /* TCPSLICE_H */

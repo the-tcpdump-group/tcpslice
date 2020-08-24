@@ -121,19 +121,19 @@ void				sessions_nids_init(pcap_t *p _U_)
 {
 }
 
-#else
+#else /* HAVE_LIBNIDS */
 
 # include <string.h>
 # include <nids.h>
 # ifdef HAVE_LIBOSIPPARSER2
 #  include <osip2/osip.h>
 #  include <osipparser2/sdp_message.h>
-# endif
+# endif /* HAVE_LIBOSIPPARSER2 */
 # ifdef HAVE_LIBOOH323C
 #  include <ooh323.h>
 #  include <ooCalls.h>
 #  include <printHandler.h>
-# endif
+# endif /* HAVE_LIBOOH323C */
 # include "tcpslice.h"
 # include <netinet/ip.h>
 # define IPHDRLEN sizeof(struct ip)
@@ -141,8 +141,8 @@ void				sessions_nids_init(pcap_t *p _U_)
 # define UDPHDRLEN sizeof(struct udphdr)
 # include <netinet/tcp.h>
 # define TCPHDRLEN sizeof(struct tcphdr)
-#include <netinet/in.h>
-#include <arpa/inet.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
 
 /*
  * Session type identifiers, used as bitmasks for
@@ -210,26 +210,24 @@ struct session
 # if defined(HAVE_LIBOSIPPARSER2) || defined(HAVE_LIBOOH323C)
   union
   {
-# endif
-# ifdef HAVE_LIBOSIPPARSER2
+#  ifdef HAVE_LIBOSIPPARSER2
     struct
     {
       struct tuple4		rtp_addr;
       osip_call_id_t		*call_id;
       int			picked_up;
     } sip_params;
-# endif
-# ifdef HAVE_LIBOOH323C
+#  endif /* HAVE_LIBOSIPPARSER2 */
+#  ifdef HAVE_LIBOOH323C
     struct
     {
       struct tuple4		cs_addr;
       H225RequestSeqNum		seqnum;
       char			call_id[16];
     } ras_params;
-# endif
-# if defined(HAVE_LIBOSIPPARSER2) || defined(HAVE_LIBOOH323C)
+#  endif /* HAVE_LIBOOH323C */
   } u;
-# endif
+# endif /* defined(HAVE_LIBOSIPPARSER2) || defined(HAVE_LIBOOH323C) */
 };
 
 /*
@@ -309,11 +307,11 @@ static enum type		parse_type(const char *str)
 # ifdef HAVE_LIBOSIPPARSER2
   if (!strcmp("sip", str))
     return CLASS_SIP;
-# endif
+# endif /* HAVE_LIBOSIPPARSER2 */
 # ifdef HAVE_LIBOOH323C
   if (!strcmp("h323", str))
     return CLASS_H323;
-# endif
+# endif /* HAVE_LIBOOH323C */
   fprintf(stderr, "Error: unsupported session type `%s'\n", str);
   exit(-1);
 }
@@ -340,7 +338,7 @@ void				sessions_init(char *types)
 # ifdef HAVE_LIBOOH323C
   ooH323EpInitialize(OO_CALLMODE_AUDIOCALL, "/dev/null");
   ooH323EpDisableAutoAnswer();
-# endif
+# endif /* HAVE_LIBOOH323C */
   track_sessions = 1;
 }
 
@@ -376,7 +374,7 @@ void				sessions_exit(void)
 # ifdef HAVE_LIBOSIPPARSER2
     if ((elt->type & TYPE_SIP) && !elt->u.sip_params.picked_up)
       sessions_del(elt);
-# endif
+# endif /* HAVE_LIBOSIPPARSER2 */
   }
 
   /*
@@ -512,7 +510,7 @@ static void			sessions_del(struct session *elt)
   if (elt->type & TYPE_SIP)
     if (NULL != elt->u.sip_params.call_id)
       osip_call_id_free(elt->u.sip_params.call_id);
-# endif
+# endif /* HAVE_LIBOSIPPARSER2 */
 
   dumper_close(elt->dumper);
   free(elt);
@@ -768,7 +766,12 @@ static void			tcp_callback(struct tcp_stream *tcp, void **user)
   }
 }
 
-# ifdef HAVE_LIBOSIPPARSER2
+# ifndef HAVE_LIBOSIPPARSER2
+static struct session			*sip_callback(struct session *sip, u_char *data _U_, uint32_t len _U_)
+{
+  return sip;
+}
+# else /* HAVE_LIBOSIPPARSER2 */
 static int		sip_get_address(osip_message_t *msg, u_int *host, u_short *port)
 {
   osip_content_type_t	*ctt;
@@ -904,14 +907,19 @@ static struct session			*sip_callback(struct session *sip, u_char *data, uint32_
   osip_message_free(msg);
   return sip;
 }
-# else
-static struct session			*sip_callback(struct session *sip, u_char *data _U_, uint32_t len _U_)
-{
-  return sip;
-}
-# endif
+# endif /* HAVE_LIBOSIPPARSER2 */
 
-# ifdef HAVE_LIBOOH323C
+# ifndef HAVE_LIBOOH323C
+static struct session			*h225_ras_callback(struct session *ras, u_char *data _U_, uint32_t len _U_)
+{
+  return ras;
+}
+
+static struct session			*h225_cs_callback(struct session *cs, u_char *data _U_, uint32_t len _U_)
+{
+  return cs;
+}
+# else /* HAVE_LIBOOH323C */
 static struct session			*h225_ras_callback(struct session *ras, u_char *data, uint32_t len)
 {
   OOCTXT				ctxt;
@@ -1034,17 +1042,6 @@ static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint
   ooCleanCall(call);
   return cs;
 }
+# endif /* HAVE_LIBOOH323C */
 
-# else
-static struct session			*h225_ras_callback(struct session *ras, u_char *data _U_, uint32_t len _U_)
-{
-  return ras;
-}
-
-static struct session			*h225_cs_callback(struct session *cs, u_char *data _U_, uint32_t len _U_)
-{
-  return cs;
-}
-# endif
-
-#endif
+#endif /* HAVE_LIBNIDS */
