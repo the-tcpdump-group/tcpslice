@@ -654,6 +654,9 @@ static void			ip_callback(struct ip *ip, int len)
   struct session		*elt_next;
   unsigned int			ip_data_offset = IPHDRLEN;
 
+  if (len < 0)
+    error("%s(): len < 0", __func__);
+
   for (elt = first_session; NULL != elt; elt = elt_next) {
     elt_next = elt->next;
     if (elt->timeout && (nids_last_pcap_header->ts.tv_sec >= elt->timeout))
@@ -661,7 +664,7 @@ static void			ip_callback(struct ip *ip, int len)
   }
   if ((ip->ip_hl > 5) && ((ip->ip_hl * 4) <= len))
     ip_data_offset = ip->ip_hl * 4;
-  if ((ip->ip_p != 6) || (len < (ip_data_offset + TCPHDRLEN)))
+  if ((ip->ip_p != 6) || ((unsigned)len < (ip_data_offset + TCPHDRLEN)))
     return; /* not TCP or too short */
   tcp = (struct tcphdr *)((char *)ip + ip_data_offset);
   addr.saddr = *((u_int *)&ip->ip_src);
