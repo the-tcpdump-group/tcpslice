@@ -109,8 +109,7 @@ time_t				sessions_expiration_delay = 0;
 
 void				sessions_init(char *types _U_)
 {
-  fprintf(stderr, "Libnids required for session tracking support, sorry.\n");
-  exit(-1);
+  error("libnids required for session tracking support, sorry.");
 }
 
 void				sessions_exit(void)
@@ -312,8 +311,9 @@ static enum type		parse_type(const char *str)
   if (!strcmp("h323", str))
     return CLASS_H323;
 # endif /* HAVE_LIBOOH323C */
-  fprintf(stderr, "Error: unsupported session type `%s'\n", str);
-  exit(-1);
+  error("unsupported session type `%s'", str);
+  /* NOTREACHED */
+  return TYPE_NONE;
 }
 
 void				sessions_init(char *types)
@@ -416,8 +416,7 @@ void				sessions_nids_init(pcap_t *p)
   nids_params.pcap_desc = p;
   nids_params.tcp_workarounds = 1;
   if (!nids_init()) {
-    fprintf(stderr, "nids_init: %s\n", nids_errbuf);
-    exit(-1);
+    error("%s(): %s", __func__, nids_errbuf);
   }
   nids_register_ip(ip_callback);
   nids_register_udp(udp_callback);
@@ -577,11 +576,9 @@ static void			dumper_too_many_open_files(struct shared_dumper **d)
     (*d)->filedesc = pcap_dump_open(nids_params.pcap_desc, (*d)->filename);
   }
   if (NULL == (*d)->filedesc) {
-    fprintf(stderr,
-	"pcap_dump_open: %s: %s\n",
+    error("%s(): %s: %s", __func__,
 	(*d)->filename,
 	pcap_geterr(nids_params.pcap_desc));
-    exit(-1);
   }
 }
 
