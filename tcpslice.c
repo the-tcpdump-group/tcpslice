@@ -514,7 +514,6 @@ assert_valid_tm(const struct tm t)
  * from which to compute offsets and fill in defaults, returns a timeval
  * containing the specified time.
  */
-
 static struct timeval
 parse_time(char *time_string, struct timeval base_time)
 {
@@ -611,7 +610,6 @@ parse_time(char *time_string, struct timeval base_time)
 	return result;
 }
 
-
 /* Fill in (or add to, if is_delta is true) the time values in the
  * tm struct "t" as specified by the time specified in the string
  * "time_string".  "usecs_addr" is updated with the specified number
@@ -692,8 +690,6 @@ fill_tm(char *time_string, int is_delta, struct tm *t, time_t *usecs_addr)
 	}
 }
 
-
-
 /* Of all the files, what is the lowest start time. */
 static struct timeval
 lowest_start_time(struct state *states, int numfiles)
@@ -729,7 +725,6 @@ latest_end_time(struct state *states, int numfiles)
  * This routine also prevents time from going "backwards"
  * within a single file.
  */
-
 static void
 get_next_packet(struct state *s)
 {
@@ -797,7 +792,6 @@ open_files(char *filenames[], int numfiles)
 	return states;
 }
 
-
 /*
  * Extract from a given set of files all packets with timestamps between
  * the two time values given (inclusive).  These packets are written
@@ -806,7 +800,6 @@ open_files(char *filenames[], int numfiles)
  * Upon return, start_time is adjusted to reflect a time just after
  * that of the last packet written to the output.
  */
-
 static void
 extract_slice(struct state *states, int numfiles, const char *write_file_name,
 		struct timeval *start_time, struct timeval *stop_time,
@@ -974,7 +967,6 @@ extract_slice(struct state *states, int numfiles, const char *write_file_name,
 	free(last_pkt);
 }
 
-
 /* Translates a timestamp to the time format specified by the user.
  * Returns a pointer to the translation residing in a static buffer.
  * There are two such buffers, which are alternated on subseqeuent
@@ -982,7 +974,6 @@ extract_slice(struct state *states, int numfiles, const char *write_file_name,
  * about the results of the first call being overwritten by the
  * results of the second.
  */
-
 char *
 timestamp_to_string(struct timeval *timestamp)
 {
@@ -1022,11 +1013,9 @@ timestamp_to_string(struct timeval *timestamp)
 	return buf;
 }
 
-
 /* Given a pcap save filename, reports on the times of the first
  * and last packets in the file.
  */
-
 static void
 dump_times(struct state *states, int numfiles)
 {

@@ -132,12 +132,10 @@ reasonable_header( struct pcap_pkthdr *hdr, time_t first_time, time_t last_time 
 	       hdr->caplen <= MAX_REASONABLE_PACKET_LENGTH;
 	}
 
-
 #define	SWAPLONG(y) \
 ((((y)&0xff)<<24) | (((y)&0xff00)<<8) | (((y)&0xff0000)>>8) | (((y)>>24)&0xff))
 
 /* Given a buffer, extracts a (properly aligned) packet header from it. */
-
 static void
 extract_header( pcap_t *p, u_char *buf, struct pcap_pkthdr *hdr )
 	{
@@ -174,7 +172,6 @@ extract_header( pcap_t *p, u_char *buf, struct pcap_pkthdr *hdr )
 		hdr->len = t;
 		}
 	}
-
 
 /* Search a buffer to locate the first header within it.  Return values
  * are HEADER_NONE, HEADER_CLASH, HEADER_PERHAPS, and HEADER_DEFINITELY.
@@ -304,7 +301,6 @@ find_header( pcap_t *p, u_char *buf, int buf_len,
 	return status;
 	}
 
-
 /* Positions the sf_readfile stream such that the next sf_read() will
  * read the final full packet in the file.  Returns non-zero if
  * successful, zero if unsuccessful.  If successful, returns the
@@ -419,9 +415,7 @@ sf_find_end( pcap_t *p, struct timeval *first_timestamp,
 	return status;
 	}
 
-
 /* Takes two timeval's and returns the difference, tv2 - tv1, as a double. */
-
 static double
 timeval_diff( struct timeval *tv1, struct timeval *tv2 )
 	{
@@ -431,9 +425,7 @@ timeval_diff( struct timeval *tv1, struct timeval *tv2 )
 	return result;
 	}
 
-
 /* Returns true if timestamp t1 is chronologically less than timestamp t2. */
-
 int
 sf_timestamp_less_than( struct timeval *t1, struct timeval *t2 )
 	{
@@ -442,12 +434,10 @@ sf_timestamp_less_than( struct timeval *t1, struct timeval *t2 )
 	        t1->tv_usec < t2->tv_usec);
 	}
 
-
 /* Given two timestamps on either side of desired_time and their positions,
  * returns the interpolated position of the desired_time packet.  Returns a
  * negative value if the desired_time is outside the given range.
  */
-
 static int64_t
 interpolated_position( struct timeval *min_time, int64_t min_pos,
 			struct timeval *max_time, int64_t max_pos,
@@ -464,13 +454,11 @@ interpolated_position( struct timeval *min_time, int64_t min_pos,
 	return min_pos + (int64_t) (fractional_offset * (double) full_span_pos);
 	}
 
-
 /* Reads packets linearly until one with a time >= the given desired time
  * is found; positions the dump file so that the next read will start
  * at the given packet.  Returns non-zero on success, 0 if an EOF was
  * first encountered.
  */
-
 static int
 read_up_to( pcap_t *p, struct timeval *desired_time )
 	{
@@ -524,7 +512,6 @@ read_up_to( pcap_t *p, struct timeval *desired_time )
  * already aligned so that the next call to sf_next_packet() will yield
  * a valid packet.
  */
-
 int
 sf_find_packet( pcap_t *p,
 		struct timeval *min_time, int64_t min_pos,
