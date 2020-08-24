@@ -780,7 +780,7 @@ open_files(char *filenames[], int numfiles)
 
 		s->start_pos = ftell64( pcap_file( s->p ) );
 
-		if (pcap_next(s->p, &s->hdr) == 0)
+		if (pcap_next(s->p, &s->hdr) == NULL)
 			error( "error reading packet in %s: %s",
 				s->filename, pcap_geterr( s->p ) );
 
