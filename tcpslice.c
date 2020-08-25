@@ -979,7 +979,8 @@ timestamp_to_string(struct timeval *timestamp)
 {
 	struct tm *t;
 #define NUM_BUFFERS 2
-	static char buffers[NUM_BUFFERS][128];
+#define DATEBUFSIZE (sizeof("0000y00m00d00h00m00s000000u"))
+	static char buffers[NUM_BUFFERS][DATEBUFSIZE];
 	static int buffer_to_use = 0;
 	char *buf;
 
@@ -989,20 +990,20 @@ timestamp_to_string(struct timeval *timestamp)
 	switch ( timestamp_style ) {
 
 	    case TIMESTAMP_RAW:
-		sprintf( buf, "%u.%06u",
+		snprintf( buf, DATEBUFSIZE, "%u.%06u",
 		    (u_int32_t)timestamp->tv_sec,
 		    (u_int32_t)timestamp->tv_usec );
 		break;
 
 	    case TIMESTAMP_READABLE:
 		t = localtime((time_t *) &timestamp->tv_sec);
-		strlcpy(buf, asctime(t), 128);
-		buf[24] = '\0';	/* nuke final newline */
+		/* Mimic asctime() with C99 format specifiers. */
+		strftime(buf, DATEBUFSIZE, "%a %b %e %T %Y", t);
 		break;
 
 	    case TIMESTAMP_PARSEABLE:
 		t = localtime((time_t *) &timestamp->tv_sec);
-		sprintf( buf, "%04dy%02dm%02dd%02dh%02dm%02ds%06uu",
+		snprintf( buf, DATEBUFSIZE, "%04dy%02dm%02dd%02dh%02dm%02ds%06uu",
 			t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
 			t->tm_hour, t->tm_min, t->tm_sec,
 			(u_int32_t)timestamp->tv_usec );
