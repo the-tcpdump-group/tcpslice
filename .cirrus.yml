@@ -1,8 +1,7 @@
 env:
   CIRRUS_CLONE_DEPTH: 3
   IGNORE_OSVERSION: yes
-  # Parallel make is currently broken in tcpslice.
-  MAKEFLAGS: '-j 1'
+  MAKEFLAGS: '-j 2'
 
 task:
   freebsd_instance:

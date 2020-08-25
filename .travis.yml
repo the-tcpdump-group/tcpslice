@@ -23,8 +23,7 @@ jobs:
 
 env:
   global:
-    # Parallel make is currently broken in tcpslice.
-    - MAKEFLAGS='-j 1'
+    - MAKEFLAGS='-j 2'
 
 addons:
   apt:
