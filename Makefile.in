@@ -88,7 +88,6 @@ HDR = \
 	varattrs.h
 
 TAGHDR = \
-	/usr/include/net/slip.h \
 	/usr/include/netinet/in.h \
 	/usr/include/netinet/udp.h \
 	/usr/include/netinet/tcp.h \
@@ -160,6 +159,9 @@ distclean:
 	rm -f $(CLEANFILES) Makefile config.cache config.log config.status \
 	    config.h gnuc.h os-proto.h stamp-h stamp-h.in
 	rm -rf autom4te.cache tests/DIFF tests/NEW
+
+extags: $(TAGFILES)
+	ctags $(TAGFILES)
 
 tags: $(TAGFILES)
 	ctags -wtd $(TAGFILES)
