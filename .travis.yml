@@ -54,6 +54,7 @@ addons:
   apt:
     packages:
       - libpcap-dev
+      - libosip2-dev
 
 before_install:
   - uname -a
