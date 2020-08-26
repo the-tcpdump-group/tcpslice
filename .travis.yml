@@ -23,9 +23,34 @@ jobs:
 
 env:
   global:
+    # encrypted COVERITY_SCAN_TOKEN
+    - secure: "c0XuKmVszzvcf5oyI/DOXN/7oRvshmdkMkKBIOfpClRyozaZ3xLcAGulllKl18F/tkaFqkrBmInO6/xOH0+POjxmscnwqe0R8SSknjMpyBJsb8FgCZWduLHzdZqQjwnFcIJJFfMYiyPuLH5Jxgb41xM1GhtA96zuner/pBpjSb8="
+    # Coverity run condition (avoid matrix multiple runs), need customized
+    # build script. Need an update if new matrix cases.
+    - coverity_scan_run_condition='"$TRAVIS_CPU_ARCH" = amd64 -a "$TRAVIS_OS_NAME" = linux -a "$CC" = gcc'
+    # Coverity script test mode (if true no uploading, avoid reaching the quota)
+    # usual processing: false.
+    - coverity_scan_script_test_mode=false
     - MAKEFLAGS='-j 2'
 
 addons:
+  coverity_scan:
+    # customized build script URL
+    # TRAVIS_REPO_SLUG: owner_name/repo_name of repository currently being built
+    # TRAVIS_BRANCH: name of the branch currently being built
+    build_script_url: https://raw.githubusercontent.com/$TRAVIS_REPO_SLUG/$TRAVIS_BRANCH/.travis-coverity-scan-build.sh
+    # project metadata
+    project:
+      name: $TRAVIS_REPO_SLUG
+    # Where email notification of build analysis results will be sent
+    #notification_email: tcpdump-workers@lists.tcpdump.org
+    # Commands to prepare for build_command
+    build_command_prepend: ./configure
+    # This command will be added as an argument to "cov-build" to compile
+    # the project for analysis
+    build_command: make
+    # Pattern to match selecting branches that will run analysis
+    branch_pattern: coverity_scan
   apt:
     packages:
       - libpcap-dev
@@ -37,6 +62,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then apt list --installed 'lib*-dev'; fi
 
 script:
+  - if [ "$COVERITY_SCAN_BRANCH" = 1 ]; then exit 0; fi
   - touch .devel
   - ./configure --prefix=/tmp
   - echo '$ cat Makefile [...]'; echo travis_fold:start:script.cat_makefile
