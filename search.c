@@ -80,7 +80,7 @@ struct pcap_sf_pkthdr {
 #define MAX_REASONABLE_FILE_SPAN (3600*24*366)	/* one year */
 
 /* Maximum packet length we ever expect to see. */
-#define MAX_REASONABLE_PACKET_LENGTH 65535
+#define MAX_REASONABLE_PACKET_LENGTH 262144
 
 /* Size of a packet header in bytes; easier than typing the sizeof() all
  * the time ...
