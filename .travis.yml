@@ -54,7 +54,8 @@ addons:
   apt:
     packages:
       - libpcap-dev
-      - libosip2-dev
+      - libnids-dev # Enables more code on it own.
+      - libosip2-dev # Enables even more code when libnids-dev is installed.
 
 before_install:
   - uname -a
@@ -75,7 +76,7 @@ script:
   - echo '$ cat config.log'; echo travis_fold:start:script.cat_config_log
   - cat config.log
   - echo -n travis_fold:end:script.cat_config_log
-  - make CFLAGS=-Werror
+  - make
   - ./tcpslice -h
   - make install
   - make releasetar
