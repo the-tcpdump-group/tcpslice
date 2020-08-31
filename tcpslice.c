@@ -58,7 +58,10 @@
 
 #ifdef HAVE_LIBNIDS
 #include <nids.h>
-#endif
+# ifdef HAVE_LIBOOH323C
+# include <ootypes.h>
+# endif /* HAVE_LIBOOH323C */
+#endif /* HAVE_LIBNIDS */
 
 #include "tcpslice.h"
 #include "gmt2local.h"
@@ -1049,11 +1052,16 @@ print_usage(FILE *f)
 
 #ifdef HAVE_LIBNIDS
 	(void)fprintf(f, "libnids version %u.%u\n", NIDS_MAJOR, NIDS_MINOR);
-#endif /* HAVE_LIBNIDS */
 
 #ifdef HAVE_LIBOSIPPARSER2
 	(void)fprintf(f, "libosip2 unknown version\n");
 #endif /* HAVE_LIBOSIPPARSER2 */
+
+#ifdef HAVE_LIBOOH323C
+	(void)fprintf(f, "libooh323c %s\n", OOH323C_VERSION);
+#endif /* HAVE_LIBOOH323C */
+
+#endif /* HAVE_LIBNIDS */
 
 	(void)fprintf(f,
 	              "Usage: tcpslice [-DdhlRrtv] [-w file]\n"
