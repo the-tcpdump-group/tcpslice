@@ -137,11 +137,11 @@ void				sessions_nids_init(pcap_t *p _U_)
 # endif /* HAVE_LIBOOH323C */
 # include "tcpslice.h"
 # include <netinet/ip.h>
-# define IPHDRLEN sizeof(struct ip)
+# define IPHDRLEN (sizeof(struct ip))
 # include <netinet/udp.h>
-# define UDPHDRLEN sizeof(struct udphdr)
+# define UDPHDRLEN (sizeof(struct udphdr))
 # include <netinet/tcp.h>
-# define TCPHDRLEN sizeof(struct tcphdr)
+# define TCPHDRLEN (sizeof(struct tcphdr))
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
