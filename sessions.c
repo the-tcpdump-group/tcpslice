@@ -132,6 +132,7 @@ void				sessions_nids_init(pcap_t *p _U_)
 #  include <ooh323.h>
 #  include <ooCalls.h>
 #  include <printHandler.h>
+#  include <ooh323ep.h>
 # endif /* HAVE_LIBOOH323C */
 # include "tcpslice.h"
 # include <netinet/ip.h>
@@ -995,7 +996,7 @@ static struct session			*h225_ras_callback(struct session *ras, u_char *data, ui
   return ras;
 }
 
-static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint32_t len)
+static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint32_t len _U_)
 {
   char					callToken[20];
   OOH323CallData			*call;
