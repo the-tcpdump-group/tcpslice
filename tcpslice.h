@@ -105,19 +105,19 @@
 	(year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
 
 extern const int days_in_month[];
-time_t			gwtm2secs( struct tm *tm );
+time_t			gwtm2secs( const struct tm *tm );
 
-int			sf_find_end( struct pcap *p, struct timeval *first_timestamp,
+int			sf_find_end( struct pcap *p, const struct timeval *first_timestamp,
 					struct timeval *last_timestamp );
-int			sf_timestamp_less_than( struct timeval *t1, struct timeval *t2 );
+int			sf_timestamp_less_than( const struct timeval *t1, const struct timeval *t2 );
 int			sf_find_packet( struct pcap *p,
 				struct timeval *min_time, int64_t min_pos,
 				struct timeval *max_time, int64_t max_pos,
-				struct timeval *desired_time );
+				const struct timeval *desired_time );
 
-int			fseek64(FILE *p, int64_t offset, int whence);
+int			fseek64(FILE *p, const int64_t offset, const int whence);
 int64_t			ftell64(FILE *p);
-extern char *timestamp_to_string(struct timeval *timestamp);
+extern char *timestamp_to_string(const struct timeval *timestamp);
 
 #ifndef HAVE_STRLCPY
 extern size_t strlcpy(char *, const char *, size_t);

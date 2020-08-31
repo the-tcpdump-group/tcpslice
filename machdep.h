@@ -21,5 +21,5 @@
 #ifndef tcpslice_machdep_h
 #define tcpslice_machdep_h
 
-int abort_on_misalignment(char *, size_t);
+int abort_on_misalignment(char *, const size_t);
 #endif

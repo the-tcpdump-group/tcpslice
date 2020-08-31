@@ -44,7 +44,7 @@
  * UNIX^W^WTru64 UNIX.
  */
 int
-abort_on_misalignment(char *ebuf _U_, size_t ebufsiz _U_)
+abort_on_misalignment(char *ebuf _U_, const size_t ebufsiz _U_)
 {
 #ifdef __osf__
 	static int buf[2] = { SSIN_UACPROC, UAC_SIGBUS };

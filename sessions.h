@@ -39,7 +39,7 @@ extern uint32_t			sessions_count;
 extern char			*sessions_file_format;
 extern time_t			sessions_expiration_delay;
 
-void				sessions_init(char *types);
+void				sessions_init(const char *types);
 void				sessions_exit(void);
 void				sessions_nids_init(pcap_t *p);
 

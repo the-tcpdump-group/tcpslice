@@ -41,7 +41,8 @@ const int days_in_month[] =
 	/* Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec */
 	{  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-time_t gwtm2secs( struct tm *tm )
+time_t
+gwtm2secs( const struct tm *tm )
 	{
 	int i, days, year;
 

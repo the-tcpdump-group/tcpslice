@@ -39,7 +39,7 @@
  * with more than 32 bits.
  */
 int
-fseek64(FILE *p, int64_t offset, int whence)
+fseek64(FILE *p, const int64_t offset, const int whence)
 {
 	off_t off_t_offset;
 
@@ -68,7 +68,7 @@ ftell64(FILE *p)
  * _fseeki64() and _ftelli64().
  */
 int
-fseek64(FILE *p, int64_t offset, int whence)
+fseek64(FILE *p, const int64_t offset, const int whence)
 {
 	return (_fseeki64(p, offset, whence));
 }
@@ -89,7 +89,7 @@ ftell64(FILE *p)
  * XXX - what about MinGW?
  */
 int
-fseek64(FILE *p, int64_t offset, int whence)
+fseek64(FILE *p, const int64_t offset, const int whence)
 {
 	long long_offset;
 

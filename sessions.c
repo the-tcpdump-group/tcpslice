@@ -107,7 +107,8 @@ time_t				sessions_expiration_delay = 0;
 
 #ifndef HAVE_LIBNIDS
 
-void				sessions_init(char *types _U_)
+void
+sessions_init(const char *types _U_)
 {
   error("libnids required for session tracking support, sorry.");
 }
@@ -284,15 +285,15 @@ static unsigned int		dumper_fd_count = 0;
  * ITU's H.225 Registration Admission Status and H.225 Call Signaling (both
  * part of H.323) data.
  */
-static struct session		*sessions_add(uint8_t t, struct tuple4 *addr, struct session *parent);
+static struct session		*sessions_add(const uint8_t t, const struct tuple4 *addr, const struct session *parent);
 static void			sessions_del(struct session *elt);
-static struct session		*sessions_find(struct session *start, uint8_t t, uint32_t parent_id, struct tuple4 *addr);
-static struct shared_dumper	*dumper_open(enum type t, uint32_t id);
+static struct session		*sessions_find(struct session *start, const uint8_t t, const uint32_t parent_id, const struct tuple4 *addr);
+static struct shared_dumper	*dumper_open(const enum type t, const uint32_t id);
 static void			dumper_too_many_open_files(struct shared_dumper **d);
 static void			dumper_close(struct shared_dumper *d);
-static void			dump_frame(u_char *data, int len, struct shared_dumper *output);
+static void			dump_frame(const u_char *data, const int len, struct shared_dumper *output);
 static enum type		parse_type(const char *str);
-static const char		*type2string(enum type t, int upper);
+static const char		*type2string(const enum type t, const int upper);
 static void			ip_callback(struct ip *ip, int len);
 static void			tcp_callback(struct tcp_stream *tcp, void **user);
 static void			udp_callback(struct tuple4 *addr, u_char *data, int len, struct ip *ip);
@@ -317,7 +318,8 @@ static enum type		parse_type(const char *str)
   return TYPE_NONE;
 }
 
-void				sessions_init(char *types)
+void
+sessions_init(const char *types)
 {
   char				*comma;
 
@@ -424,7 +426,8 @@ void				sessions_nids_init(pcap_t *p)
   nids_register_tcp(tcp_callback);
 }
 
-static struct session		*sessions_add(uint8_t t, struct tuple4 *addr, struct session *parent)
+static struct session *
+sessions_add(const uint8_t t, const struct tuple4 *addr, const struct session *parent)
 {
   struct session		*elt;
   static uint32_t		counter = 0;
@@ -516,7 +519,8 @@ static void			sessions_del(struct session *elt)
   free(elt);
 }
 
-static struct session		*sessions_find(struct session *start, uint8_t t, uint32_t parent_id, struct tuple4 *addr)
+static struct session *
+sessions_find(struct session *start, const uint8_t t, const uint32_t parent_id, const struct tuple4 *addr)
 {
   struct session		*elt;
 
@@ -543,7 +547,8 @@ static struct session		*sessions_find(struct session *start, uint8_t t, uint32_t
   return NULL;
 }
 
-static struct shared_dumper	*dumper_open(enum type t, uint32_t id)
+static struct shared_dumper *
+dumper_open(const enum type t, const uint32_t id)
 {
   struct shared_dumper		*d;
 
@@ -597,7 +602,8 @@ static void			dumper_close(struct shared_dumper *d)
   }
 }
 
-static const char		*type2string(enum type t, int upper)
+static const char *
+type2string(const enum type t, const int upper)
 {
   if (t & TYPE_SIP)
     return upper ? "SIP" : "sip";
@@ -610,7 +616,8 @@ static const char		*type2string(enum type t, int upper)
   return "???";
 }
 
-static void			dump_frame(u_char *data, int len, struct shared_dumper *output)
+static void
+dump_frame(const u_char *data, const int len, struct shared_dumper *output)
 {
   u_char			*frame;
   struct pcap_pkthdr		ph;
@@ -773,7 +780,8 @@ static struct session			*sip_callback(struct session *sip, u_char *data _U_, uin
   return sip;
 }
 # else /* HAVE_LIBOSIPPARSER2 */
-static int		sip_get_address(osip_message_t *msg, u_int *host, u_short *port)
+static int
+sip_get_address(const osip_message_t *msg, u_int *host, u_short *port)
 {
   osip_content_type_t	*ctt;
   sdp_message_t		*sdp;

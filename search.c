@@ -119,7 +119,7 @@ extern int snaplen;
  * if the header looks reasonable and zero otherwise.
  */
 static int
-reasonable_header( struct pcap_pkthdr *hdr, time_t first_time, time_t last_time )
+reasonable_header( const struct pcap_pkthdr *hdr, const time_t first_time, time_t last_time )
 	{
 	if ( last_time == 0 )
 		last_time = first_time + MAX_REASONABLE_FILE_SPAN;
@@ -137,7 +137,7 @@ reasonable_header( struct pcap_pkthdr *hdr, time_t first_time, time_t last_time 
 
 /* Given a buffer, extracts a (properly aligned) packet header from it. */
 static void
-extract_header( pcap_t *p, u_char *buf, struct pcap_pkthdr *hdr )
+extract_header( pcap_t *p, const u_char *buf, struct pcap_pkthdr *hdr )
 	{
 	struct pcap_sf_pkthdr sfhdr;
 
@@ -206,8 +206,8 @@ extract_header( pcap_t *p, u_char *buf, struct pcap_pkthdr *hdr )
 #define HEADER_DEFINITELY 3
 
 static int
-find_header( pcap_t *p, u_char *buf, int buf_len,
-		time_t first_time, time_t last_time,
+find_header( pcap_t *p, u_char *buf, const int buf_len,
+		const time_t first_time, const time_t last_time,
 		u_char **hdrpos_addr, struct pcap_pkthdr *return_hdr )
 	{
 	u_char *bufptr, *bufend, *last_pos_to_try;
@@ -312,7 +312,7 @@ find_header( pcap_t *p, u_char *buf, int buf_len,
  * present in the dump file.
  */
 int
-sf_find_end( pcap_t *p, struct timeval *first_timestamp,
+sf_find_end( pcap_t *p, const struct timeval *first_timestamp,
 		struct timeval *last_timestamp )
 	{
 	time_t first_time = first_timestamp->tv_sec;
@@ -417,7 +417,7 @@ sf_find_end( pcap_t *p, struct timeval *first_timestamp,
 
 /* Takes two timeval's and returns the difference, tv2 - tv1, as a double. */
 static double
-timeval_diff( struct timeval *tv1, struct timeval *tv2 )
+timeval_diff( const struct timeval *tv1, const struct timeval *tv2 )
 	{
 	double result = (tv2->tv_sec - tv1->tv_sec);
 	result += (tv2->tv_usec - tv1->tv_usec) / 1000000.0;
@@ -427,7 +427,7 @@ timeval_diff( struct timeval *tv1, struct timeval *tv2 )
 
 /* Returns true if timestamp t1 is chronologically less than timestamp t2. */
 int
-sf_timestamp_less_than( struct timeval *t1, struct timeval *t2 )
+sf_timestamp_less_than( const struct timeval *t1, const struct timeval *t2 )
 	{
 	return t1->tv_sec < t2->tv_sec ||
 	       (t1->tv_sec == t2->tv_sec &&
@@ -439,9 +439,9 @@ sf_timestamp_less_than( struct timeval *t1, struct timeval *t2 )
  * negative value if the desired_time is outside the given range.
  */
 static int64_t
-interpolated_position( struct timeval *min_time, int64_t min_pos,
-			struct timeval *max_time, int64_t max_pos,
-			struct timeval *desired_time )
+interpolated_position( const struct timeval *min_time, const int64_t min_pos,
+			const struct timeval *max_time, const int64_t max_pos,
+			const struct timeval *desired_time )
 	{
 	double full_span = timeval_diff( max_time, min_time );
 	double desired_span = timeval_diff( desired_time, min_time );
@@ -460,7 +460,7 @@ interpolated_position( struct timeval *min_time, int64_t min_pos,
  * first encountered.
  */
 static int
-read_up_to( pcap_t *p, struct timeval *desired_time )
+read_up_to( pcap_t *p, const struct timeval *desired_time )
 	{
 	struct pcap_pkthdr hdr;
 	int64_t pos;
@@ -516,7 +516,7 @@ int
 sf_find_packet( pcap_t *p,
 		struct timeval *min_time, int64_t min_pos,
 		struct timeval *max_time, int64_t max_pos,
-		struct timeval *desired_time )
+		const struct timeval *desired_time )
 	{
 	int status = 1;
 	struct timeval min_time_copy, max_time_copy;
