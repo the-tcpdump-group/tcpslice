@@ -982,7 +982,7 @@ timestamp_to_string(const struct timeval *timestamp)
 {
 	struct tm *t;
 #define NUM_BUFFERS 2
-#define DATEBUFSIZE (sizeof("0000y00m00d00h00m00s000000u"))
+#define DATEBUFSIZE 128
 	static char buffers[NUM_BUFFERS][DATEBUFSIZE];
 	static int buffer_to_use = 0;
 	char *buf;
