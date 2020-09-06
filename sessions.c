@@ -1006,6 +1006,11 @@ static struct session			*h225_ras_callback(struct session *ras, u_char *data, ui
 
 static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint32_t len _U_)
 {
+  /* ooCreateCall() for some reason declares its read-only first argument as
+   * "char *" instead of "const char *", wrap the string in an array in order
+   * not to upset the compiler.
+   */
+  char					callType[] = "incoming";
   char					callToken[20];
   OOH323CallData			*call;
   Q931Message				q931;
@@ -1015,7 +1020,7 @@ static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint
   struct tuple4				addr;
 
   ooGenerateCallToken(callToken, 20);
-  call = ooCreateCall("incoming", callToken);
+  call = ooCreateCall(callType, callToken);
   call->pH225Channel = (OOH323Channel*) memAllocZ (call->pctxt, sizeof (OOH323Channel));
   if (OO_OK == ooQ931Decode(call, &q931, ntohs(*((u_short *)(data + 2))) - 4, data + 4)) {
     if (OO_OK == ooHandleH2250Message(call, &q931)) {
