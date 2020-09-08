@@ -69,7 +69,7 @@
  *
  * `track_sessions' is a flag set by sessions_init() and
  * sessions_exit() but it is mostly used in tcpslice.c to know
- * wether or not to pass each PCAP frame to libnids in order to
+ * whether or not to pass each PCAP frame to libnids in order to
  * track sessions (it saves further processing if the user did
  * not want to track sessions, which should be the case most of
  * the time).
