@@ -879,7 +879,7 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 
 
 	/*
-	 * Now, loop thru all the packets in all the files,
+	 * Now, loop through all the packets in all the files,
 	 * putting packets out in timestamp order.
 	 *
 	 * Quite often, the files will not have overlapping
