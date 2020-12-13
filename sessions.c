@@ -147,7 +147,7 @@ void				sessions_nids_init(pcap_t *p _U_)
 
 /*
  * Session type identifiers, used as bitmasks for
- * convenience in searchs among tracked sessions.
+ * convenience in searches among tracked sessions.
  */
 enum type
 {
