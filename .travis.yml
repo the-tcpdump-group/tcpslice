@@ -6,7 +6,7 @@ os:
   - linux
   - osx
 
-dist: bionic
+dist: focal # Ubuntu 20.04
 
 language: c
 
