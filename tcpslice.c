@@ -1068,4 +1068,3 @@ print_usage(FILE *f)
 	              "                [ -s types [ -e seconds ] [ -f format ] ]\n"
 	              "                [start-time [end-time]] file ... \n");
 }
-

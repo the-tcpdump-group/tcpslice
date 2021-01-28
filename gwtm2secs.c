@@ -43,7 +43,7 @@ const int days_in_month[] =
 
 time_t
 gwtm2secs( const struct tm *tm )
-	{
+{
 	int i, days, year;
 
 	/* tm_year is either:
@@ -62,11 +62,11 @@ gwtm2secs( const struct tm *tm )
 
 	days = 0;
 	for ( i = 1970; i < year; ++i )
-		{
+	{
 		days += 365;
 		if ( IS_LEAP_YEAR(i) )
 			++days;
-		}
+	}
 
 	for ( i = 0; i < tm->tm_mon; ++i )
 		days += days_in_month[i];
@@ -77,4 +77,4 @@ gwtm2secs( const struct tm *tm )
 	days += tm->tm_mday - 1; /* -1 since days are numbered starting at 1 */
 
 	return days * 86400 + tm->tm_hour * 3600 + tm->tm_min * 60 + tm->tm_sec;
-	}
+}

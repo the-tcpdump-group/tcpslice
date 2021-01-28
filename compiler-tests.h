@@ -148,4 +148,4 @@
 	(__HP_aCC >= ((major)*10000 + (minor)*100))
 #endif
 
-#endif /* tcpslice_funcattrs_h */
+#endif /* tcpslice_compiler_tests_h */
