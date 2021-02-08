@@ -16,10 +16,6 @@ dist: focal # Ubuntu 20.04
 
 language: c
 
-compiler:
-  - gcc
-  - clang
-
 jobs:
   fast_finish: true
   exclude:
@@ -70,20 +66,6 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = linux ]; then apt list --installed 'lib*-dev'; fi
 
 script:
-  - if [ "$COVERITY_SCAN_BRANCH" = 1 ]; then exit 0; fi
-  - touch .devel
-  - ./configure --prefix=/tmp
-  - echo '$ cat Makefile [...]'; echo travis_fold:start:script.cat_makefile
-  - cat Makefile | sed -n '1,/DO NOT DELETE THIS LINE -- mkdep uses it/p'
-  - echo -n travis_fold:end:script.cat_makefile
-  - echo '$ cat config.h'; echo travis_fold:start:script.cat_config_h
-  - cat config.h
-  - echo -n travis_fold:end:script.cat_config_h
-  - echo '$ cat config.log'; echo travis_fold:start:script.cat_config_log
-  - cat config.log
-  - echo -n travis_fold:end:script.cat_config_log
-  - make
-  - ./tcpslice -h
-  - make install
-  - make releasetar
+  - if [ "$COVERITY_SCAN_BRANCH" = 1 ]; then if [ "$TRAVIS_OS_NAME" = linux ]; then travis_terminate 0; else exit 0; fi; fi
+  - ./build_matrix.sh
   - if [ "$TRAVIS_OS_NAME" = osx ]; then sleep 10; fi
