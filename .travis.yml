@@ -2,11 +2,6 @@ git:
   quiet: true
   depth: 3
 
-arch:
-  - ppc64le
-  - s390x
-  - arm64
-
 os:
   - linux
 
@@ -16,6 +11,19 @@ language: c
 
 jobs:
   fast_finish: true
+  include:
+  - name: "amd64"
+    arch: amd64
+    if: branch = coverity_scan
+  - name: "arm64"
+    arch: arm64
+    if: branch != coverity_scan
+  - name: "ppc64le"
+    arch: ppc64le
+    if: branch != coverity_scan
+  - name: "s390x"
+    arch: s390x
+    if: branch != coverity_scan
 
 env:
   global:
