@@ -22,6 +22,9 @@ jobs:
     # GCC is a symlink to Clang in macOS
     - os: osx
       compiler: gcc
+    # in .cirrus.yml
+    - os: linux
+      arch: amd64
 
 env:
   global:
