@@ -28,4 +28,16 @@ linux_task:
     - apt-get -qy update
     - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang gcc
     - apt-get -qy install git # for build_matrix.sh and build.sh
+    - apt list --installed 'lib*-dev'
+    - ./build_matrix.sh
+
+macos_task:
+  name: MAC+BM
+  macos_instance:
+    image: big-sur-xcode
+  env:
+    MAKEFLAGS: '-j 12' # macOS VMs always run on 12 cores
+    MATRIX_CC: clang # GCC is a symlink to Clang in macOS
+  script:
+    - brew update >/dev/null
     - ./build_matrix.sh

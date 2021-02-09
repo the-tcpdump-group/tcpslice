@@ -3,14 +3,12 @@ git:
   depth: 3
 
 arch:
-  - amd64
   - ppc64le
   - s390x
   - arm64
 
 os:
   - linux
-  - osx
 
 dist: focal # Ubuntu 20.04
 
@@ -18,13 +16,6 @@ language: c
 
 jobs:
   fast_finish: true
-  exclude:
-    # GCC is a symlink to Clang in macOS
-    - os: osx
-      compiler: gcc
-    # in .cirrus.yml
-    - os: linux
-      arch: amd64
 
 env:
   global:
@@ -65,10 +56,8 @@ addons:
 before_install:
   - uname -a
   - date
-  - if [ "$TRAVIS_OS_NAME" = osx ]; then brew update >/dev/null; fi
   - if [ "$TRAVIS_OS_NAME" = linux ]; then apt list --installed 'lib*-dev'; fi
 
 script:
   - if [ "$COVERITY_SCAN_BRANCH" = 1 ]; then if [ "$TRAVIS_OS_NAME" = linux ]; then travis_terminate 0; else exit 0; fi; fi
   - ./build_matrix.sh
-  - if [ "$TRAVIS_OS_NAME" = osx ]; then sleep 10; fi
