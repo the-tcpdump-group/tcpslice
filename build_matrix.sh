@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script executes the matrix loops, exclude tests and cleaning.
+# This script executes the matrix loop, exclude tests and cleaning.
 # The matrix can be configured with the environment variable MATRIX_CC
 # (default: MATRIX_CC='gcc clang')
 # It calls the build.sh script which runs one build with the setup environment
