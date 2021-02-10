@@ -36,7 +36,7 @@ for CC in ${MATRIX_CC:-gcc clang}; do
     # Exclude gcc on OSX (it is just an alias for clang)
     if [ "$CC" = gcc ] && [ "$TRAVIS_OS_NAME" = osx ]; then continue; fi
     COUNT=$((COUNT+1))
-    echo_magenta "===== SETUP $COUNT: compiler:$CC ====="
+    echo_magenta "===== SETUP $COUNT: CC=$CC ====="
     # LABEL is needed to build the travis fold labels
     LABEL="$CC"
     # Run one build with the setup environment variable: CC
