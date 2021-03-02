@@ -9,6 +9,7 @@ os-proto.h
 stamp-h
 stamp-h.in
 tcpslice
+tcpslice-*.tar.gz
 autom4te.cache/
 *.o
 *~
