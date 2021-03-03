@@ -6,6 +6,8 @@ freebsd_task:
   name: FBSD+BM
   only_if: $CIRRUS_BRANCH == master
   freebsd_instance:
+    cpu: 2
+    memory: 2G
     matrix:
       - image_family: freebsd-11-4
       - image_family: freebsd-12-2
@@ -23,6 +25,8 @@ linux_task:
   name: LNX+BM
   only_if: $CIRRUS_BRANCH == master
   container:
+    cpu: 2
+    memory: 1G
     image: ubuntu:20.04
   env:
     DEBIAN_FRONTEND: noninteractive # libnids-dev -> tzdata -> debconf
@@ -49,6 +53,8 @@ coverity_task:
   name: Coverity Scan
   only_if: $CIRRUS_BRANCH == coverity_scan
   container:
+    cpu: 2
+    memory: 2G
     image: ubuntu:20.04
   env:
     DEBIAN_FRONTEND: noninteractive
