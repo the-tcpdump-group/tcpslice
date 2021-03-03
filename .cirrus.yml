@@ -4,6 +4,7 @@ env:
 
 freebsd_task:
   name: FBSD+BM
+  only_if: $CIRRUS_BRANCH == master
   freebsd_instance:
     matrix:
       - image_family: freebsd-11-4
@@ -20,6 +21,7 @@ freebsd_task:
 
 linux_task:
   name: LNX+BM
+  only_if: $CIRRUS_BRANCH == master
   container:
     image: ubuntu:20.04
   env:
@@ -33,6 +35,7 @@ linux_task:
 
 macos_task:
   name: MAC+BM
+  only_if: $CIRRUS_BRANCH == master
   macos_instance:
     image: big-sur-xcode
   env:
@@ -41,3 +44,24 @@ macos_task:
   script:
     - brew update >/dev/null
     - ./build_matrix.sh
+
+coverity_task:
+  name: Coverity Scan
+  only_if: $CIRRUS_BRANCH == coverity_scan
+  container:
+    image: ubuntu:20.04
+  env:
+    DEBIAN_FRONTEND: noninteractive
+    COVERITY_SCAN_PROJECT_NAME: $CIRRUS_REPO_FULL_NAME
+    COVERITY_SCAN_TOKEN: ENCRYPTED[1f7a6aa7e3fd93d9556938b29df39e43e510fc3083f41bcd2283c7a7afe62dd31d00e19717d64d955c5fdd7916451d27]
+    COVERITY_SCAN_BUILD_COMMAND_PREPEND: ./configure
+    COVERITY_SCAN_BUILD_COMMAND: make
+    COVERITY_SCAN_BRANCH_PATTERN: $CIRRUS_BRANCH
+    TRAVIS_BRANCH: $CIRRUS_BRANCH
+    TRAVIS_PULL_REQUEST: ${CIRRUS_BASE_BRANCH:+true}
+  script:
+    - apt-get -qy update
+    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make gcc
+    - apt-get -qy install git curl wget ruby rubygems ruby-json # for the coverity script
+    - apt list --installed 'lib*-dev'
+    - /bin/bash .travis-coverity-scan-build.sh # Not executable, depends on bashisms.
