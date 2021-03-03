@@ -2,19 +2,13 @@ git:
   quiet: true
   depth: 3
 
-os:
-  - linux
-
+os: linux
 dist: focal # Ubuntu 20.04
-
 language: c
 
 jobs:
   fast_finish: true
   include:
-  - name: "arm64"
-    arch: arm64
-    if: branch == master
   - name: "ppc64le"
     arch: ppc64le
     if: branch == master
@@ -35,10 +29,8 @@ addons:
       - libnids-dev # Enables more code on it own.
       - libosip2-dev # Enables even more code when libnids-dev is installed.
 
-before_install:
+script:
   - uname -a
   - date
-  - if [ "$TRAVIS_OS_NAME" = linux ]; then apt list --installed 'lib*-dev'; fi
-
-script:
+  - apt list --installed 'lib*-dev'
   - ./build_matrix.sh
