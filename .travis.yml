@@ -11,10 +11,10 @@ jobs:
   include:
   - name: "ppc64le"
     arch: ppc64le
-    if: branch == master
+    if: branch != coverity_scan
   - name: "s390x"
     arch: s390x
-    if: branch == master
+    if: branch != coverity_scan
   allow_failures:
     - arch: ppc64le # Since 20 Feb 2021 often times out trying to boot.
 
