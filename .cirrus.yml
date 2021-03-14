@@ -3,7 +3,7 @@ env:
   MAKEFLAGS: '-j 2'
 
 freebsd_task:
-  name: FBSD+BM
+  name: freebsd-amd64
   only_if: $CIRRUS_BRANCH != 'coverity_scan'
   freebsd_instance:
     cpu: 2
@@ -22,7 +22,7 @@ freebsd_task:
     - ./build_matrix.sh
 
 linux_task:
-  name: LNX+BM
+  name: linux-amd64
   only_if: $CIRRUS_BRANCH != 'coverity_scan'
   container:
     cpu: 2
@@ -38,7 +38,7 @@ linux_task:
     - ./build_matrix.sh
 
 macos_task:
-  name: MAC+BM
+  name: macos-amd64
   only_if: $CIRRUS_BRANCH != 'coverity_scan'
   macos_instance:
     image: big-sur-xcode
