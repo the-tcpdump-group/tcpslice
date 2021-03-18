@@ -11,8 +11,14 @@ set -e
 # ANSI color escape sequences
 ANSI_MAGENTA="\\033[35;1m"
 ANSI_RESET="\\033[0m"
+uname -a
+date
 # Install directory prefix
-PREFIX=/tmp/local
+if [ -z "$PREFIX" ]; then
+    PREFIX=$(mktemp -d -t tcpslice_build_matrix_XXXXXXXX)
+    echo "PREFIX set to '$PREFIX'"
+    export PREFIX
+fi
 COUNT=0
 
 travis_fold() {
@@ -44,11 +50,12 @@ for CC in ${MATRIX_CC:-gcc clang}; do
     echo 'Cleaning...'
     travis_fold start cleaning
     make distclean
-    rm -rf $PREFIX
+    rm -rf "$PREFIX"/*
     git status -suall
     # Cancel changes in configure
     git checkout configure
     travis_fold end cleaning
 done
+rm -rf "$PREFIX"
 echo_magenta "Tested setup count: $COUNT"
 # vi: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab autoindent :

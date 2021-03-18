@@ -7,8 +7,13 @@ set -e
 
 # CC: gcc or clang
 CC=${CC:-gcc}
+"$CC" --version
 # Install directory prefix
-PREFIX=/tmp/local
+if [ -z "$PREFIX" ]; then
+    PREFIX=$(mktemp -d -t tcpslice_build_XXXXXXXX)
+    echo "PREFIX set to '$PREFIX'"
+    DELETE_PREFIX=yes
+fi
 
 travis_fold() {
     local action="$1"
@@ -29,7 +34,7 @@ run_after_echo() {
 LABEL="$CC"
 echo '$ ./configure [...]'
 travis_fold start configure
-./configure --prefix=$PREFIX
+./configure --prefix="$PREFIX"
 travis_fold end configure
 run_after_echo "make -s clean"
 run_after_echo "make"
@@ -46,7 +51,6 @@ if [ "$TRAVIS" = true ]; then
     echo '$ cat Makefile [...]'
     travis_fold start cat_makefile
     sed -n '1,/DO NOT DELETE THIS LINE -- mkdep uses it/p' < Makefile
-    cat Makefile
     travis_fold end cat_makefile
     echo '$ cat config.h'
     travis_fold start cat_config_h
@@ -56,5 +60,8 @@ if [ "$TRAVIS" = true ]; then
     travis_fold start cat_config_log
     cat config.log
     travis_fold end cat_config_log
+fi
+if [ "$DELETE_PREFIX" = yes ]; then
+    rm -rf "$PREFIX"
 fi
 # vi: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab autoindent :
