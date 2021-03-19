@@ -44,7 +44,6 @@ macos_task:
     image: big-sur-xcode
   env:
     MAKEFLAGS: '-j 12' # macOS VMs always run on 12 cores
-    MATRIX_CC: clang # GCC is a symlink to Clang in macOS
   script:
     - brew update >/dev/null
     - ./build_matrix.sh

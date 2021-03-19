@@ -22,8 +22,8 @@ fi
 COUNT=0
 
 travis_fold() {
-    local action="$1"
-    local name="$2"
+    local action=${1:?}
+    local name=${2:?}
     if [ "$TRAVIS" != true ]; then return; fi
     echo -ne "travis_fold:$action:$LABEL.script.$name\\r"
     sleep 1
@@ -39,8 +39,11 @@ echo_magenta() {
 touch .devel configure
 for CC in ${MATRIX_CC:-gcc clang}; do
     export CC
-    # Exclude gcc on OSX (it is just an alias for clang)
-    if [ "$CC" = gcc ] && [ "$TRAVIS_OS_NAME" = osx ]; then continue; fi
+    # Exclude gcc on macOS (it is just an alias for clang).
+    if [ "$CC" = gcc ] && [ "$(uname -s)" = Darwin ]; then
+        echo '(skipped)'
+        continue
+    fi
     COUNT=$((COUNT+1))
     echo_magenta "===== SETUP $COUNT: CC=$CC ====="
     # LABEL is needed to build the travis fold labels

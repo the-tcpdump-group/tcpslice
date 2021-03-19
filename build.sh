@@ -50,7 +50,7 @@ fi
 if [ "$TRAVIS" = true ]; then
     echo '$ cat Makefile [...]'
     travis_fold start cat_makefile
-    sed -n '1,/DO NOT DELETE THIS LINE -- mkdep uses it/p' < Makefile
+    sed '/^# DO NOT DELETE THIS LINE -- mkdep uses it.$/q' < Makefile
     travis_fold end cat_makefile
     echo '$ cat config.h'
     travis_fold start cat_config_h
