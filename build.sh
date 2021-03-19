@@ -7,7 +7,9 @@ set -e
 
 # CC: gcc or clang
 CC=${CC:-gcc}
-"$CC" --version
+# GCC and Clang recognize --version and print to stdout. Sun compilers
+# recognize -V and print to stderr.
+"$CC" --version 2>/dev/null || "$CC" -V || :
 # Install directory prefix
 if [ -z "$PREFIX" ]; then
     PREFIX=$(mktemp -d -t tcpslice_build_XXXXXXXX)
@@ -16,8 +18,8 @@ if [ -z "$PREFIX" ]; then
 fi
 
 travis_fold() {
-    local action="$1"
-    local name="$2"
+    local action=${1:?}
+    local name=${2:?}
     if [ "$TRAVIS" != true ]; then return; fi
     echo -ne "travis_fold:$action:$LABEL.script.$name\\r"
     sleep 1
