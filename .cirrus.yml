@@ -16,7 +16,6 @@ freebsd_task:
     IGNORE_OSVERSION: yes
     MATRIX_CC: clang gcc48 gcc10
   script:
-    - freebsd-version
     - pkg install -qy autoconf gcc48 gcc10
     - pkg install -qy bash git # for build_matrix.sh and build.sh
     - ./build_matrix.sh
