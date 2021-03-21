@@ -68,4 +68,4 @@ coverity_task:
     - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make gcc
     - apt-get -qy install git curl wget ruby rubygems ruby-json # for the coverity script
     - apt list --installed 'lib*-dev'
-    - /bin/bash .travis-coverity-scan-build.sh # Not executable, depends on bashisms.
+    - ./.travis-coverity-scan-build.sh
