@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 #include <ctype.h>
 #ifdef HAVE_FCNTL_H
@@ -68,8 +69,10 @@
 #include "machdep.h"
 #include "sessions.h"
 
+/* For Solaris before 11. */
 /* compute a + b, store in c */
-#define	TV_ADD(a,b,c)	{ \
+#ifndef timeradd
+#define timeradd(a, b, c) { \
 	(c)->tv_sec = (a)->tv_sec + (b)->tv_sec; \
 	(c)->tv_usec = (a)->tv_usec + (b)->tv_usec; \
 	if ((c)->tv_usec > 1000000) { \
@@ -77,9 +80,10 @@
 		(c)->tv_sec += 1; \
 	} \
 }
-
+#endif /* timeradd */
 /* compute a - b, store in c */
-#define	TV_SUB(a,b,c)	{ \
+#ifndef timersub
+#define timersub(a, b, c) { \
 	(c)->tv_sec = (a)->tv_sec - (b)->tv_sec; \
 	if ((a)->tv_usec < (b)->tv_usec) { \
 		(c)->tv_sec -= 1;		/* need to borrow */ \
@@ -88,6 +92,7 @@
 		(c)->tv_usec = (a)->tv_usec - (b)->tv_usec; \
 	} \
 }
+#endif /* timersub */
 
 /* The structure used to keep track of files being merged. */
 struct state {
@@ -550,7 +555,7 @@ parse_time(const char *time_string, struct timeval base_time)
 			result.tv_usec = 0;
 
 		if ( is_delta )
-			TV_ADD(&result, &base_time, &result);
+			timeradd(&result, &base_time, &result);
 
 		return result;
 		}
@@ -830,8 +835,8 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 
 	memset(last_pkt, 0, snaplen);
 
-	TV_SUB(start_time, base_time, &relative_start);
-	TV_SUB(stop_time, base_time, &relative_stop);
+	timersub(start_time, base_time, &relative_start);
+	timersub(stop_time, base_time, &relative_stop);
 
 	for (i = 0; i < numfiles; ++i) {
 		s = &states[i];
@@ -839,7 +844,7 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 		/* compute the first packet time within *this* file */
 		if (relative_time_merge) {
 			/* relative time within this file */
-			TV_ADD(&s->file_start_time, &relative_start, &temp1);
+			timeradd(&s->file_start_time, &relative_start, &temp1);
 		} else {
 			/* absolute time */
 			temp1 = *start_time;
@@ -897,9 +902,9 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 
 				if (relative_time_merge) {
 					/* compare *relative* times */
-					TV_SUB(&s->hdr.ts,
+					timersub(&s->hdr.ts,
 						&s->file_start_time, &temp1);
-					TV_SUB(&min_state->hdr.ts,
+					timersub(&min_state->hdr.ts,
 						&min_state->file_start_time, &temp2);
 				} else {
 					/* compare *absolute* times */
@@ -916,7 +921,7 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 
 		if (relative_time_merge) {
 			/* relative time w/in this file */
-			TV_ADD(&min_state->file_start_time, &relative_stop, &temp1);
+			timeradd(&min_state->file_start_time, &relative_stop, &temp1);
 		} else
 			/* take absolute times */
 			temp1 = *stop_time;
@@ -939,8 +944,8 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 		}
 
 		if (relative_time_merge) {
-			TV_SUB(&min_state->hdr.ts, &min_state->file_start_time, &temp1);
-			TV_ADD(&temp1, base_time, &min_state->hdr.ts);
+			timersub(&min_state->hdr.ts, &min_state->file_start_time, &temp1);
+			timeradd(&temp1, base_time, &min_state->hdr.ts);
 		}
 
 #ifdef HAVE_LIBNIDS
