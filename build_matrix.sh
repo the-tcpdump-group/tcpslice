@@ -44,20 +44,32 @@ for CC in ${MATRIX_CC:-gcc clang}; do
         echo '(skipped)'
         continue
     fi
-    COUNT=$((COUNT+1))
-    echo_magenta "===== SETUP $COUNT: CC=$CC ====="
-    # LABEL is needed to build the travis fold labels
-    LABEL="$CC"
-    # Run one build with the setup environment variable: CC
-    ./build.sh
-    echo 'Cleaning...'
-    travis_fold start cleaning
-    make distclean
-    rm -rf "$PREFIX"/*
-    git status -suall
-    # Cancel changes in configure
-    git checkout configure
-    travis_fold end cleaning
+    for BUILD_LIBPCAP in ${MATRIX_BUILD_LIBPCAP:-yes no}; do
+        COUNT=$((COUNT+1))
+        echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="
+        if [ "$BUILD_LIBPCAP" = yes ]; then
+            echo_magenta "Build libpcap (CMAKE=no)"
+            (cd ../libpcap && CMAKE=no ./build.sh)
+        else
+            echo_magenta 'Use system libpcap'
+            rm -rf "$PREFIX"/*
+            if [ -d ../libpcap ]; then
+                make -C ../libpcap distclean || :
+            fi
+        fi
+        # LABEL is needed to build the travis fold labels
+        LABEL="$CC.$BUILD_LIBPCAP"
+        # Run one build with the setup environment variable: CC
+        ./build.sh
+        echo 'Cleaning...'
+        travis_fold start cleaning
+        make distclean
+        rm -rf "$PREFIX"/*
+        git status -suall
+        # Cancel changes in configure
+        git checkout configure
+        travis_fold end cleaning
+    done
 done
 rm -rf "$PREFIX"
 echo_magenta "Tested setup count: $COUNT"

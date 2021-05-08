@@ -1,5 +1,6 @@
 env:
   CIRRUS_CLONE_DEPTH: 3
+  LIBPCAP_GIT: https://github.com/the-tcpdump-group/libpcap
   MAKEFLAGS: '-j 2'
 
 freebsd_task:
@@ -18,6 +19,7 @@ freebsd_task:
   script:
     - pkg install -qy autoconf gcc48 gcc10
     - pkg install -qy bash git # for build_matrix.sh and build.sh
+    - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
 
 linux_task:
@@ -34,6 +36,7 @@ linux_task:
     - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang gcc
     - apt-get -qy install git # for build_matrix.sh and build.sh
     - apt list --installed 'lib*-dev'
+    - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
 
 macos_task:
@@ -45,6 +48,7 @@ macos_task:
     MAKEFLAGS: '-j 12' # macOS VMs always run on 12 cores
   script:
     - brew update >/dev/null
+    - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
 
 coverity_task:
