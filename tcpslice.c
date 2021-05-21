@@ -736,6 +736,8 @@ latest_end_time(const struct state *states, int numfiles)
 static void
 get_next_packet(struct state *s)
 {
+	struct timeval tvbuf;
+
 	do {
 		s->pkt = pcap_next(s->p, &s->hdr);
 		if (! s->pkt) {
@@ -744,10 +746,11 @@ get_next_packet(struct state *s)
 				sessions_exit();
 			pcap_close(s->p);
 		}
+		TIMEVAL_FROM_PKTHDR_TS(tvbuf, s->hdr.ts);
 	} while ((! s->done) &&
-		 sf_timestamp_less_than(&s->hdr.ts, &s->last_pkt_time));
+		 sf_timestamp_less_than(&tvbuf, &s->last_pkt_time));
 
-	s->last_pkt_time = s->hdr.ts;
+	s->last_pkt_time = tvbuf;
 }
 
 static struct state *
@@ -787,7 +790,7 @@ open_files(char *filenames[], const int numfiles)
 			error( "error reading packet in %s: %s",
 				s->filename, pcap_geterr( s->p ) );
 
-		s->file_start_time = s->hdr.ts;
+		TIMEVAL_FROM_PKTHDR_TS(s->file_start_time, s->hdr.ts);
 
 		if ( ! sf_find_end( s->p, &s->file_start_time,
 					  &s->file_stop_time ) )
@@ -893,6 +896,8 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 	 */
 
 	while (1) {
+		struct timeval tvbuf;
+
 		min_state = 0;
 		for (i = 0; i < numfiles; ++i) {
 			s = &states[i];
@@ -908,8 +913,8 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 						&min_state->file_start_time, &temp2);
 				} else {
 					/* compare *absolute* times */
-					temp1 = s->hdr.ts;
-					temp2 = min_state->hdr.ts;
+					TIMEVAL_FROM_PKTHDR_TS(temp1, s->hdr.ts);
+					TIMEVAL_FROM_PKTHDR_TS(temp2, min_state->hdr.ts);
 				}
 				if (sf_timestamp_less_than( &temp1, &temp2))
 					min_state = s;
@@ -926,7 +931,8 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 			/* take absolute times */
 			temp1 = *stop_time;
 
-		if (sf_timestamp_less_than(&temp1, &min_state->hdr.ts)) {
+		TIMEVAL_FROM_PKTHDR_TS(tvbuf, min_state->hdr.ts);
+		if (sf_timestamp_less_than(&temp1, &tvbuf)) {
 			if (!sessions_count) {
 				/* We've gone beyond the end of the region
 				 * of interest ... We're done with this file.

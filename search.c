@@ -401,7 +401,7 @@ sf_find_end( pcap_t *p, const struct timeval *first_timestamp,
 	}
 
 	/* Success!  Last valid packet is at hdrpos. */
-	*last_timestamp = hdr.ts;
+	TIMEVAL_FROM_PKTHDR_TS(*last_timestamp, hdr.ts);
 	status = 1;
 
 	/* Seek so that the next read will start at last valid packet. */
@@ -467,7 +467,7 @@ read_up_to( pcap_t *p, const struct timeval *desired_time )
 
 	for ( ; ; )
 	{
-		struct timeval *timestamp;
+		struct timeval tvbuf;
 
 		pos = ftell64( pcap_file( p ) );
 
@@ -483,9 +483,9 @@ read_up_to( pcap_t *p, const struct timeval *desired_time )
 			error( "bad status in %s()", __func__ );
 		}
 
-		timestamp = &hdr.ts;
+		TIMEVAL_FROM_PKTHDR_TS(tvbuf, hdr.ts);
 
-		if ( ! sf_timestamp_less_than( timestamp, desired_time ) )
+		if ( ! sf_timestamp_less_than( &tvbuf, desired_time ) )
 		{
 			status = 1;
 			break;
@@ -539,6 +539,7 @@ sf_find_packet( pcap_t *p,
 			interpolated_position( min_time, min_pos,
 					       max_time, max_pos,
 					       desired_time );
+		struct timeval tvbuf;
 
 		if ( desired_pos < 0 )
 			{
@@ -590,15 +591,16 @@ sf_find_packet( pcap_t *p,
 		if ( fseek64( pcap_file( p ), desired_pos, SEEK_SET ) < 0 )
 			error( S(fseek64) "() failed in %s()", __func__ );
 
-		if ( sf_timestamp_less_than( &hdr.ts, desired_time ) )
+		TIMEVAL_FROM_PKTHDR_TS(tvbuf, hdr.ts);
+		if ( sf_timestamp_less_than( &tvbuf, desired_time ) )
 		{ /* too early in the file */
-			*min_time = hdr.ts;
+			*min_time = tvbuf;
 			min_pos = desired_pos;
 		}
 
-		else if ( sf_timestamp_less_than( desired_time, &hdr.ts ) )
+		else if ( sf_timestamp_less_than( desired_time, &tvbuf ) )
 		{ /* too late in the file */
-			*max_time = hdr.ts;
+			*max_time = tvbuf;
 			max_pos = desired_pos;
 		}
 

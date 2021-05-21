@@ -104,6 +104,17 @@
 #define IS_LEAP_YEAR(year)	\
 	(year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
 
+/*
+ * OpenBSD libpcap compensation: in struct pcap_pkthdr "ts" instead of struct
+ * timeval uses struct bpf_timeval, which declares members with the same names
+ * and a different type, which is a 32-bit unsigned, whilst on 64-bit systems
+ * struct timeval uses a 64-bit integer type.
+ */
+#define TIMEVAL_FROM_PKTHDR_TS(dst, src) { \
+	(dst).tv_sec = (src).tv_sec; \
+	(dst).tv_usec = (src).tv_usec; \
+}
+
 extern const int days_in_month[];
 time_t			gwtm2secs( const struct tm *tm );
 
