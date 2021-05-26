@@ -2,6 +2,20 @@ v1.4 ...
 
 - Install into bindir, not sbindir.
 
+- Refine some C code style.
+
+- Address many warnings from GCC, Clang and cppcheck.
+
+- Fix wording in an error message.
+
+- Update MAX_REASONABLE_PACKET_LENGTH to 262144.
+
+- Tell libooh323c in the "-h" message.
+
+- Update config.{guess,sub}, timestamps 2020-12-22.
+
+- Fix parallel build with FreeBSD make.
+
 - Fix building with OpenBSD libpcap.
 
 v1.3 Wed 19 Aug 19:00:47 BST 2020
