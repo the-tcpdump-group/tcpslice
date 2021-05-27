@@ -12,7 +12,7 @@ v1.4 ...
 
 - Tell libooh323c in the "-h" message.
 
-- Update config.{guess,sub}, timestamps 2020-12-22.
+- Update config.{guess,sub}, timestamps 2021-01-25,2021-03-10.
 
 - Fix parallel build with FreeBSD make.
 
