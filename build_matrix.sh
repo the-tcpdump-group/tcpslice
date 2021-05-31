@@ -52,7 +52,7 @@ for CC in ${MATRIX_CC:-gcc clang}; do
             (cd ../libpcap && CMAKE=no ./build.sh)
         else
             echo_magenta 'Use system libpcap'
-            rm -rf "$PREFIX"/*
+            rm -rf "${PREFIX:?}"/*
             if [ -d ../libpcap ]; then
                 make -C ../libpcap distclean || :
             fi
@@ -64,7 +64,7 @@ for CC in ${MATRIX_CC:-gcc clang}; do
         echo 'Cleaning...'
         travis_fold start cleaning
         make distclean
-        rm -rf "$PREFIX"/*
+        rm -rf "${PREFIX:?}"/*
         git status -suall
         # Cancel changes in configure
         git checkout configure
