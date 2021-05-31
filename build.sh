@@ -29,6 +29,7 @@ travis_fold() {
 run_after_echo() {
     echo -n '$ '
     echo "$@"
+    # shellcheck disable=SC2068
     $@
 }
 
