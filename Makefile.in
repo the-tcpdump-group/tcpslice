@@ -180,4 +180,4 @@ depend: $(GENSRC)
 	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC) $(LIBNETDISSECT_SRC)
 
 shellcheck:
-	shellcheck -f gcc build.sh build_matrix.sh
+	shellcheck -f gcc build.sh build_matrix.sh .ci-coverity-scan-build.sh
