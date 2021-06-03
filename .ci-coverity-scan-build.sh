@@ -56,7 +56,8 @@ RESULTS_DIR="cov-int"
 eval "${COVERITY_SCAN_BUILD_COMMAND_PREPEND}"
 # Do not quote COV_BUILD_OPTIONS so it collapses when it is empty and expands
 # when it is not.
-COVERITY_UNSUPPORTED=1 cov-build --dir "$RESULTS_DIR" "$COV_BUILD_OPTIONS" "$COVERITY_SCAN_BUILD_COMMAND"
+# shellcheck disable=SC2086
+COVERITY_UNSUPPORTED=1 cov-build --dir "$RESULTS_DIR" $COV_BUILD_OPTIONS "$COVERITY_SCAN_BUILD_COMMAND"
 cov-import-scm --dir $RESULTS_DIR --scm git --log $RESULTS_DIR/scm_log.txt 2>&1
 
 # Upload results
