@@ -16,14 +16,6 @@ if [ -z "$PREFIX" ]; then
 fi
 COUNT=0
 
-travis_fold() {
-    tf_action=${1:?}
-    tf_name=${2:?}
-    if [ "$TRAVIS" != true ]; then return; fi
-    printf 'travis_fold:%s:%s.script.%s\r' "$tf_action" "$LABEL" "$tf_name"
-    sleep 1
-}
-
 # Display text in magenta
 echo_magenta() {
     printf '\033[35;1m' # ANSI magenta
@@ -52,18 +44,14 @@ for CC in ${MATRIX_CC:-gcc clang}; do
                 make -C ../libpcap distclean || :
             fi
         fi
-        # LABEL is needed to build the travis fold labels
-        LABEL="$CC.$BUILD_LIBPCAP"
         # Run one build with the setup environment variable: CC
         ./build.sh
         echo 'Cleaning...'
-        travis_fold start cleaning
         make distclean
         rm -rf "${PREFIX:?}"/*
         git status -suall
         # Cancel changes in configure
         git checkout configure
-        travis_fold end cleaning
     done
 done
 rm -rf "$PREFIX"
