@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh -e
 
 # This script executes the matrix loop, exclude tests and cleaning.
 # The matrix can be configured with the environment variable MATRIX_CC
@@ -6,11 +6,6 @@
 # It calls the build.sh script which runs one build with the setup environment
 # variable : CC (default: CC=gcc).
 
-set -e
-
-# ANSI color escape sequences
-ANSI_MAGENTA="\\033[35;1m"
-ANSI_RESET="\\033[0m"
 uname -a
 date
 # Install directory prefix
@@ -22,18 +17,18 @@ fi
 COUNT=0
 
 travis_fold() {
-    local action=${1:?}
-    local name=${2:?}
+    tf_action=${1:?}
+    tf_name=${2:?}
     if [ "$TRAVIS" != true ]; then return; fi
-    echo -ne "travis_fold:$action:$LABEL.script.$name\\r"
+    printf 'travis_fold:%s:%s.script.%s\r' "$tf_action" "$LABEL" "$tf_name"
     sleep 1
 }
 
 # Display text in magenta
 echo_magenta() {
-    echo -ne "$ANSI_MAGENTA"
+    printf '\033[35;1m' # ANSI magenta
     echo "$@"
-    echo -ne "$ANSI_RESET"
+    printf '\033[0m' # ANSI reset
 }
 
 touch .devel configure

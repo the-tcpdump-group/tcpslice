@@ -18,7 +18,7 @@ freebsd_task:
     MATRIX_CC: clang gcc48 gcc10
   script:
     - pkg install -qy autoconf gcc48 gcc10
-    - pkg install -qy bash git # for build_matrix.sh and build.sh
+    - pkg install -qy git # for build_matrix.sh
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
 
