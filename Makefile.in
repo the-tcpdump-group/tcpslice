@@ -104,7 +104,7 @@ EXTRA_DIST = \
 	INSTALL \
 	Makefile.in \
 	Makefile-devel-adds \
-	README \
+	README.md \
 	VERSION \
 	aclocal.m4 \
 	config.guess \

@@ -1,4 +1,4 @@
-If you have not built libpcap, do so first.  See the README file in
+If you have not built libpcap, do so first.  See the README.md file in
 this directory for the source code location.
 
 You will need an ANSI C compiler to build tcpslice. The configure
@@ -25,7 +25,7 @@ CHANGES         - description of differences between releases
 INSTALL         - this file
 Makefile.in	- compilation rules (input to the configure script)
 Makefile-devel-adds - additional rules if .devel file exists
-README		- description of distribution
+README.md	- description of distribution
 VERSION		- version of this release
 aclocal.m4	- autoconf macros
 compiler-tests.h - compiler version definitions
