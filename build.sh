@@ -29,10 +29,7 @@ run_after_echo "make"
 run_after_echo "./tcpslice -h"
 echo '$ make install'
 make install
-system=$(uname -s)
-if [ "$system" = Darwin ] || [ "$system" = Linux ]; then
-    run_after_echo "make releasetar"
-fi
+run_after_echo "make releasetar"
 if [ "$MATRIX_DEBUG" = true ]; then
     echo '$ cat Makefile [...]'
     sed '/^# DO NOT DELETE THIS LINE -- mkdep uses it.$/q' < Makefile
