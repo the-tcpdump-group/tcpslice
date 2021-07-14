@@ -1,10 +1,9 @@
 #!/bin/sh -e
 
-# This script runs one build with the setup environment variable: CC
-# (default: CC=gcc).
+# This script runs one build with the setup environment variable CC (usually
+# "gcc" or "clang").
+: "${CC:=gcc}"
 
-# CC: gcc or clang
-CC=${CC:-gcc}
 # GCC and Clang recognize --version and print to stdout. Sun compilers
 # recognize -V and print to stderr.
 "$CC" --version 2>/dev/null || "$CC" -V || :

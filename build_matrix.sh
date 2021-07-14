@@ -1,10 +1,11 @@
 #!/bin/sh -e
 
 # This script executes the matrix loop, exclude tests and cleaning.
-# The matrix can be configured with the environment variable MATRIX_CC
-# (default: MATRIX_CC='gcc clang')
+# The matrix can be configured with the following environment variables:
+: "${MATRIX_CC:=gcc clang}"
+: "${MATRIX_BUILD_LIBPCAP:=yes no}"
 # It calls the build.sh script which runs one build with the setup environment
-# variable : CC (default: CC=gcc).
+# variable CC.
 
 uname -a
 date
@@ -24,14 +25,14 @@ echo_magenta() {
 }
 
 touch .devel configure
-for CC in ${MATRIX_CC:-gcc clang}; do
+for CC in $MATRIX_CC; do
     export CC
     # Exclude gcc on macOS (it is just an alias for clang).
     if [ "$CC" = gcc ] && [ "$(uname -s)" = Darwin ]; then
         echo '(skipped)'
         continue
     fi
-    for BUILD_LIBPCAP in ${MATRIX_BUILD_LIBPCAP:-yes no}; do
+    for BUILD_LIBPCAP in $MATRIX_BUILD_LIBPCAP; do
         COUNT=$((COUNT+1))
         echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="
         if [ "$BUILD_LIBPCAP" = yes ]; then
