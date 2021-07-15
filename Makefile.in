@@ -136,16 +136,16 @@ strlcpy.o: $(srcdir)/missing/strlcpy.c
 	$(CC) $(FULL_CFLAGS) -o $@ -c $(srcdir)/missing/strlcpy.c
 
 install: all
-	[ -d $(DESTDIR)$(bindir) ] || \
-	    (mkdir -p $(DESTDIR)$(bindir); chmod 755 $(DESTDIR)$(bindir))
-	$(INSTALL_PROGRAM) $(PROG) $(DESTDIR)$(bindir)/$(PROG)
-	[ -d $(DESTDIR)$(mandir)/man1 ] || \
-	    (mkdir -p $(DESTDIR)$(mandir)/man1; chmod 755 $(DESTDIR)$(mandir)/man1)
-	$(INSTALL_DATA) $(srcdir)/$(PROG).1 $(DESTDIR)$(mandir)/man1/$(PROG).1
+	[ -d "$(DESTDIR)$(bindir)" ] || \
+	    (mkdir -p "$(DESTDIR)$(bindir)"; chmod 755 "$(DESTDIR)$(bindir)")
+	$(INSTALL_PROGRAM) $(PROG) "$(DESTDIR)$(bindir)/$(PROG)"
+	[ -d "$(DESTDIR)$(mandir)/man1" ] || \
+	    (mkdir -p "$(DESTDIR)$(mandir)/man1"; chmod 755 "$(DESTDIR)$(mandir)/man1")
+	$(INSTALL_DATA) $(srcdir)/$(PROG).1 "$(DESTDIR)$(mandir)/man1/$(PROG).1"
 
 uninstall:
-	rm -f $(DESTDIR)$(bindir)/$(PROG)
-	rm -f $(DESTDIR)$(mandir)/man1/$(PROG).1
+	rm -f "$(DESTDIR)$(bindir)/$(PROG)"
+	rm -f "$(DESTDIR)$(mandir)/man1/$(PROG).1"
 
 lint: $(GENSRC)
 	lint -hbxn $(SRC) | \
