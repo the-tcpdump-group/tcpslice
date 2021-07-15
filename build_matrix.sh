@@ -7,8 +7,8 @@
 # It calls the build.sh script which runs one build with the setup environment
 # variable CC.
 
-uname -a
-date
+. ./build_common.sh
+print_sysinfo
 # Install directory prefix
 if [ -z "$PREFIX" ]; then
     PREFIX=$(mktemp -d -t tcpslice_build_matrix_XXXXXXXX)
@@ -16,13 +16,6 @@ if [ -z "$PREFIX" ]; then
     export PREFIX
 fi
 COUNT=0
-
-# Display text in magenta
-echo_magenta() {
-    printf '\033[35;1m' # ANSI magenta
-    echo "$@"
-    printf '\033[0m' # ANSI reset
-}
 
 touch .devel configure
 for CC in $MATRIX_CC; do
@@ -46,13 +39,13 @@ for CC in $MATRIX_CC; do
             fi
         fi
         # Run one build with the setup environment variable: CC
-        ./build.sh
+        run_after_echo ./build.sh
         echo 'Cleaning...'
         make distclean
         rm -rf "${PREFIX:?}"/*
-        git status -suall
+        run_after_echo git status -suall
         # Cancel changes in configure
-        git checkout configure
+        run_after_echo git checkout configure
     done
 done
 rm -rf "$PREFIX"
