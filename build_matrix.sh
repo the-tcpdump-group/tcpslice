@@ -35,7 +35,7 @@ for CC in $MATRIX_CC; do
             echo_magenta 'Use system libpcap'
             rm -rf "${PREFIX:?}"/*
             if [ -d ../libpcap ]; then
-                make -C ../libpcap distclean || :
+                make -C ../libpcap distclean || echo '(Ignoring the make error.)'
             fi
         fi
         # Run one build with the setup environment variable: CC

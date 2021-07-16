@@ -2,6 +2,8 @@ v1.5 ...
 
 - Makefile.in: Quote some pathnames properly.
 
+- Handle some build errors better.
+
 v1.4 Tue 15 Jun 08:30:11 BST 2021
 
 - Install into bindir, not sbindir.
