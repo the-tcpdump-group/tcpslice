@@ -11,7 +11,7 @@
 print_sysinfo
 # Install directory prefix
 if [ -z "$PREFIX" ]; then
-    PREFIX=$(mktemp -d -t tcpslice_build_matrix_XXXXXXXX)
+    PREFIX=$(mktempdir tcpslice_build_matrix)
     echo "PREFIX set to '$PREFIX'"
     export PREFIX
 fi

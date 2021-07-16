@@ -3,6 +3,23 @@
 # To make CI scripts maintenance simpler, copies of this file in the
 # libpcap, tcpdump and tcpslice git repositories should be identical.
 
+mktempdir() {
+    mktempdir_prefix=${1:?}
+    case $(uname -s) in
+    Darwin|FreeBSD|NetBSD)
+        # In these operating systems mktemp(1) always appends an implicit
+        # ".XXXXXXXX" suffix to the requested template when creating a
+        # temporary directory.
+        ;;
+    *)
+        # At least Linux and OpenBSD implementations require explicit trailing
+        # X'es in the template, so make it the same suffix as above.
+        mktempdir_prefix="${mktempdir_prefix}.XXXXXXXX"
+        ;;
+    esac
+    mktemp -d -t "$mktempdir_prefix"
+}
+
 print_sysinfo() {
     uname -a
     date
