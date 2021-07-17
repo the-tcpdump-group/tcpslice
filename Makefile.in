@@ -169,11 +169,12 @@ tags: $(TAGFILES)
 TAGS: $(TAGFILES)
 	etags $(TAGFILES)
 
+# AIX tar does not support "z", so use a pipe for gzip.
 releasetar:
 	@name=$(PROG)-`cat VERSION` ; \
 	   mkdir $$name && \
 	   tar cf - $(CSRC) $(HDR) $(EXTRA_DIST) | (cd $$name; tar xf -) && \
-	   tar -c -z -f $$name.tar.gz $$name && \
+	   tar cf - $$name | gzip >$$name.tar.gz && \
 	   rm -rf $$name
 
 depend: $(GENSRC)

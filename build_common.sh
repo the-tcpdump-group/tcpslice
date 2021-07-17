@@ -10,14 +10,33 @@ mktempdir() {
         # In these operating systems mktemp(1) always appends an implicit
         # ".XXXXXXXX" suffix to the requested template when creating a
         # temporary directory.
+        mktemp -d -t "$mktempdir_prefix"
+        ;;
+    AIX)
+        # A poor man's mktemp(1) because AIX does not have one.
+        mktempdir_prefix=${TMPDIR:-/tmp}/${mktempdir_prefix}
+        while true; do
+            mktempdir_suffix='.'
+            for xx in XX XX XX XX; do
+                # /bin/sh implements RANDOM in AIX.
+                # shellcheck disable=SC2039
+                xx=$(printf '%02x' $((RANDOM % 256)))
+                mktempdir_suffix="${mktempdir_suffix}${xx}"
+            done
+            if ! [ -e "${mktempdir_prefix}${mktempdir_suffix}" ]; then
+                mkdir -p "${mktempdir_prefix}${mktempdir_suffix}"
+                chmod go= "${mktempdir_prefix}${mktempdir_suffix}"
+                echo "${mktempdir_prefix}${mktempdir_suffix}"
+                break
+            fi
+        done
         ;;
     *)
         # At least Linux and OpenBSD implementations require explicit trailing
         # X'es in the template, so make it the same suffix as above.
-        mktempdir_prefix="${mktempdir_prefix}.XXXXXXXX"
+        mktemp -d -t "${mktempdir_prefix}.XXXXXXXX"
         ;;
     esac
-    mktemp -d -t "$mktempdir_prefix"
 }
 
 print_sysinfo() {
@@ -27,8 +46,20 @@ print_sysinfo() {
 
 print_cc_version() {
     # GCC and Clang recognize --version and print to stdout. Sun compilers
-    # recognize -V and print to stderr.
-    "$CC" --version 2>/dev/null || "$CC" -V || :
+    # recognize -V and print to stderr. XL C for AIX recognizes -qversion
+    # and prints to stdout, but on an unknown command-line flag displays its
+    # man page and waits.
+    case $(basename "$CC") in
+    gcc*|clang*)
+        "$CC" --version
+        ;;
+    xl*)
+        "$CC" -qversion
+        ;;
+    *)
+        "$CC" --version || "$CC" -V || :
+        ;;
+    esac
 }
 
 # Display text in magenta.
