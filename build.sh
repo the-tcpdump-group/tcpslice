@@ -21,6 +21,6 @@ run_after_echo make install
 run_after_echo make releasetar
 handle_matrix_debug
 if [ "$DELETE_PREFIX" = yes ]; then
-    rm -rf "$PREFIX"
+    run_after_echo rm -rf "$PREFIX"
 fi
 # vi: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab autoindent :

@@ -48,6 +48,6 @@ for CC in $MATRIX_CC; do
         run_after_echo git checkout configure
     done
 done
-rm -rf "$PREFIX"
+run_after_echo rm -rf "$PREFIX"
 echo_magenta "Tested setup count: $COUNT"
 # vi: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab autoindent :
