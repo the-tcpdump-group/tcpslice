@@ -18,6 +18,7 @@ run_after_echo ./configure --prefix="$PREFIX"
 run_after_echo make -s clean
 run_after_echo make
 run_after_echo ./tcpslice -h
+print_so_deps tcpslice
 run_after_echo make install
 run_after_echo make releasetar
 handle_matrix_debug

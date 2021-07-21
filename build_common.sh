@@ -104,6 +104,22 @@ run_after_echo() {
     "$@"
 }
 
+print_so_deps() {
+    case `uname -s` in
+    Darwin)
+        run_after_echo otool -L "${1:?}"
+        ;;
+    *)
+        run_after_echo ldd "${1:?}"
+        ;;
+    esac
+}
+
+# Beware that setting MATRIX_DEBUG for tcpdump or tcpslice will produce A LOT
+# of additional output there and in any nested libpcap builds. Multiplied by
+# the matrix size, the full output log size might exceed limits of some CI
+# systems (as it had previously happened with Travis CI). Use with caution on
+# a reduced matrix.
 handle_matrix_debug() {
     [ "$MATRIX_DEBUG" != yes ] && return
     echo '$ cat Makefile [...]'
