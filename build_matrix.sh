@@ -11,7 +11,8 @@
 print_sysinfo
 # Install directory prefix
 if [ -z "$PREFIX" ]; then
-    PREFIX=$(mktempdir tcpslice_build_matrix)
+    # shellcheck disable=SC2006
+    PREFIX=`mktempdir tcpslice_build_matrix`
     echo "PREFIX set to '$PREFIX'"
     export PREFIX
 fi
@@ -21,19 +22,21 @@ touch .devel configure
 for CC in $MATRIX_CC; do
     export CC
     # Exclude gcc on macOS (it is just an alias for clang).
-    if [ "$CC" = gcc ] && [ "$(uname -s)" = Darwin ]; then
+    # shellcheck disable=SC2006
+    if [ "$CC" = gcc ] && [ "`uname -s`" = Darwin ]; then
         echo '(skipped)'
         continue
     fi
     for BUILD_LIBPCAP in $MATRIX_BUILD_LIBPCAP; do
-        COUNT=$((COUNT+1))
+        # shellcheck disable=SC2006
+        COUNT=`increment $COUNT`
         echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="
         if [ "$BUILD_LIBPCAP" = yes ]; then
             echo_magenta "Build libpcap (CMAKE=no)"
             (cd ../libpcap && CMAKE=no ./build.sh)
         else
             echo_magenta 'Use system libpcap'
-            rm -rf "${PREFIX:?}"/*
+            purge_directory "$PREFIX"
             if [ -d ../libpcap ]; then
                 (cd ../libpcap; make distclean || echo '(Ignoring the make error.)')
             fi
@@ -42,7 +45,7 @@ for CC in $MATRIX_CC; do
         run_after_echo ./build.sh
         echo 'Cleaning...'
         make distclean
-        rm -rf "${PREFIX:?}"/*
+        purge_directory "$PREFIX"
         run_after_echo git status -suall
         # Cancel changes in configure
         run_after_echo git checkout configure

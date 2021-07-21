@@ -7,7 +7,8 @@
 . ./build_common.sh
 # Install directory prefix
 if [ -z "$PREFIX" ]; then
-    PREFIX=$(mktempdir tcpslice_build)
+    # shellcheck disable=SC2006
+    PREFIX=`mktempdir tcpslice_build`
     echo "PREFIX set to '$PREFIX'"
     DELETE_PREFIX=yes
 fi
