@@ -4,7 +4,7 @@ v1.5 ...
 
 - Handle some build errors better.
 
-- Work around some build issues on AIX.
+- Fix "make releasetar" on AIX and Solaris.
 
 v1.4 Tue 15 Jun 08:30:11 BST 2021
 

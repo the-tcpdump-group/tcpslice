@@ -170,6 +170,7 @@ TAGS: $(TAGFILES)
 	etags $(TAGFILES)
 
 # AIX tar does not support "z", so use a pipe for gzip.
+# Solaris tar understands "cf -", but not "-c -f -".
 releasetar:
 	@name=$(PROG)-`cat VERSION` ; \
 	   mkdir $$name && \
