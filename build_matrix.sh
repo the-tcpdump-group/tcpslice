@@ -4,6 +4,12 @@
 # The matrix can be configured with the following environment variables:
 : "${MATRIX_CC:=gcc clang}"
 : "${MATRIX_BUILD_LIBPCAP:=yes no}"
+# Set this variable to "yes" before calling this script to disregard all
+# warnings in a particular environment (CI or a local working copy). Set it to
+# "yes" in this script or in build.sh when a matrix subset is known to be not
+# warning-free because of the OS, the compiler or whatever other factor that
+# the scripts can detect both in and out of CI.
+: "${TCPSLICE_TAINTED:=no}"
 # It calls the build.sh script which runs one build with the setup environment
 # variable CC.
 
@@ -17,6 +23,7 @@ if [ -z "$PREFIX" ]; then
     export PREFIX
 fi
 COUNT=0
+export TCPSLICE_TAINTED
 
 touch .devel configure
 for CC in $MATRIX_CC; do
