@@ -37,12 +37,12 @@ for CC in $MATRIX_CC; do
     for BUILD_LIBPCAP in $MATRIX_BUILD_LIBPCAP; do
         # shellcheck disable=SC2006
         COUNT=`increment $COUNT`
-        echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="
+        echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="  >&2
         if [ "$BUILD_LIBPCAP" = yes ]; then
-            echo_magenta "Build libpcap (CMAKE=no)"
+            echo_magenta "Build libpcap (CMAKE=no)" >&2
             (cd ../libpcap && CMAKE=no ./build.sh)
         else
-            echo_magenta 'Use system libpcap'
+            echo_magenta 'Use system libpcap' >&2
             purge_directory "$PREFIX"
             if [ -d ../libpcap ]; then
                 (cd ../libpcap; make distclean || echo '(Ignoring the make error.)')
@@ -59,5 +59,5 @@ for CC in $MATRIX_CC; do
     done
 done
 run_after_echo rm -rf "$PREFIX"
-echo_magenta "Tested setup count: $COUNT"
+echo_magenta "Tested setup count: $COUNT" >&2
 # vi: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab autoindent :
