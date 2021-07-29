@@ -25,24 +25,26 @@ if [ "`sed -n '/^#define HAVE_LIBNIDS 1$/p' config.h | wc -l`" = 1 ]; then
     TCPSLICE_TAINTED=yes
 fi
 # shellcheck disable=SC2006
-case `uname -s` in
-NetBSD)
+case `cc_id`/`os_id` in
+*/NetBSD-*)
     # tcpslice.c triggers -Wchar-subscripts with GCC and Clang.
     TCPSLICE_TAINTED=yes
     ;;
-SunOS)
-    # config.h triggers a warning with Sun C and GCC on Solaris 9 and 10, with
-    # Sunc C on Solaris 11.
-    # tcpslice.c triggers -Wchar-subscripts and -Wuninitialized with GCC on
-    # Solaris 9.
-    case `cc_id` in
-    gcc-*)
-        [ "`uname -r`" != 5.11 ] && TCPSLICE_TAINTED=yes
-        ;;
-    *)
-        TCPSLICE_TAINTED=yes
-        ;;
-    esac
+gcc-*/SunOS-5.9)
+    # tcpslice.c triggers -Wchar-subscripts and -Wuninitialized with GCC.
+    TCPSLICE_TAINTED=yes
+    ;;
+*/SunOS-5.9)
+    # config.h triggers a warning with Sun C and GCC.
+    TCPSLICE_TAINTED=yes
+    ;;
+*/SunOS-5.10)
+    # config.h triggers a warning with Sun C and GCC.
+    TCPSLICE_TAINTED=yes
+    ;;
+suncc-*/SunOS-5.11)
+    # config.h triggers a warning with Sunc C.
+    TCPSLICE_TAINTED=yes
     ;;
 esac
 

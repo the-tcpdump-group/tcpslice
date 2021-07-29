@@ -28,9 +28,8 @@ export TCPSLICE_TAINTED
 touch .devel configure
 for CC in $MATRIX_CC; do
     export CC
-    # Exclude gcc on macOS (it is just an alias for clang).
-    # shellcheck disable=SC2006
-    if [ "$CC" = gcc ] && [ "`uname -s`" = Darwin ]; then
+    discard_cc_cache
+    if gcc_is_clang_in_disguise; then
         echo '(skipped)'
         continue
     fi
