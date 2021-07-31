@@ -5366,67 +5366,39 @@ rm -f os-proto.h
 	    #
 	    if test "$ac_lbl_cc_dont_try_gcc_dashW" != yes; then
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler fails when given an unknown warning option" >&5
-$as_echo_n "checking whether the compiler fails when given an unknown warning option... " >&6; }
-	save_CFLAGS="$CFLAGS"
-	CFLAGS="$CFLAGS -Wxyzzy-this-will-never-succeed-xyzzy"
-	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-		#
-		# We're assuming this is clang, where
-		# -Werror=unknown-warning-option is the appropriate
-		# option to force the compiler to fail.
-		#
-		ac_lbl_unknown_warning_option_error="-Werror=unknown-warning-option"
-
-else
-
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-	CFLAGS="$save_CFLAGS"
-
-
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -W option" >&5
 $as_echo_n "checking whether the compiler supports the -W option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-W" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -W"
-	elif expr "x-W" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -W"
-	elif expr "x-W" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -W"
-	else
-	    CFLAGS="$CFLAGS -W"
-	fi
+	CFLAGS="$CFLAGS -W"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5443,33 +5415,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wall option" >&5
 $as_echo_n "checking whether the compiler supports the -Wall option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wall" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wall"
-	elif expr "x-Wall" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wall"
-	elif expr "x-Wall" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wall"
-	else
-	    CFLAGS="$CFLAGS -Wall"
-	fi
+	CFLAGS="$CFLAGS -Wall"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5486,33 +5467,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wassign-enum option" >&5
 $as_echo_n "checking whether the compiler supports the -Wassign-enum option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wassign-enum" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wassign-enum"
-	elif expr "x-Wassign-enum" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wassign-enum"
-	elif expr "x-Wassign-enum" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wassign-enum"
-	else
-	    CFLAGS="$CFLAGS -Wassign-enum"
-	fi
+	CFLAGS="$CFLAGS -Wassign-enum"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5529,33 +5519,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wcast-qual option" >&5
 $as_echo_n "checking whether the compiler supports the -Wcast-qual option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wcast-qual" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wcast-qual"
-	elif expr "x-Wcast-qual" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wcast-qual"
-	elif expr "x-Wcast-qual" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wcast-qual"
-	else
-	    CFLAGS="$CFLAGS -Wcast-qual"
-	fi
+	CFLAGS="$CFLAGS -Wcast-qual"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5572,33 +5571,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wmissing-prototypes option" >&5
 $as_echo_n "checking whether the compiler supports the -Wmissing-prototypes option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wmissing-prototypes" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wmissing-prototypes"
-	elif expr "x-Wmissing-prototypes" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wmissing-prototypes"
-	elif expr "x-Wmissing-prototypes" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wmissing-prototypes"
-	else
-	    CFLAGS="$CFLAGS -Wmissing-prototypes"
-	fi
+	CFLAGS="$CFLAGS -Wmissing-prototypes"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5615,33 +5623,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wold-style-definition option" >&5
 $as_echo_n "checking whether the compiler supports the -Wold-style-definition option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wold-style-definition" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wold-style-definition"
-	elif expr "x-Wold-style-definition" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wold-style-definition"
-	elif expr "x-Wold-style-definition" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wold-style-definition"
-	else
-	    CFLAGS="$CFLAGS -Wold-style-definition"
-	fi
+	CFLAGS="$CFLAGS -Wold-style-definition"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5658,33 +5675,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wpedantic option" >&5
 $as_echo_n "checking whether the compiler supports the -Wpedantic option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wpedantic" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wpedantic"
-	elif expr "x-Wpedantic" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wpedantic"
-	elif expr "x-Wpedantic" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wpedantic"
-	else
-	    CFLAGS="$CFLAGS -Wpedantic"
-	fi
+	CFLAGS="$CFLAGS -Wpedantic"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5701,33 +5727,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wpointer-arith option" >&5
 $as_echo_n "checking whether the compiler supports the -Wpointer-arith option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wpointer-arith" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wpointer-arith"
-	elif expr "x-Wpointer-arith" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wpointer-arith"
-	elif expr "x-Wpointer-arith" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wpointer-arith"
-	else
-	    CFLAGS="$CFLAGS -Wpointer-arith"
-	fi
+	CFLAGS="$CFLAGS -Wpointer-arith"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5744,33 +5779,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wpointer-sign option" >&5
 $as_echo_n "checking whether the compiler supports the -Wpointer-sign option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wpointer-sign" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wpointer-sign"
-	elif expr "x-Wpointer-sign" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wpointer-sign"
-	elif expr "x-Wpointer-sign" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wpointer-sign"
-	else
-	    CFLAGS="$CFLAGS -Wpointer-sign"
-	fi
+	CFLAGS="$CFLAGS -Wpointer-sign"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5787,33 +5831,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wshadow option" >&5
 $as_echo_n "checking whether the compiler supports the -Wshadow option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wshadow" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wshadow"
-	elif expr "x-Wshadow" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wshadow"
-	elif expr "x-Wshadow" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wshadow"
-	else
-	    CFLAGS="$CFLAGS -Wshadow"
-	fi
+	CFLAGS="$CFLAGS -Wshadow"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5830,33 +5883,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wsign-compare option" >&5
 $as_echo_n "checking whether the compiler supports the -Wsign-compare option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wsign-compare" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wsign-compare"
-	elif expr "x-Wsign-compare" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wsign-compare"
-	elif expr "x-Wsign-compare" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wsign-compare"
-	else
-	    CFLAGS="$CFLAGS -Wsign-compare"
-	fi
+	CFLAGS="$CFLAGS -Wsign-compare"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5873,33 +5935,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wstrict-prototypes option" >&5
 $as_echo_n "checking whether the compiler supports the -Wstrict-prototypes option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wstrict-prototypes" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wstrict-prototypes"
-	elif expr "x-Wstrict-prototypes" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wstrict-prototypes"
-	elif expr "x-Wstrict-prototypes" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wstrict-prototypes"
-	else
-	    CFLAGS="$CFLAGS -Wstrict-prototypes"
-	fi
+	CFLAGS="$CFLAGS -Wstrict-prototypes"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5916,33 +5987,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wunreachable-code-return option" >&5
 $as_echo_n "checking whether the compiler supports the -Wunreachable-code-return option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wunreachable-code-return" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wunreachable-code-return"
-	elif expr "x-Wunreachable-code-return" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wunreachable-code-return"
-	elif expr "x-Wunreachable-code-return" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wunreachable-code-return"
-	else
-	    CFLAGS="$CFLAGS -Wunreachable-code-return"
-	fi
+	CFLAGS="$CFLAGS -Wunreachable-code-return"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -5959,33 +6039,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wused-but-marked-unused option" >&5
 $as_echo_n "checking whether the compiler supports the -Wused-but-marked-unused option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wused-but-marked-unused" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wused-but-marked-unused"
-	elif expr "x-Wused-but-marked-unused" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wused-but-marked-unused"
-	elif expr "x-Wused-but-marked-unused" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wused-but-marked-unused"
-	else
-	    CFLAGS="$CFLAGS -Wused-but-marked-unused"
-	fi
+	CFLAGS="$CFLAGS -Wused-but-marked-unused"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -6002,33 +6091,42 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports the -Wwrite-strings option" >&5
 $as_echo_n "checking whether the compiler supports the -Wwrite-strings option... " >&6; }
 	save_CFLAGS="$CFLAGS"
-	if expr "x-Wwrite-strings" : "x-W.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS $ac_lbl_unknown_warning_option_error -Wwrite-strings"
-	elif expr "x-Wwrite-strings" : "x-f.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wwrite-strings"
-	elif expr "x-Wwrite-strings" : "x-m.*" >/dev/null
-	then
-	    CFLAGS="$CFLAGS -Werror -Wwrite-strings"
-	else
-	    CFLAGS="$CFLAGS -Wwrite-strings"
-	fi
+	CFLAGS="$CFLAGS -Wwrite-strings"
+	#
+	# XXX - yes, this depends on the way AC_LANG_WERROR works,
+	# but no mechanism is provided to turn AC_LANG_WERROR on
+	# *and then turn it back off*, so that we *only* do it when
+	# testing compiler options - 15 years after somebody asked
+	# for it:
+	#
+	#     https://autoconf.gnu.narkive.com/gTAVmfKD/how-to-cancel-flags-set-by-ac-lang-werror
+	#
+	save_ac_c_werror_flag="$ac_c_werror_flag"
+	ac_c_werror_flag=yes
+	#
+	# We use AC_LANG_SOURCE() so that we can control the complete
+	# content of the program being compiled.  We do not, for example,
+	# want the default "int main()" that AC_LANG_PROGRAM() generates,
+	# as it will generate a warning with -Wold-style-definition, meaning
+	# that we would treat it as not working, as the test will fail if
+	# *any* error output, including a warning due to the flag we're
+	# testing, is generated; see
+	#
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
+	#
+	# This may, as per those two messages, be fixed in autoonf 2.70,
+	# but we only require 2.64 or newer for now.
+	#
 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-int
-main ()
-{
-return 0
-  ;
-  return 0;
-}
+int main(void) { return 0; }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
@@ -6045,6 +6143,7 @@ $as_echo "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+	ac_c_werror_flag="$save_ac_c_werror_flag"
 
 	    fi
 
