@@ -43,7 +43,7 @@ gcc-*/SunOS-5.9)
     TCPSLICE_TAINTED=yes
     ;;
 suncc-*/SunOS-5.11)
-    # config.h triggers a warning with Sunc C.
+    # config.h triggers a warning with Sun C.
     TCPSLICE_TAINTED=yes
     ;;
 esac
