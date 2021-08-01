@@ -26,12 +26,8 @@ if [ "`sed -n '/^#define HAVE_LIBNIDS 1$/p' config.h | wc -l`" = 1 ]; then
 fi
 # shellcheck disable=SC2006
 case `cc_id`/`os_id` in
-*/NetBSD-*)
-    # tcpslice.c triggers -Wchar-subscripts with GCC and Clang.
-    TCPSLICE_TAINTED=yes
-    ;;
 gcc-*/SunOS-5.9)
-    # tcpslice.c triggers -Wchar-subscripts and -Wuninitialized with GCC.
+    # tcpslice.c triggers -Wuninitialized with GCC.
     TCPSLICE_TAINTED=yes
     ;;
 */SunOS-5.9)

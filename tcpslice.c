@@ -332,7 +332,7 @@ timestamp_raw_format_correct(const char *str)
 	while (1) {
 		switch (fsm_state) {
 		case START: /* Have not seen anything yet. */
-			if (! isdigit(*str))
+			if (! isdigit((u_char)*str))
 				return 0;
 			s_value = *str - '0';
 			fsm_state = SECONDS;
@@ -344,12 +344,12 @@ timestamp_raw_format_correct(const char *str)
 				fsm_state = POINT;
 				break;
 			}
-			if (! isdigit(*str) ||
+			if (! isdigit((u_char)*str) ||
 			    (s_value = s_value * 10 + *str - '0') > TS_RAW_S_MAX_VALUE)
 				return 0;
 			break;
 		case POINT: /* Have seen the decimal point. */
-			if (! isdigit(*str))
+			if (! isdigit((u_char)*str))
 				return 0;
 			us_digits = 1;
 			fsm_state = MICROSECONDS;
@@ -357,7 +357,7 @@ timestamp_raw_format_correct(const char *str)
 		case MICROSECONDS: /* Have seen one or more digits for the microseconds. */
 			if (*str == '\0')
 				return 1; /* "uuuuuuuuu.ssssss" */
-			if (! isdigit(*str) || ++us_digits > TS_RAW_US_MAX_DIGITS)
+			if (! isdigit((u_char)*str) || ++us_digits > TS_RAW_US_MAX_DIGITS)
 				return 0;
 			break;
 		default:
@@ -384,19 +384,19 @@ parse_token(const char *str, struct parseable_token_t *token)
 	while (1) {
 		switch (fsm_state) {
 		case START: /* Have not seen anything yet. */
-			if (! isdigit(*str))
+			if (! isdigit((u_char)*str))
 				return NULL;
 			amount = *str - '0';
 			fsm_state = AMOUNT;
 			break;
 		case AMOUNT: /* Have seen one or more digits for the amount. */
-			if (isalpha(*str)) {
+			if (isalpha((u_char)*str)) {
 				token->amount = amount;
-				char_unit = tolower(*str);
+				char_unit = tolower((u_char)*str);
 				fsm_state = UNIT;
 				break;
 			}
-			if (! isdigit(*str) ||
+			if (! isdigit((u_char)*str) ||
 			    (amount = amount * 10 + *str - '0') > INT32_MAX)
 				return NULL;
 			break;
@@ -640,11 +640,11 @@ fill_tm(const char *time_string, const int is_delta, struct tm *t, time_t *usecs
 	 * the units.
 	 */
 	for (t_stop = t_start = time_string; *t_start; t_start = ++t_stop) {
-		if (! isdigit(*t_start))
+		if (! isdigit((u_char)*t_start))
 			error("bad date format %s, problem starting at %s",
 			      time_string, t_start);
 
-		while (isdigit(*t_stop))
+		while (isdigit((u_char)*t_stop))
 			++t_stop;
 		if (! (*t_stop))
 			error("bad date format %s, problem starting at %s",
@@ -653,8 +653,8 @@ fill_tm(const char *time_string, const int is_delta, struct tm *t, time_t *usecs
 		int val = atoi(t_start);
 
 		char format_ch = *t_stop;
-		if ( isupper( format_ch ) )
-			format_ch = tolower( format_ch );
+		if (isupper((u_char)format_ch))
+			format_ch = tolower((u_char)format_ch);
 
 		switch (format_ch) {
 			case 'y':
