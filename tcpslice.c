@@ -326,8 +326,8 @@ static unsigned char
 timestamp_raw_format_correct(const char *str)
 {
 	enum { START, SECONDS, POINT, MICROSECONDS } fsm_state = START;
-	uint64_t s_value;
-	unsigned us_digits;
+	uint64_t s_value = 0; /* Initialize to squelch a warning. */
+	unsigned us_digits = 0; /* Initialize to squelch a warning. */
 
 	while (1) {
 		switch (fsm_state) {
@@ -378,8 +378,8 @@ static const char *
 parse_token(const char *str, struct parseable_token_t *token)
 {
 	enum { START, AMOUNT, UNIT } fsm_state = START;
-	uint64_t amount;
-	char char_unit;
+	uint64_t amount = 0; /* Initialize to squelch a warning. */
+	char char_unit = 0; /* Initialize to squelch a warning. */
 
 	while (1) {
 		switch (fsm_state) {
