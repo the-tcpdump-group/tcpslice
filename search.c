@@ -525,7 +525,7 @@ sf_find_packet( pcap_t *p,
 
 	buf = (u_char *) malloc( num_bytes );
 	if ( ! buf )
-		error( "malloc() failured in %s()", __func__ );
+		error( "malloc() failed in %s()", __func__ );
 
 	min_time_copy = *min_time;
 	min_time = &min_time_copy;
