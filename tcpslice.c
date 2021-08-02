@@ -956,8 +956,18 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 
 #ifdef HAVE_LIBNIDS
 		/* Keep track of sessions, if specified by the user */
-		if (track_sessions)
-			nids_pcap_handler((u_char *)min_state->p, &min_state->hdr, (u_char *)min_state->pkt);
+		if (track_sessions && min_state->hdr.caplen) {
+			/*
+			 * Copy the packet buffer to deconstify it for the function.
+			 */
+			u_char *pkt_copy = malloc(min_state->hdr.caplen);
+
+			if (!pkt_copy)
+				error("malloc() failed in %s()", __func__);
+			memcpy(pkt_copy, min_state->pkt, min_state->hdr.caplen);
+			nids_pcap_handler((u_char *)min_state->p, &min_state->hdr, pkt_copy);
+			free(pkt_copy);
+		}
 #endif
 
 		/* Dump it, unless it's a duplicate. */

@@ -22,6 +22,14 @@ run_after_echo make -s clean
 # shellcheck disable=SC2006
 if [ "`sed -n '/^#define HAVE_LIBNIDS 1$/p' config.h | wc -l`" = 1 ]; then
     # libnids calls trigger warnings on most OSes.
+    # See also: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=83584
+    #
+    # sessions.c:424:20: warning: ISO C forbids passing argument 1 of
+    #   'nids_register_ip' between function pointer and 'void *' [-Wpedantic]
+    # sessions.c:425:21: warning: ISO C forbids passing argument 1 of
+    #   'nids_register_udp' between function pointer and 'void *' [-Wpedantic]
+    # sessions.c:426:21: warning: ISO C forbids passing argument 1 of
+    #   'nids_register_tcp' between function pointer and 'void *' [-Wpedantic]
     TCPSLICE_TAINTED=yes
 fi
 # shellcheck disable=SC2006
