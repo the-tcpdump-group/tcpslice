@@ -49,6 +49,7 @@
 
 #include "varattrs.h"
 #include "sessions.h"
+#include "diag-control.h"
 
 /*
  * The global variables below have the following purposes:
@@ -421,9 +422,16 @@ void				sessions_nids_init(pcap_t *p)
   if (!nids_init()) {
     error("%s(): %s", __func__, nids_errbuf);
   }
+  /*
+   * These conversions between function pointer and void pointer upset GCC,
+   * Clang and XL C.
+   * See also: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=83584
+   */
+  DIAG_OFF_PEDANTIC
   nids_register_ip(ip_callback);
   nids_register_udp(udp_callback);
   nids_register_tcp(tcp_callback);
+  DIAG_ON_PEDANTIC
 }
 
 static struct session *

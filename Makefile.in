@@ -81,6 +81,7 @@ SRC =	$(CSRC) $(GENSRC)
 OBJ =	$(CSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
 HDR = \
 	compiler-tests.h \
+	diag-control.h \
 	gmt2local.h \
 	machdep.h \
 	sessions.h \
