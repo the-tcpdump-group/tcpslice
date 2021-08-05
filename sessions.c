@@ -43,6 +43,10 @@
  *  - tcp_callback() is called upon reception of correct TCP data
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -101,10 +105,6 @@ int				track_sessions = 0;
 uint32_t			sessions_count = 0;
 char				*sessions_file_format = NULL;
 time_t				sessions_expiration_delay = 0;
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 
 #ifndef HAVE_LIBNIDS
 
@@ -733,7 +733,7 @@ static void			udp_callback(struct tuple4 *addr, u_char *udp_data, int udp_data_l
    * a new session object (`elt') might be created by the callback,
    * with a pointer to a different PCAP file.
    */
-  if ((ip->ip_hl > 5) && ((ip->ip_hl * 4) < (udp_data_offset + udp_data_len)))
+  if ((ip->ip_hl > 5) && ((ip->ip_hl * 4U) < (udp_data_offset + udp_data_len)))
     udp_data_offset = ip->ip_hl * 4 + UDPHDRLEN;
   dump_frame((u_char *)ip, udp_data_offset + udp_data_len, elt->dumper);
 }

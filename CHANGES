@@ -6,7 +6,7 @@ v1.5 ...
 
 - Fix "make releasetar" on AIX and Solaris.
 
-- Address some compiler warnings on Linux, NetBSD 9.2 and Solaris 9.
+- Address some compiler warnings on Linux, NetBSD 9.2 and Solaris.
 
 v1.4 Tue 15 Jun 08:30:11 BST 2021
 

@@ -18,21 +18,9 @@ print_cc_version
 run_after_echo ./configure --prefix="$PREFIX"
 run_after_echo make -s clean
 
-# shellcheck disable=SC2006
-case `cc_id`/`os_id` in
-*/SunOS-5.9)
-    # config.h triggers a warning with Sun C and GCC.
-    TCPSLICE_TAINTED=yes
-    ;;
-*/SunOS-5.10)
-    # config.h triggers a warning with Sun C and GCC.
-    TCPSLICE_TAINTED=yes
-    ;;
-suncc-*/SunOS-5.11)
-    # config.h triggers a warning with Sun C.
-    TCPSLICE_TAINTED=yes
-    ;;
-esac
+# If necessary, set TCPSLICE_TAINTED here to exempt particular builds from
+# warnings. Use as specific terms as possible (e.g. some specific compiler and
+# some specific OS).
 
 # shellcheck disable=SC2006
 [ "$TCPSLICE_TAINTED" != yes ] && CFLAGS=`cc_werr_cflags`
