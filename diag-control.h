@@ -72,11 +72,11 @@
   #endif
 #endif
 
-#if !defined(DIAG_OFF_PEDANTIC)
+#ifndef DIAG_OFF_PEDANTIC
 #define DIAG_OFF_PEDANTIC
 #endif
-#if !defined(DIAG_ON_PEDANTIC)
+#ifndef DIAG_ON_PEDANTIC
 #define DIAG_ON_PEDANTIC
 #endif
 
-#endif /* _diag_control_h */
+#endif /* tcpslice_diag_control_h */
