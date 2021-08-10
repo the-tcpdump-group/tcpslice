@@ -72,10 +72,6 @@ struct pcap_sf_pkthdr {
     bpf_u_int32 len;		/* length this packet (off wire) */
 };
 
-/* stringify macros, for error reporting. */
-#define	SS(x)	#x
-#define	S(x)	SS(x)
-
 /* Maximum number of seconds that we can conceive of a dump file spanning. */
 #define MAX_REASONABLE_FILE_SPAN (3600*24*366)	/* one year */
 
@@ -406,7 +402,7 @@ sf_find_end( pcap_t *p, const struct timeval *first_timestamp,
 
 	/* Seek so that the next read will start at last valid packet. */
 	if ( fseek64( pcap_file( p ), -(int64_t) (bufend - hdrpos), SEEK_END ) < 0 )
-		error( "final " S(fseek64) "() failed in %s()", __func__ );
+		error( "final fseek64() failed in %s()", __func__ );
 
     done:
 	free( (char *) buf );
@@ -493,7 +489,7 @@ read_up_to( pcap_t *p, const struct timeval *desired_time )
 	}
 
 	if ( fseek64( pcap_file( p ), pos, SEEK_SET ) < 0 )
-		error( S(fseek64) "() failed in %s()", __func__ );
+		error( "fseek64() failed in %s()", __func__ );
 
 	return (status);
 }
@@ -549,7 +545,7 @@ sf_find_packet( pcap_t *p,
 
 		int64_t present_pos = ftell64( pcap_file( p ) );
 		if ( present_pos < 0 )
-			error ( S(ftell64) "() failed in %s()", __func__ );
+			error ( "ftell64() failed in %s()", __func__ );
 
 		if ( present_pos <= desired_pos &&
 		     (uint64_t) (desired_pos - present_pos) < STRAIGHT_SCAN_THRESHOLD )
@@ -566,7 +562,7 @@ sf_find_packet( pcap_t *p,
 			desired_pos = min_pos;
 
 		if ( fseek64( pcap_file( p ), desired_pos, SEEK_SET ) < 0 )
-			error( S(fseek64) "() failed in %s()", __func__ );
+			error( "fseek64() failed in %s()", __func__ );
 
 		int num_bytes_read =
 			fread( (char *) buf, 1, num_bytes, pcap_file( p ) );
@@ -589,7 +585,7 @@ sf_find_packet( pcap_t *p,
 
 		/* Seek to the beginning of the header. */
 		if ( fseek64( pcap_file( p ), desired_pos, SEEK_SET ) < 0 )
-			error( S(fseek64) "() failed in %s()", __func__ );
+			error( "fseek64() failed in %s()", __func__ );
 
 		TIMEVAL_FROM_PKTHDR_TS(tvbuf, hdr.ts);
 		if ( sf_timestamp_less_than( &tvbuf, desired_time ) )
