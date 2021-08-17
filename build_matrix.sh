@@ -10,6 +10,9 @@
 # warning-free because of the OS, the compiler or whatever other factor that
 # the scripts can detect both in and out of CI.
 : "${TCPSLICE_TAINTED:=no}"
+# Some OSes have native make without parallel jobs support and sometimes have
+# GNU Make available as "gmake".
+: "${MAKE_BIN:=make}"
 # It calls the build.sh script which runs one build with the setup environment
 # variable CC.
 
@@ -24,6 +27,7 @@ if [ -z "$PREFIX" ]; then
 fi
 COUNT=0
 export TCPSLICE_TAINTED
+export MAKE_BIN
 
 touch .devel configure
 for CC in $MATRIX_CC; do
@@ -44,13 +48,13 @@ for CC in $MATRIX_CC; do
             echo_magenta 'Use system libpcap' >&2
             purge_directory "$PREFIX"
             if [ -d ../libpcap ]; then
-                (cd ../libpcap; make distclean || echo '(Ignoring the make error.)')
+                (cd ../libpcap; "$MAKE_BIN" distclean || echo '(Ignoring the make error.)')
             fi
         fi
         # Run one build with the setup environment variable: CC
         run_after_echo ./build.sh
         echo 'Cleaning...'
-        make distclean
+        "$MAKE_BIN" distclean
         purge_directory "$PREFIX"
         run_after_echo git status -suall
         # Cancel changes in configure
