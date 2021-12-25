@@ -20,7 +20,6 @@
 print_sysinfo
 # Install directory prefix
 if [ -z "$PREFIX" ]; then
-    # shellcheck disable=SC2006
     PREFIX=`mktempdir tcpslice_build_matrix`
     echo "PREFIX set to '$PREFIX'"
     export PREFIX
@@ -38,7 +37,6 @@ for CC in $MATRIX_CC; do
         continue
     fi
     for BUILD_LIBPCAP in $MATRIX_BUILD_LIBPCAP; do
-        # shellcheck disable=SC2006
         COUNT=`increment $COUNT`
         echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="  >&2
         if [ "$BUILD_LIBPCAP" = yes ]; then

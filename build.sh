@@ -9,7 +9,6 @@
 . ./build_common.sh
 # Install directory prefix
 if [ -z "$PREFIX" ]; then
-    # shellcheck disable=SC2006
     PREFIX=`mktempdir tcpslice_build`
     echo "PREFIX set to '$PREFIX'"
     DELETE_PREFIX=yes
@@ -23,7 +22,6 @@ run_after_echo "$MAKE_BIN" -s clean
 # warnings. Use as specific terms as possible (e.g. some specific compiler and
 # some specific OS).
 
-# shellcheck disable=SC2006
 [ "$TCPSLICE_TAINTED" != yes ] && CFLAGS=`cc_werr_cflags`
 run_after_echo "$MAKE_BIN" -s ${CFLAGS:+CFLAGS="$CFLAGS"}
 run_after_echo ./tcpslice -h
