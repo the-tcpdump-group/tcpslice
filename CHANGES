@@ -8,6 +8,8 @@ v1.5 ...
 
 - Compare the first and the last timestamps of input.
 
+- Get the initial value right in latest_end_time().
+
 - Makefile.in: Quote some pathnames properly.
 
 - Handle some build errors better.

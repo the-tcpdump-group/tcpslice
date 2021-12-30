@@ -723,7 +723,7 @@ lowest_start_time(const struct state *states, int numfiles)
 static struct timeval
 latest_end_time(const struct state *states, int numfiles)
 {
-	struct timeval max_time = states->file_start_time;
+	struct timeval max_time = states->file_stop_time;
 
 	while (numfiles--) {
 		if (sf_timestamp_less_than(&max_time, &states->file_stop_time)) {
