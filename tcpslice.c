@@ -841,6 +841,13 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 	timersub(start_time, base_time, &relative_start);
 	timersub(stop_time, base_time, &relative_stop);
 
+	/* Always write the output file, use the first input file's DLT. */
+	global_dumper = pcap_dump_open(states[0].p, write_file_name);
+	if (!global_dumper) {
+		error("error creating output file '%s': %s",
+		      write_file_name, pcap_geterr(states[0].p));
+	}
+
 	for (i = 0; i < numfiles; ++i) {
 		s = &states[i];
 
@@ -877,12 +884,6 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 
 		/* get first packet for this file */
 		get_next_packet(s);
-	}
-
-	global_dumper = pcap_dump_open(states->p, write_file_name);
-	if (!global_dumper) {
-		error( "error creating output file %s: %s",
-			write_file_name, pcap_geterr( states->p ) );
 	}
 
 

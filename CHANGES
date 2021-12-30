@@ -1,5 +1,7 @@
 v1.5 ...
 
+- CVE-2021-41043: Fix a use-after-free in extract_slice().
+
 - Makefile.in: Quote some pathnames properly.
 
 - Handle some build errors better.
