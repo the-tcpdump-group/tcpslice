@@ -6,6 +6,8 @@ v1.5 ...
 
 - Require every input file to have the same DLT.
 
+- Compare the first and the last timestamps of input.
+
 - Makefile.in: Quote some pathnames properly.
 
 - Handle some build errors better.

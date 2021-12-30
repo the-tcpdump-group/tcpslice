@@ -825,6 +825,14 @@ validate_files(struct state states[], const int numfiles)
 			        states[i].filename, this_dlt, states[0].filename, first_dlt);
 			ret = 1;
 		}
+
+		/* Do a minimal sanity check of the timestamps. */
+		if (sf_timestamp_less_than(&states[i].file_stop_time,
+		                           &states[i].file_start_time)) {
+			warning("'%s' has the last timestamp before the first timestamp",
+			        states[i].filename);
+			ret = 1;
+		}
 	}
 	return ret;
 }
