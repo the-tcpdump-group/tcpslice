@@ -147,6 +147,7 @@ static void fill_tm(const char *time_string, const int is_delta, struct tm *t, t
 static struct timeval lowest_start_time(const struct state *states, int numfiles);
 static struct timeval latest_end_time(const struct state *states, int numfiles);
 static struct state *open_files(char *filenames[], const int numfiles);
+static void close_files(struct state[], const int);
 static void extract_slice(struct state *states, const int numfiles,
 			const char *write_file_name,
 			const struct timeval *start_time, struct timeval *stop_time,
@@ -314,6 +315,7 @@ main(int argc, char **argv)
 		    &first_time);
 	}
 
+	close_files (states, numfiles);
 	return 0;
 }
 
@@ -801,6 +803,17 @@ open_files(char *filenames[], const int numfiles)
 	}
 
 	return states;
+}
+
+static void
+close_files(struct state states[], const int numfiles)
+{
+	int i;
+
+	for (i = 0; i < numfiles; i++)
+		if (!states[i].done)
+			pcap_close(states[i].p);
+	free(states);
 }
 
 /*
