@@ -4,6 +4,8 @@ v1.5 ...
 
 - Deallocate input resources to plug a leak.
 
+- Require every input file to have the same DLT.
+
 - Makefile.in: Quote some pathnames properly.
 
 - Handle some build errors better.

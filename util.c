@@ -38,21 +38,38 @@
 
 #include "tcpslice.h"
 
+static void
+complain(const char *fmt, va_list ap)
+{
+	(void)fprintf(stderr, "tcpslice: ");
+	(void)vfprintf(stderr, fmt, ap);
+	if (*fmt) {
+		fmt += strlen(fmt);
+		if (fmt[-1] != '\n')
+			(void)fputc('\n', stderr);
+	}
+}
+
+/* VARARGS */
+void
+warning(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	complain(fmt, ap);
+	va_end(ap);
+}
+
 /* VARARGS */
 void
 error(const char *fmt, ...)
 {
 	va_list ap;
 
-	(void)fprintf(stderr, "tcpslice: ");
 	va_start(ap, fmt);
-	(void)vfprintf(stderr, fmt, ap);
+	complain(fmt, ap);
 	va_end(ap);
-	if (*fmt) {
-		fmt += strlen(fmt);
-		if (fmt[-1] != '\n')
-			(void)fputc('\n', stderr);
-	}
 	exit(1);
 	/* NOTREACHED */
 }

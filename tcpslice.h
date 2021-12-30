@@ -135,6 +135,7 @@ extern size_t strlcpy(char *, const char *, size_t);
 #endif
 
 void			error(const char *fmt, ...);
+void			warning(const char *fmt, ...);
 
 extern pcap_dumper_t	*global_dumper;
 #endif /* TCPSLICE_H */

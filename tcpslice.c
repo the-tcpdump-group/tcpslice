@@ -147,6 +147,7 @@ static void fill_tm(const char *time_string, const int is_delta, struct tm *t, t
 static struct timeval lowest_start_time(const struct state *states, int numfiles);
 static struct timeval latest_end_time(const struct state *states, int numfiles);
 static struct state *open_files(char *filenames[], const int numfiles);
+static u_char validate_files(struct state[], const int);
 static void close_files(struct state[], const int);
 static void extract_slice(struct state *states, const int numfiles,
 			const char *write_file_name,
@@ -283,6 +284,9 @@ main(int argc, char **argv)
 		keep_dups = 1;	/* no dups can occur, so don't do the work */
 
 	states = open_files(&argv[optind], numfiles);
+	/* validate_files() might identify multiple issues before returning. */
+	if (validate_files(states, numfiles))
+		exit(1);
 	first_time = lowest_start_time(states, numfiles);
 
 	if (start_time_string)
@@ -803,6 +807,26 @@ open_files(char *filenames[], const int numfiles)
 	}
 
 	return states;
+}
+
+/* Return 0 on no errors. */
+static u_char
+validate_files(struct state states[], const int numfiles)
+{
+	u_char ret = 0;
+	int i, first_dlt, this_dlt;
+
+	for (i = 0; i < numfiles; i++) {
+		this_dlt = pcap_datalink(states[i].p);
+		if (i == 0)
+			first_dlt = this_dlt;
+		else if (first_dlt != this_dlt) {
+			warning("file '%s' uses DLT %d, and the first file '%s' uses DLT %d",
+			        states[i].filename, this_dlt, states[0].filename, first_dlt);
+			ret = 1;
+		}
+	}
+	return ret;
 }
 
 static void
