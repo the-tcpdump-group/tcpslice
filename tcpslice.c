@@ -1034,6 +1034,7 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 		get_next_packet(min_state);
 	}
 
+	pcap_dump_close(global_dumper);
 	free(last_pkt);
 }
 
