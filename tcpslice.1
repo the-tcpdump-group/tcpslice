@@ -17,7 +17,7 @@
 .\" WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
 .\" MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 .\"
-.TH TCPSLICE 1  "30 July 2020"
+.TH TCPSLICE 1  "01 January 2022"
 .SH NAME
 tcpslice \- extract pieces of and/or merge together pcap files
 .SH SYNOPSIS
@@ -209,6 +209,10 @@ will not discard duplicates in the same trace file.  In addition,
 you can use the
 .B \-D
 option to suppress any discarding of duplicates.
+.LP
+.I tcpslice
+will refuse to merge multiple files if they don't have the same
+link-layer header type.
 .SH OPTIONS
 .LP
 If any of
