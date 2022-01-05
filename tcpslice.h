@@ -102,7 +102,7 @@
 #include <pcap.h>
 
 #define IS_LEAP_YEAR(year)	\
-	(year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
+	((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
 
 /*
  * OpenBSD libpcap compensation: in struct pcap_pkthdr "ts" instead of struct
