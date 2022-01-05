@@ -48,20 +48,32 @@ AC_REPLACE_FUNCS(strlcpy)
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
 saveCPPFLAGS=$CPPFLAGS
 
-AC_CHECK_LIB(nids, nids_pcap_handler,,
-	AC_MSG_WARN(Libnids not present or too old; tcpslice won't be able to track sessions!)
-	AC_MSG_WARN(Get the latest version of Libnids at http://libnids.sourceforge.net/)
-)
+AC_ARG_WITH([libnids],
+            AS_HELP_STRING([--without-libnids], [Do not use libnids even if present]))
 
-AC_CHECK_LIB(osipparser2, osip_message_parse,,
-	AC_MSG_WARN(Libosip2 not present or too old; tcpslice won't be able to track SIP calls!)
-	AC_MSG_WARN(Get the latest version of Libosip at https://www.gnu.org/software/osip/)
-)
+AS_IF([test "x$with_libnids" != "xno"],
+      [AC_CHECK_LIB(nids, nids_pcap_handler,,
+              AC_MSG_WARN(Libnids not present or too old; tcpslice won't be able to track sessions!)
+              AC_MSG_WARN(Get the latest version of Libnids at http://libnids.sourceforge.net/)
+      )])
 
-AC_CHECK_LIB(ooh323c, asn1PD_H225RasMessage,,
-	AC_MSG_WARN(Libooh323c not present or too old; tcpslice won't be able to track H.323 calls!)
-	AC_MSG_WARN(Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/)
-)
+AC_ARG_WITH([libosipparser2],
+            AS_HELP_STRING([--without-libosipparser2], [Do not use libosipparser2 even if present]))
+
+AS_IF([test "x$with_libosipparser2" != "xno"],
+      [AC_CHECK_LIB(osipparser2, osip_message_parse,,
+              AC_MSG_WARN(Libosip2 not present or too old; tcpslice won't be able to track SIP calls!)
+              AC_MSG_WARN(Get the latest version of Libosip at https://www.gnu.org/software/osip/)
+      )])
+
+AC_ARG_WITH([libooh323c],
+            AS_HELP_STRING([--without-libooh323c], [Do not use libooh323c even if present]))
+
+AS_IF([test "x$with_libooh323c" != "xno"],
+      [AC_CHECK_LIB(ooh323c, asn1PD_H225RasMessage,,
+              AC_MSG_WARN(Libooh323c not present or too old; tcpslice won't be able to track H.323 calls!)
+              AC_MSG_WARN(Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/)
+      )])
 
 #
 # Check whether we have pcap/pcap-inttypes.h.

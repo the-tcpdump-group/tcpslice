@@ -696,6 +696,9 @@ enable_option_checking
 with_gcc
 enable_largefile
 with_system_libpcap
+with_libnids
+with_libosipparser2
+with_libooh323c
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1337,6 +1340,10 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --without-gcc           don't use gcc
   --with-system-libpcap   don't use local pcap library
+  --without-libnids       Do not use libnids even if present
+  --without-libosipparser2
+                          Do not use libosipparser2 even if present
+  --without-libooh323c    Do not use libooh323c even if present
 
 Some influential environment variables:
   CC          C compiler command
@@ -5128,7 +5135,15 @@ fi
 
 saveCPPFLAGS=$CPPFLAGS
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for nids_pcap_handler in -lnids" >&5
+
+# Check whether --with-libnids was given.
+if test "${with_libnids+set}" = set; then :
+  withval=$with_libnids;
+fi
+
+
+if test "x$with_libnids" != "xno"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nids_pcap_handler in -lnids" >&5
 $as_echo_n "checking for nids_pcap_handler in -lnids... " >&6; }
 if ${ac_cv_lib_nids_nids_pcap_handler+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -5174,13 +5189,22 @@ _ACEOF
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libnids not present or too old; tcpslice won't be able to track sessions!" >&5
 $as_echo "$as_me: WARNING: Libnids not present or too old; tcpslice won't be able to track sessions!" >&2;}
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libnids at http://libnids.sourceforge.net/" >&5
+              { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libnids at http://libnids.sourceforge.net/" >&5
 $as_echo "$as_me: WARNING: Get the latest version of Libnids at http://libnids.sourceforge.net/" >&2;}
 
 fi
 
+fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for osip_message_parse in -losipparser2" >&5
+
+# Check whether --with-libosipparser2 was given.
+if test "${with_libosipparser2+set}" = set; then :
+  withval=$with_libosipparser2;
+fi
+
+
+if test "x$with_libosipparser2" != "xno"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for osip_message_parse in -losipparser2" >&5
 $as_echo_n "checking for osip_message_parse in -losipparser2... " >&6; }
 if ${ac_cv_lib_osipparser2_osip_message_parse+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -5226,13 +5250,22 @@ _ACEOF
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libosip2 not present or too old; tcpslice won't be able to track SIP calls!" >&5
 $as_echo "$as_me: WARNING: Libosip2 not present or too old; tcpslice won't be able to track SIP calls!" >&2;}
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libosip at https://www.gnu.org/software/osip/" >&5
+              { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libosip at https://www.gnu.org/software/osip/" >&5
 $as_echo "$as_me: WARNING: Get the latest version of Libosip at https://www.gnu.org/software/osip/" >&2;}
 
 fi
 
+fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for asn1PD_H225RasMessage in -looh323c" >&5
+
+# Check whether --with-libooh323c was given.
+if test "${with_libooh323c+set}" = set; then :
+  withval=$with_libooh323c;
+fi
+
+
+if test "x$with_libooh323c" != "xno"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for asn1PD_H225RasMessage in -looh323c" >&5
 $as_echo_n "checking for asn1PD_H225RasMessage in -looh323c... " >&6; }
 if ${ac_cv_lib_ooh323c_asn1PD_H225RasMessage+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -5278,11 +5311,12 @@ _ACEOF
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libooh323c not present or too old; tcpslice won't be able to track H.323 calls!" >&5
 $as_echo "$as_me: WARNING: Libooh323c not present or too old; tcpslice won't be able to track H.323 calls!" >&2;}
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/" >&5
+              { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/" >&5
 $as_echo "$as_me: WARNING: Get the latest version of Libooh323c at https://sourceforge.net/projects/ooh323c/" >&2;}
 
 fi
 
+fi
 
 #
 # Check whether we have pcap/pcap-inttypes.h.
