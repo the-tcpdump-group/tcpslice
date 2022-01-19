@@ -14,9 +14,9 @@ freebsd_task:
       - image_family: freebsd-13-0
   env:
     IGNORE_OSVERSION: yes
-    MATRIX_CC: clang gcc10
+    MATRIX_CC: clang gcc11
   script:
-    - pkg install -qy autoconf gcc10
+    - pkg install -qy autoconf gcc11
     - pkg install -qy git-tiny # for build_matrix.sh
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
