@@ -2,6 +2,9 @@ v1.6 ...
 
 - Call pcap_dump_close() on the output file.
 
+- Implement new flags in ./configure: --enable-instrument-functions,
+  --without-libnids, --without-libosipparser2 and --without-libooh323c.
+
 v1.5 Thu 30 Dec 20:53:17 GMT 2021
 
 - CVE-2021-41043: Fix a use-after-free in extract_slice().
