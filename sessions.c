@@ -1028,9 +1028,9 @@ static struct session			*h225_cs_callback(struct session *cs, u_char *data, uint
   struct tuple4				addr;
 
   ooGenerateCallToken(callToken, 20);
-  call = ooCreateCall(callType, callToken);
+  call = ooCreateCall(callType, callToken, NULL);
   call->pH225Channel = (OOH323Channel*) memAllocZ (call->pctxt, sizeof (OOH323Channel));
-  if (OO_OK == ooQ931Decode(call, &q931, ntohs(*((u_short *)(data + 2))) - 4, data + 4)) {
+  if (OO_OK == ooQ931Decode(call, &q931, ntohs(*((u_short *)(data + 2))) - 4, data + 4, TRUE)) {
     if (OO_OK == ooHandleH2250Message(call, &q931)) {
       if (!bonus_time && (q931.messageType == Q931CallProceedingMsg)) {
 	for (node = call->remoteFastStartOLCs.head; NULL != node; node = node->next) {
