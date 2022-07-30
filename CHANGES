@@ -5,6 +5,8 @@ v1.6 ...
 - Implement new flags in ./configure: --enable-instrument-functions,
   --without-libnids, --without-libosipparser2 and --without-libooh323c.
 
+- Remove awk code from mkdep.
+
 v1.5 Thu 30 Dec 20:53:17 GMT 2021
 
 - CVE-2021-41043: Fix a use-after-free in extract_slice().
