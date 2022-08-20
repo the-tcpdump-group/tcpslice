@@ -65,8 +65,8 @@ coverity_task:
     COVERITY_SCAN_BUILD_COMMAND_PREPEND: ./configure
     COVERITY_SCAN_BUILD_COMMAND: make
   script:
-    - apt-get -qy update
-    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make gcc
-    - apt-get -qy install git curl wget ruby rubygems ruby-json # for the coverity script
+    - apt-get -qy update >/dev/null
+    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make gcc >/dev/null
+    - apt-get -qy install git curl wget ruby rubygems ruby-json >/dev/null # for the coverity script
     - apt list --installed 'lib*-dev'
     - ./.ci-coverity-scan-build.sh
