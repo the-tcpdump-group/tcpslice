@@ -27,7 +27,7 @@ linux_task:
   container:
     cpu: 2
     memory: 1G
-    image: ubuntu:20.04
+    image: ubuntu:22.04
   env:
     DEBIAN_FRONTEND: noninteractive # libnids-dev -> tzdata -> debconf
   script:
@@ -57,7 +57,7 @@ coverity_task:
   container:
     cpu: 2
     memory: 2G
-    image: ubuntu:20.04
+    image: ubuntu:22.04
   env:
     DEBIAN_FRONTEND: noninteractive
     COVERITY_SCAN_PROJECT_NAME: $CIRRUS_REPO_FULL_NAME
