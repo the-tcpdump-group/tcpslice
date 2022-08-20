@@ -31,10 +31,10 @@ linux_task:
   env:
     DEBIAN_FRONTEND: noninteractive # libnids-dev -> tzdata -> debconf
   script:
-    - apt-get -qy update
-    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang gcc
-    - apt-get -qy install flex bison libdbus-1-dev libbluetooth-dev libnl-genl-3-dev libibverbs-dev # for libpcap
-    - apt-get -qy install git bc # for build_matrix.sh and build.sh
+    - apt-get -qy update >/dev/null
+    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang gcc >/dev/null
+    - apt-get -qy install flex bison libdbus-1-dev libbluetooth-dev libnl-genl-3-dev libibverbs-dev >/dev/null # for libpcap
+    - apt-get -qy install git bc >/dev/null # for build_matrix.sh and build.sh
     - apt list --installed 'lib*-dev'
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
