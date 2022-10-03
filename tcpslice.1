@@ -27,9 +27,8 @@ tcpslice \- extract pieces of and/or merge together pcap files
 .B \-DdlhRrtv
 ] [
 .B \-w
-.I file
+.I output-file
 ]
-.br
 .ti +9
 [
 .B \-s
@@ -41,7 +40,6 @@ tcpslice \- extract pieces of and/or merge together pcap files
 .B \-f
 .I format
 ] ]
-.br
 .ti +9
 [
 .I start-time
@@ -241,7 +239,7 @@ or
 has been specified then the times are dumped in the corresponding
 format; otherwise, raw format (\fB\-R\fP) is used.
 .TP
-.B \-e
+.BI \-e " seconds"
 Specify a number of
 .I seconds
 to wait after the last packet was seen before considering a session
@@ -250,7 +248,7 @@ is only effective when the
 .B \-s
 option is used to track sessions.
 .TP
-.B \-f
+.BI \-f " format"
 Specify the name
 .I format
 of PCAP files to which each session will be extracted (default: NULL = do
@@ -285,7 +283,7 @@ except the timestamps are dumped in human-readable format, similar
 to that used by
 .BR date (1).
 .TP
-.B \-s
+.BI \-s " types"
 Enable session tracking for the specified
 .I types
 which is a comma-separated list of the following:
@@ -337,8 +335,8 @@ displayed past
 if specified at least twice, subsessions (sessions initiated by other
 sessions) openings and closings are also displayed.
 .TP
-.B \-w
-Direct the output to \fIfile\fR rather than \fIstdout\fP.
+.BI \-w " output-file"
+Direct the output to \fIoutput-file\fR rather than \fIstdout\fP.
 .SH "SEE ALSO"
 .BR tcpdump (1)
 .SH AUTHORS
