@@ -1,6 +1,6 @@
 # TCPSLICE 1.x by [The Tcpdump Group](https://www.tcpdump.org/)
 
-**To report a security issue please send an e-mail to security@tcpdump.org.**
+**To report a security issue, please send an e-mail to security@tcpdump.org.**
 
 Anonymous git access is available via
 
@@ -10,7 +10,7 @@ This directory contains source code for tcpslice, a tool for extracting
 portions of packet trace files generated using tcpdump's `-w` flag.
 
 Problems, bugs, questions, desirable enhancements, source code contributions,
-etc., should be sent to the mailing list "tcpdump-workers@lists.tcpdump.org".
+etc., should be sent to the [mailing list](https://www.tcpdump.org/#mailing-lists).
 
 ### Dependency on libpcap
 Tcpslice uses libpcap, a system-independent interface for user-level
@@ -18,7 +18,7 @@ packet capture.  Before building tcpslice, you must first retrieve and
 build libpcap.
 
 Once libpcap is built (either install it or make sure it's in `../libpcap`),
-you can build tcpslice using the procedure in the [installation guidelines](INSTALL).
+you can build tcpslice using the procedure in the [installation guidelines](INSTALL.md).
 
 ### Origins of tcpslice
 

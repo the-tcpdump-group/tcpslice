@@ -103,7 +103,7 @@ CLEANFILES = $(PROG) $(OBJ) $(GENSRC)
 EXTRA_DIST = \
 	CHANGES \
 	CREDITS \
-	INSTALL \
+	INSTALL.md \
 	Makefile.in \
 	Makefile-devel-adds \
 	README.md \

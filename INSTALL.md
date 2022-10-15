@@ -1,28 +1,29 @@
-If you have not built libpcap, do so first.  See the README.md file in
-this directory for the source code location.
+# tcpslice installation notes
 
-You will need an ANSI C compiler to build tcpslice. The configure
-script will abort if your compiler is not ANSI compliant. If this
-happens, use the generally available GNU C compiler (GCC).
+If you have not built libpcap, do so first.  See [this file](README.md)
+for the source code location.
 
-After libpcap has been built (either install it with "make install" and
-"make install-incl" or make sure both the libpcap and tcpslice source
-trees are in the same directory), edit the BINDEST and MANDEST paths in
-Makefile.in and run ./configure (a shell script).  "configure" will
-determine your system attributes and generate an appropriate Makefile
-from Makefile.in.  Now build tcpslice by running "make".
+You will need a C99 compiler to build tcpslice.  The `configure`
+script will abort if your compiler is not C99 compliant.  If this
+happens, use the generally available GNU C compiler (GCC) or Clang.
 
-If everything builds ok, su and type "make install" (and optionally
-"make install-man). This will install tcpslice and the manual entry.
+After libpcap has been built (either install it with `make install`
+or make sure both the libpcap and tcpslice source trees are in the same
+directory), run `./configure` (a shell script).  `configure` will
+determine your system attributes and generate an appropriate `Makefile`
+from `Makefile.in`.  Now build tcpslice by running `make`.
+
+If everything builds OK, `su` and run `make install`.  This will install
+tcpslice and the manual entry.
 
 If your system is not one which we have tested tcpslice on, you may
-have to modify the configure script and Makefile.in. Please send us
+have to modify the `configure.ac` and `Makefile.in` files.  Please send us
 patches for any modifications you need to make.
 
-FILES
------
+## Description of files
+```
 CHANGES         - description of differences between releases
-INSTALL         - this file
+INSTALL.md      - this file
 Makefile.in	- compilation rules (input to the configure script)
 Makefile-devel-adds - additional rules if .devel file exists
 README.md	- description of distribution
@@ -32,7 +33,7 @@ compiler-tests.h - compiler version definitions
 config.guess	- autoconf support
 config.sub	- autoconf support
 configure	- configure script (run this first)
-configure.in	- configure script source
+configure.ac	- configure script source
 gmt2local.c	- time conversion routines
 gmt2local.h	- time conversion prototypes
 gwtm2secs.c	- GMT to Unix timestamp conversion
@@ -51,3 +52,4 @@ tcpslice.c	- main program
 tcpslice.h	- global prototypes
 util.c		- utility routines
 varattrs.h	- compiler attribute definitions
+```
