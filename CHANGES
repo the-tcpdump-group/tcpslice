@@ -5,13 +5,17 @@ v1.6 ...
 - Implement new flags in ./configure: --enable-instrument-functions,
   --without-libnids, --without-libosipparser2 and --without-libooh323c.
 
+- autoconf: Add the option to print functions and files names
+
+- Update config.{guess,sub}, timestamps 2022-01-09,2022-01-03
+
+- configure: use pcap-config --static-pcap-only if available
+
 - Remove awk code from mkdep.
 
 - Refine the man page.
 
 - Refine the documentation files.
-
-- configure: use pcap-config --static-pcap-only if available
 
 v1.5 Thu 30 Dec 20:53:17 GMT 2021
 
