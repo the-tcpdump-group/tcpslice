@@ -122,6 +122,8 @@ EXTRA_DIST = \
 	mkdep \
 	tcpslice.1
 
+RELEASE_FILES = $(CSRC) $(HDR) $(EXTRA_DIST)
+
 all: $(PROG)
 
 $(PROG): $(OBJ) @V_PCAPDEP@
@@ -184,14 +186,17 @@ tags: $(TAGFILES)
 TAGS: $(TAGFILES)
 	etags $(TAGFILES)
 
-# AIX tar does not support "z", so use a pipe for gzip.
-# Solaris tar understands "cf -", but not "-c -f -".
 releasetar:
-	@name=$(PROG)-`cat VERSION` ; \
-	   mkdir $$name && \
-	   tar cf - $(CSRC) $(HDR) $(EXTRA_DIST) | (cd $$name; tar xf -) && \
-	   tar cf - $$name | gzip >$$name.tar.gz && \
-	   rm -rf $$name
+	@TAG=$(PROG)-`cat VERSION` && \
+	if git show-ref --tags --quiet --verify -- "refs/tags/$$TAG"; then \
+	    git archive --prefix="$$TAG"/ -o "$$TAG".tar.gz "$$TAG" \
+	    $(RELEASE_FILES) && \
+	    echo "Archive build from tag $$TAG."; \
+	else \
+	    git archive --prefix="$$TAG"/ -o "$$TAG".tar.gz HEAD \
+	    $(RELEASE_FILES) && \
+	    echo "No $$TAG tag. Archive build from HEAD."; \
+	fi
 
 depend: $(GENSRC)
 	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC) $(LIBNETDISSECT_SRC)
