@@ -1,5 +1,7 @@
 v1.7 ...
 
+- Use "git archive" for the "make releasetar" process.
+
 v1.6 Thu 20 Oct 21:22:28 BST 2022
 
 - Call pcap_dump_close() on the output file.
