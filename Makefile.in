@@ -198,6 +198,19 @@ releasetar:
 	    echo "No $$TAG tag. Archive build from HEAD."; \
 	fi
 
+releasecheck:
+	@TAG=$(PROG)-`cat VERSION` && \
+	DIR=`pwd` && \
+	make releasetar && \
+	cd /tmp && \
+	rm -rf "$$TAG" && \
+	tar xf "$$DIR"/"$$TAG".tar.gz && \
+	cd "$$TAG" && \
+	./configure && \
+	make -s && \
+	cd .. && \
+	rm -rf "$$TAG"
+
 depend: $(GENSRC)
 	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC) $(LIBNETDISSECT_SRC)
 
