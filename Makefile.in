@@ -198,10 +198,9 @@ releasetar:
 	    echo "No $$TAG tag. Archive build from HEAD."; \
 	fi
 
-releasecheck:
+releasecheck: releasetar
 	@TAG=$(PROG)-`cat VERSION` && \
 	DIR=`pwd` && \
-	make releasetar && \
 	cd /tmp && \
 	rm -rf "$$TAG" && \
 	tar xf "$$DIR"/"$$TAG".tar.gz && \
