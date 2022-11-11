@@ -31,13 +31,16 @@ VERSION		- version of this release
 aclocal.m4	- autoconf macros
 compiler-tests.h - compiler version definitions
 config.guess	- autoconf support
+config.h.in	- autoconf input
 config.sub	- autoconf support
 configure	- configure script (run this first)
 configure.ac	- configure script source
+diag-control.h	- diagnostic control #defines
 gmt2local.c	- time conversion routines
 gmt2local.h	- time conversion prototypes
 gwtm2secs.c	- GMT to Unix timestamp conversion
 install-sh	- BSD style install script
+instrument-functions.c - instrumentation of functions
 lbl/os-*.h	- os dependent defines and prototypes
 machdep.c	- machine dependent routines
 machdep.h	- machine dependent definitions
