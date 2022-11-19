@@ -205,7 +205,9 @@ releasecheck: releasetar
 	rm -rf "$$TAG" && \
 	tar xf "$$DIR"/"$$TAG".tar.gz && \
 	cd "$$TAG" && \
+	echo '[$@] $$ ./configure --quiet' && \
 	./configure --quiet && \
+	echo '[$@] $$ make -s' && \
 	make -s && \
 	cd .. && \
 	rm -rf "$$TAG"
