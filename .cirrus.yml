@@ -47,7 +47,7 @@ macos_task:
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-xcode:14.1 # macOS 13 with Xcode 14.1
   env:
-    MAKEFLAGS: '-j 12' # macOS VMs always run on 12 cores
+    MAKEFLAGS: '-j 4' # macOS VMs run on 4 cores
   script:
     - brew update >/dev/null
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
