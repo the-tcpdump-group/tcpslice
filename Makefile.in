@@ -210,7 +210,8 @@ releasecheck: releasetar
 	echo '[$@] $$ make -s' && \
 	make -s && \
 	cd .. && \
-	rm -rf "$$TAG"
+	rm -rf "$$TAG" && \
+	echo '[$@] Done.'
 
 depend: $(GENSRC)
 	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC) $(LIBNETDISSECT_SRC)
