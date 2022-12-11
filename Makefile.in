@@ -204,6 +204,7 @@ releasecheck: releasetar
 	DIR=`pwd` && \
 	cd /tmp && \
 	rm -rf "$$TAG" && \
+	rm -rf "$$INSTALL_DIR" && \
 	tar xf "$$DIR"/"$$TAG".tar.gz && \
 	cd "$$TAG" && \
 	echo "[$@] $$ ./configure --quiet --prefix=$$INSTALL_DIR" && \
