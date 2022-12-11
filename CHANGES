@@ -4,6 +4,7 @@ v1.7 ...
 - Makefile.in: Add the releasecheck target.
 - Cirrus CI: Add the "make releasecheck" command in the Linux task.
 - INSTALL.md: Add missing files.
+- Makefile.in: Add "make -s install" in the releasecheck target.
 
 v1.6 Thu 20 Oct 21:22:28 BST 2022
 

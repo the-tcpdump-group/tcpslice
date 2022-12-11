@@ -200,17 +200,21 @@ releasetar:
 
 releasecheck: releasetar
 	@TAG=$(PROG)-`cat VERSION` && \
+	INSTALL_DIR=/tmp/install_"$$TAG"_$$$$ && \
 	DIR=`pwd` && \
 	cd /tmp && \
 	rm -rf "$$TAG" && \
 	tar xf "$$DIR"/"$$TAG".tar.gz && \
 	cd "$$TAG" && \
-	echo '[$@] $$ ./configure --quiet' && \
-	./configure --quiet && \
+	echo "[$@] $$ ./configure --quiet --prefix=$$INSTALL_DIR" && \
+	./configure --quiet --prefix="$$INSTALL_DIR" && \
 	echo '[$@] $$ make -s' && \
 	make -s && \
+	echo '[$@] $$ make -s install' && \
+	make -s install && \
 	cd .. && \
 	rm -rf "$$TAG" && \
+	rm -rf "$$INSTALL_DIR" && \
 	echo '[$@] Done.'
 
 depend: $(GENSRC)
