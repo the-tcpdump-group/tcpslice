@@ -37,9 +37,7 @@ linux_task:
     - apt-get -qy install git bc >/dev/null # for build_matrix.sh and build.sh
     - apt list --installed 'lib*-dev'
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
-    - echo '$ ./configure --quiet'
     - ./configure --quiet # build the Makefile
-    - echo '$ make releasecheck'
     - make releasecheck
     - ./build_matrix.sh
 
