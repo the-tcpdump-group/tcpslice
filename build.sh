@@ -15,6 +15,7 @@ if [ -z "$PREFIX" ]; then
 fi
 
 print_cc_version
+run_after_echo ./autogen.sh
 run_after_echo ./configure --prefix="$PREFIX"
 run_after_echo "$MAKE_BIN" -s clean
 

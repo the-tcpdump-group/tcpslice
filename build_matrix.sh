@@ -28,7 +28,7 @@ COUNT=0
 export TCPSLICE_TAINTED
 export MAKE_BIN
 
-touch .devel configure
+touch .devel
 for CC in $MATRIX_CC; do
     export CC
     discard_cc_cache
@@ -55,8 +55,6 @@ for CC in $MATRIX_CC; do
         "$MAKE_BIN" distclean
         purge_directory "$PREFIX"
         run_after_echo git status -suall
-        # Cancel changes in configure
-        run_after_echo git checkout configure
     done
 done
 run_after_echo rm -rf "$PREFIX"

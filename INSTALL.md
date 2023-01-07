@@ -9,9 +9,19 @@ happens, use the generally available GNU C compiler (GCC) or Clang.
 
 After libpcap has been built (either install it with `make install`
 or make sure both the libpcap and tcpslice source trees are in the same
-directory), run `./configure` (a shell script).  `configure` will
-determine your system attributes and generate an appropriate `Makefile`
-from `Makefile.in`.  Now build tcpslice by running `make`.
+directory), run `./autogen.sh` (a shell script).  `autogen.sh` will
+build the `configure` and `config.h.in` files.  Then run `./configure`
+(a shell script).  `configure` will determine your system attributes
+and generate an appropriate `Makefile` from `Makefile.in`.
+Now build tcpslice by running `make`.
+
+On some system, you may need to set the `AUTORECONF` variable, like:
+`AUTORECONF=autoreconf-2.69 ./autogen.sh`
+to select the `autoreconf` version you want to use.
+
+On OpenBSD, you may need to set, before the `make`, the `AUTOCONF_VERSION`
+variable like:
+`AUTOCONF_VERSION=2.69 make`
 
 If everything builds OK, `su` and run `make install`.  This will install
 tcpslice and the manual entry.
@@ -29,11 +39,10 @@ Makefile-devel-adds - additional rules if .devel file exists
 README.md	- description of distribution
 VERSION		- version of this release
 aclocal.m4	- autoconf macros
+autogen.sh	- build configure and config.h.in (run this first)
 compiler-tests.h - compiler version definitions
 config.guess	- autoconf support
-config.h.in	- autoconf input
 config.sub	- autoconf support
-configure	- configure script (run this first)
 configure.ac	- configure script source
 diag-control.h	- diagnostic control #defines
 gmt2local.c	- time conversion routines

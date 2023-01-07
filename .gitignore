@@ -3,7 +3,9 @@ Makefile
 config.status
 config.log
 config.cache
+configure
 config.h
+config.h.in
 .devel
 os-proto.h
 stamp-h
