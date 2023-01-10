@@ -149,11 +149,6 @@ else
 	srcdirprefix="./"
 fi
 
-if test -r ${srcdirprefix}lbl/gnuc.h ; then
-	rm -f gnuc.h
-	ln -s ${srcdirprefix}lbl/gnuc.h gnuc.h
-fi
-
 AC_SUBST(V_CCOPT)
 AC_SUBST(V_DEFS)
 AC_SUBST(V_INCLS)
