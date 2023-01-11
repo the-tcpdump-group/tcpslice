@@ -208,6 +208,8 @@ releasecheck: releasetar
 	rm -rf "$$INSTALL_DIR" && \
 	tar xf "$$DIR"/"$$TAG".tar.gz && \
 	cd "$$TAG" && \
+	echo "[$@] $$ touch .devel" && \
+	touch .devel && \
 	echo "[$@] $$ ./configure --quiet --prefix=$$INSTALL_DIR" && \
 	./configure --quiet --prefix="$$INSTALL_DIR" && \
 	echo '[$@] $$ make -s' && \
