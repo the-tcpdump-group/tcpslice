@@ -194,6 +194,11 @@ TAGS: $(TAGFILES)
 # construct the release tarball from that subdirectory, and remove
 # the subdirectory.
 #
+# The --format=tar and ^{tree} are there to force git archive not to
+# write out the "helpful" global extended pax header with a commit ID,
+# as not all versions of tar can handle that (Solaris tar can't, for
+# example).
+#
 releasetar:
 	@TAG=$(PROG)-`cat VERSION` && \
 	AUTORECONF_DIR=/tmp/autoreconf_"$$TAG"_$$$$ && \
@@ -203,7 +208,7 @@ releasetar:
 	mkdir "$$AUTORECONF_DIR" && \
 	cd "$$AUTORECONF_DIR" && \
 	if git -C $$DIR show-ref --tags --quiet --verify -- "refs/tags/$$TAG"; then \
-	    (git -C $$DIR archive --format=tar --prefix="$$TAG"/ "$$TAG" $(RELEASE_FILES) | \
+	    (git -C $$DIR archive --format=tar --prefix="$$TAG"/ "$$TAG"^{tree} $(RELEASE_FILES) | \
 	     tar xf -) && \
 	    echo "Archive build from tag $$TAG."; \
 	else \
