@@ -7,7 +7,8 @@ AUTORECONFVERSION=`$AUTORECONF --version 2>&1 | grep "^autoreconf" | sed 's/.*) 
 maj=`echo "$AUTORECONFVERSION" | cut -d. -f1`
 min=`echo "$AUTORECONFVERSION" | cut -d. -f2`
 # The minimum required version of autoconf is currently 2.69.
-if [ "$maj" -lt 2 ] || [ "$maj" -eq 2 -a "$min" -lt 69 ]; then
+if [ "$maj" = "" ] || [ "$min" = "" ] || \
+   [ "$maj" -lt 2 ] || [ "$maj" -eq 2 -a "$min" -lt 69 ]; then
 	cat >&2 <<-EOF
 	Please install the 'autoconf' package version 2.69 or later.
 	If version 2.69 or later is already installed and there is no
