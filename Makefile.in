@@ -186,17 +186,34 @@ tags: $(TAGFILES)
 TAGS: $(TAGFILES)
 	etags $(TAGFILES)
 
+#
+# Use git archive piped to tar to construct a subdirectory whose name
+# is libpcap-{release}, containing all the checked-in source files,
+# and then run autoreconf in that directory to generate the configure
+# script and other files from that source.  Then remove autom4te.cache,
+# construct the release tarball from that subdirectory, and remove
+# the subdirectory.
+#
 releasetar:
 	@TAG=$(PROG)-`cat VERSION` && \
-	if git show-ref --tags --quiet --verify -- "refs/tags/$$TAG"; then \
-	    git archive --prefix="$$TAG"/ -o "$$TAG".tar.gz "$$TAG" \
-	    $(RELEASE_FILES) && \
+	AUTORECONF_DIR=/tmp/autoreconf_"$$TAG"_$$$$ && \
+	DIR=`pwd` && \
+	cd /tmp && \
+	rm -rf "$$AUTORECONF_DIR" && \
+	mkdir "$$AUTORECONF_DIR" && \
+	cd "$$AUTORECONF_DIR" && \
+	if git -C $$DIR show-ref --tags --quiet --verify -- "refs/tags/$$TAG"; then \
+	    (git -C $$DIR archive --format=tar --prefix="$$TAG"/ "$$TAG" $(RELEASE_FILES) | \
+	     tar xf -) && \
 	    echo "Archive build from tag $$TAG."; \
 	else \
-	    git archive --prefix="$$TAG"/ -o "$$TAG".tar.gz HEAD \
-	    $(RELEASE_FILES) && \
+	    (git -C $$DIR archive --format=tar --prefix="$$TAG"/ HEAD^{tree} $(RELEASE_FILES) | tar xf -) && \
 	    echo "No $$TAG tag. Archive build from HEAD."; \
-	fi
+	fi && \
+	(cd "$$TAG" && autoreconf && rm -rf autom4te.cache) && \
+	tar cf "$$DIR/$$TAG".tar.gz "$$TAG" && \
+	cd /tmp && \
+	rm -rf "$$AUTORECONF_DIR"
 
 releasecheck: releasetar
 	@TAG=$(PROG)-`cat VERSION` && \
