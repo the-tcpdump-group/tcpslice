@@ -207,11 +207,16 @@ TAGS: $(TAGFILES)
 # a commit ID, so no commit ID is available to write, and thus
 # git archive doesn't write one.)
 #
+# To simplify automatic cleanup, use the same temporary directory and
+# name prefix for AUTORECONF_DIR as build.sh and build_matrix.sh use for
+# their temporary directories.
+#
 releasetar:
 	@TAG=$(PROG)-`cat VERSION` && \
-	AUTORECONF_DIR=/tmp/autoreconf_"$$TAG"_$$$$ && \
+	TMPTESTFILE=`mktemp -t tmptestfile_XXXXXXXX` && \
+	rm -f "$$TMPTESTFILE" && \
+	AUTORECONF_DIR=`dirname "$$TMPTESTFILE"`/tcpslice_build_autoreconf_$$$$ && \
 	DIR=`pwd` && \
-	cd /tmp && \
 	rm -rf "$$AUTORECONF_DIR" && \
 	mkdir "$$AUTORECONF_DIR" && \
 	cd "$$AUTORECONF_DIR" && \
@@ -227,7 +232,7 @@ releasetar:
 	tar cf "$$DIR/$$TAG".tar "$$TAG" && \
 	rm -f "$$DIR/$$TAG".tar.gz && \
 	gzip --best "$$DIR/$$TAG".tar && \
-	rm -rf "/tmp/$$AUTORECONF_DIR"
+	rm -rf "$$AUTORECONF_DIR"
 
 releasecheck: releasetar
 	@TAG=$(PROG)-`cat VERSION` && \
