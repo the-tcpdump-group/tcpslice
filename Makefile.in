@@ -232,6 +232,7 @@ releasetar:
 	tar cf "$$DIR/$$TAG".tar "$$TAG" && \
 	rm -f "$$DIR/$$TAG".tar.gz && \
 	gzip --best "$$DIR/$$TAG".tar && \
+	cd "$$DIR" && \
 	rm -rf "$$AUTORECONF_DIR"
 
 releasecheck: releasetar
