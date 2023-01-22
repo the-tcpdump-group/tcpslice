@@ -9,15 +9,19 @@ happens, use the generally available GNU C compiler (GCC) or Clang.
 
 After libpcap has been built (either install it with `make install`
 or make sure both the libpcap and tcpslice source trees are in the same
-directory), run `./autogen.sh` (a shell script).  `autogen.sh` will
-build the `configure` and `config.h.in` files.  Then run `./configure`
-(a shell script).  `configure` will determine your system attributes
-and generate an appropriate `Makefile` from `Makefile.in`.
-Now build tcpslice by running `make`.
+directory):
+
+* If you build from a git clone rather than from a release archive,
+run `./autogen.sh` (a shell script).  `autogen.sh` will
+build the `configure` and `config.h.in` files.
 
 On some system, you may need to set the `AUTORECONF` variable, like:
 `AUTORECONF=autoreconf-2.69 ./autogen.sh`
 to select the `autoreconf` version you want to use.
+
+* Run `./configure` (a shell script).  `configure` will determine your
+system attributes and generate an appropriate `Makefile` from `Makefile.in`.
+Now build tcpslice by running `make`.
 
 On OpenBSD, you may need to set, before the `make`, the `AUTOCONF_VERSION`
 variable like:
