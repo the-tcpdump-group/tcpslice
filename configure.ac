@@ -13,8 +13,8 @@ dnl
 # config.sub.
 #
 
-AC_PREREQ(2.69)
-AC_INIT(tcpslice, m4_esyscmd_s([cat VERSION]))
+AC_PREREQ([2.69])
+AC_INIT([tcpslice],[m4_esyscmd_s(cat VERSION)])
 AC_CONFIG_SRCDIR(tcpslice.c)
 
 AC_CANONICAL_HOST
@@ -159,10 +159,11 @@ AC_PROG_INSTALL
 
 AC_CONFIG_HEADER(config.h)
 
-AC_OUTPUT_COMMANDS([if test -f .devel; then
+AC_CONFIG_COMMANDS([.devel],[[if test -f .devel; then
 	echo timestamp > stamp-h
 	cat $srcdir/Makefile-devel-adds >> Makefile
 	make depend || exit 1
-fi])
-AC_OUTPUT(Makefile)
+fi]],[[]])
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
 exit 0
