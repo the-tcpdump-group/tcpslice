@@ -29,7 +29,6 @@ if test "$ac_cv_prog_cc_c99" = "no"; then
 	AC_MSG_WARN([The C compiler does not support C99; there may be compiler errors])
 fi
 AC_LBL_C_INIT(V_CCOPT, V_INCLS)
-AC_LBL_C_INLINE
 
 AC_CHECK_HEADERS(fcntl.h)
 
@@ -46,7 +45,6 @@ AC_FUNC_FSEEKO
 AC_REPLACE_FUNCS(strlcpy)
 
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
-saveCPPFLAGS=$CPPFLAGS
 
 AC_MSG_CHECKING([whether to enable the instrument functions code])
 AC_ARG_ENABLE([instrument-functions],
