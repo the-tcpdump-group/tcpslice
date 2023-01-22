@@ -215,7 +215,7 @@ releasetar:
 	@TAG=$(PROG)-`cat VERSION` && \
 	TMPTESTFILE=`mktemp -t tmptestfile_XXXXXXXX` && \
 	rm -f "$$TMPTESTFILE" && \
-	AUTORECONF_DIR=`dirname "$$TMPTESTFILE"`/tcpslice_build_autoreconf_$$$$ && \
+	AUTORECONF_DIR=`dirname "$$TMPTESTFILE"`/"$(PROG)"_build_autoreconf_$$$$ && \
 	DIR=`pwd` && \
 	rm -rf "$$AUTORECONF_DIR" && \
 	mkdir "$$AUTORECONF_DIR" && \
