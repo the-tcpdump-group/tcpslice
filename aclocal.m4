@@ -385,14 +385,9 @@ dnl
 dnl	$1 (pcapdep set)
 dnl	$2 (incls appended)
 dnl	LIBS
-dnl	LBL_LIBS
 dnl
 AC_DEFUN(AC_LBL_LIBPCAP,
     [AC_REQUIRE([AC_LBL_LIBRARY_NET])
-    dnl
-    dnl save a copy before locating libpcap.a
-    dnl
-    LBL_LIBS="$LIBS"
     libpcap=FAIL
     AC_ARG_WITH([system-libpcap],
         [AS_HELP_STRING([--with-system-libpcap], [don't use local pcap library])],
