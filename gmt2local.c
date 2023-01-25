@@ -27,9 +27,7 @@
 #include <sys/time.h>
 
 #include <stdio.h>
-#ifdef TIME_WITH_SYS_TIME
 #include <time.h>
-#endif
 
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"

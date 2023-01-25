@@ -41,9 +41,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TIME_WITH_SYS_TIME
 #include <time.h>
-#endif
 #include <unistd.h>
 
 #if HAVE_STDINT_H
