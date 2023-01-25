@@ -190,12 +190,11 @@ AC_DEFUN(AC_LBL_C_INIT,
 	    ultrix*)
 		    AC_MSG_CHECKING(that Ultrix $CC hacks const in prototypes)
 		    AC_CACHE_VAL(ac_cv_lbl_cc_const_proto,
-			AC_TRY_COMPILE(
-			    [#include <sys/types.h>],
-			    [struct a { int b; };
-			    void c(const struct a *)],
-			    ac_cv_lbl_cc_const_proto=yes,
-			    ac_cv_lbl_cc_const_proto=no))
+			AC_COMPILE_IFELSE(
+			    [AC_LANG_PROGRAM([[#include <sys/types.h>]],
+				[[struct a { int b; }; void c(const struct a *)]])],
+			    [ac_cv_lbl_cc_const_proto=yes],
+			    [ac_cv_lbl_cc_const_proto=no]))
 		    AC_MSG_RESULT($ac_cv_lbl_cc_const_proto)
 		    if test $ac_cv_lbl_cc_const_proto = no ; then
 			    AC_DEFINE(const,[],
@@ -241,7 +240,7 @@ AC_DEFUN(AC_LBL_CHECK_COMPILER_OPT,
 	#    https://www.postgresql.org/message-id/2192993.1591682589%40sss.pgh.pa.us
 	#
 	# This may, as per those two messages, be fixed in autoconf 2.70,
-	# but we only require 2.64 or newer for now.
+	# but we only require 2.69 or newer for now.
 	#
 	AC_COMPILE_IFELSE(
 	    [AC_LANG_SOURCE([[int main(void) { return 0; }]])],
