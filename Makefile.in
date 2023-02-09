@@ -77,9 +77,7 @@ LIBOBJS = @LIBOBJS@
 
 SRC =	$(CSRC) $(GENSRC)
 
-# We would like to say "OBJ = $(SRC:.c=.o)" but Ultrix's make cannot
-# hack the extra indirection
-OBJ =	$(CSRC:.c=.o) $(GENSRC:.c=.o) $(LOCALSRC:.c=.o) $(LIBOBJS)
+OBJ =	$(SRC:.c=.o) $(LOCALSRC:.c=.o) $(LIBOBJS)
 HDR = \
 	compiler-tests.h \
 	diag-control.h \
