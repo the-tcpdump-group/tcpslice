@@ -10,6 +10,7 @@ v1.7 ...
 - Makefile.in: Add some missing files in the distclean target.
 - autoconf: Add autogen.sh, remove configure and config.h.in.
 - autoconf: Require at least autoconf 2.69.
+- Fix a build error on Haiku.
 
 v1.6 Thu 20 Oct 21:22:28 BST 2022
 
