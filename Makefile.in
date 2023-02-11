@@ -113,8 +113,6 @@ EXTRA_DIST = \
 	configure.ac \
 	install-sh \
 	instrument-functions.c \
-	lbl/os-solaris2.h \
-	lbl/os-sunos4.h \
 	missing/strlcpy.c \
 	mkdep \
 	tcpslice.1
