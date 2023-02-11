@@ -165,12 +165,12 @@ lint: $(GENSRC)
 	    grep -v 'possible pointer alignment problem'
 
 clean:
-	rm -f $(CLEANFILES) $(PROG)-`cat VERSION`.tar*
+	rm -f $(CLEANFILES) $(PROG)-`cat VERSION`.tar* \
+	config.h.in~ configure~ configure.ac~
 
 distclean: clean
 	rm -f Makefile config.cache config.log config.status \
-	    config.h config.h.in~ configure~ configure.ac~ \
-	    os-proto.h stamp-h stamp-h.in
+	    config.h os-proto.h stamp-h stamp-h.in
 	rm -rf autom4te.cache
 
 extags: $(TAGFILES)
