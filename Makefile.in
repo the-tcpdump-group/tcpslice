@@ -89,9 +89,7 @@ HDR = \
 TAGHDR = \
 	/usr/include/netinet/in.h \
 	/usr/include/netinet/udp.h \
-	/usr/include/netinet/tcp.h \
-	/usr/include/netinet/if_ether.h \
-	/usr/include/arpa/tftp.h
+	/usr/include/netinet/tcp.h
 
 TAGFILES = $(SRC) $(HDR) $(TAGHDR)
 
