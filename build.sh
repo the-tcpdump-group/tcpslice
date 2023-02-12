@@ -25,8 +25,8 @@ run_after_echo "$MAKE_BIN" -s clean
 
 [ "$TCPSLICE_TAINTED" != yes ] && CFLAGS=`cc_werr_cflags`
 run_after_echo "$MAKE_BIN" -s ${CFLAGS:+CFLAGS="$CFLAGS"}
-run_after_echo ./tcpslice -h
 print_so_deps tcpslice
+run_after_echo ./tcpslice -h
 run_after_echo "$MAKE_BIN" install
 run_after_echo "$MAKE_BIN" releasetar
 handle_matrix_debug
