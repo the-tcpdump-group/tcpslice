@@ -41,6 +41,7 @@ linux_task:
     - ./configure --quiet # build the Makefile
     - make releasecheck
     - make whitespacecheck
+    - make shellcheck
     - ./build_matrix.sh
 
 macos_task:
