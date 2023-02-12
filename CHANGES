@@ -11,6 +11,7 @@ v1.7 ...
 - autoconf: Add autogen.sh, remove configure and config.h.in.
 - autoconf: Require at least autoconf 2.69.
 - Fix a build error on Haiku.
+- Do the version number the same way as in tcpdump and libpcap.
 
 v1.6 Thu 20 Oct 21:22:28 BST 2022
 

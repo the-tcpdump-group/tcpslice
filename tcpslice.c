@@ -1100,7 +1100,6 @@ dump_times(const struct state *states, int numfiles)
 static void
 print_usage(FILE *f)
 {
-	extern char version[];
 #ifndef HAVE_PCAP_LIB_VERSION
   #ifdef HAVE_PCAP_VERSION
 	extern char pcap_version[];
@@ -1109,7 +1108,7 @@ print_usage(FILE *f)
   #endif /* HAVE_PCAP_VERSION */
 #endif /* HAVE_PCAP_LIB_VERSION */
 
-	(void)fprintf(f, "tcpslice version %s\n", version);
+	(void)fprintf(f, "tcpslice version %s\n", PACKAGE_VERSION);
 #ifdef HAVE_PCAP_LIB_VERSION
 	(void)fprintf(f, "%s\n", pcap_lib_version());
 #else /* HAVE_PCAP_LIB_VERSION */

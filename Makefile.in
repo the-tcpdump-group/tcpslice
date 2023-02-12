@@ -71,11 +71,10 @@ DEPENDENCY_CFLAG = @DEPENDENCY_CFLAG@
 
 CSRC =	tcpslice.c gmt2local.c gwtm2secs.c machdep.c search.c \
 	seek-tell.c sessions.c util.c
-GENSRC = version.c
 LOCALSRC = @LOCALSRC@
 LIBOBJS = @LIBOBJS@
 
-SRC =	$(CSRC) $(GENSRC)
+SRC =	$(CSRC)
 
 OBJ =	$(SRC:.c=.o) $(LOCALSRC:.c=.o) $(LIBOBJS)
 HDR = \
@@ -96,7 +95,7 @@ TAGHDR = \
 
 TAGFILES = $(SRC) $(HDR) $(TAGHDR)
 
-CLEANFILES = $(PROG) $(OBJ) $(GENSRC)
+CLEANFILES = $(PROG) $(OBJ)
 
 EXTRA_DIST = \
 	CHANGES \
@@ -137,13 +136,6 @@ instrument_off: $(PROG)
 	@touch instrument_functions_off.devel
 	@rm -f instrument_functions_global.devel
 
-version.o: version.c
-	$(CC) $(FULL_CFLAGS) -c version.c
-
-version.c: $(srcdir)/VERSION
-	@rm -f $@
-	sed -e 's/.*/char version[] = "&";/' $(srcdir)/VERSION > $@
-
 strlcpy.o: $(srcdir)/missing/strlcpy.c
 	$(CC) $(FULL_CFLAGS) -o $@ -c $(srcdir)/missing/strlcpy.c
 
@@ -159,7 +151,7 @@ uninstall:
 	rm -f "$(DESTDIR)$(bindir)/$(PROG)"
 	rm -f "$(DESTDIR)$(mandir)/man1/$(PROG).1"
 
-lint: $(GENSRC)
+lint:
 	lint -hbxn $(SRC) | \
 	    grep -v 'struct/union .* never defined' | \
 	    grep -v 'possible pointer alignment problem'
@@ -268,7 +260,7 @@ whitespacecheck:
 	    exit 1; \
 	fi
 
-depend: $(GENSRC)
+depend:
 	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC) $(LIBNETDISSECT_SRC)
 
 shellcheck:
