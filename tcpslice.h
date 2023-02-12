@@ -130,10 +130,6 @@ int			fseek64(FILE *p, const int64_t offset, const int whence);
 int64_t			ftell64(FILE *p);
 extern char *timestamp_to_string(const struct timeval *timestamp);
 
-#ifndef HAVE_STRLCPY
-extern size_t strlcpy(char *, const char *, size_t);
-#endif
-
 void			error(const char *fmt, ...);
 void			warning(const char *fmt, ...);
 

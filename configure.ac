@@ -40,8 +40,6 @@ tcpslice_telloseeko=yes
 AC_SYS_LARGEFILE
 AC_FUNC_FSEEKO
 
-AC_REPLACE_FUNCS(strlcpy)
-
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
 
 AC_MSG_CHECKING([whether to enable the instrument functions code])

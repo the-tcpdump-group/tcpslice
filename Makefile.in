@@ -112,7 +112,6 @@ EXTRA_DIST = \
 	configure.ac \
 	install-sh \
 	instrument-functions.c \
-	missing/strlcpy.c \
 	mkdep \
 	tcpslice.1
 
@@ -135,9 +134,6 @@ instrument_global: $(PROG)
 instrument_off: $(PROG)
 	@touch instrument_functions_off.devel
 	@rm -f instrument_functions_global.devel
-
-strlcpy.o: $(srcdir)/missing/strlcpy.c
-	$(CC) $(FULL_CFLAGS) -o $@ -c $(srcdir)/missing/strlcpy.c
 
 install: all
 	[ -d "$(DESTDIR)$(bindir)" ] || \
