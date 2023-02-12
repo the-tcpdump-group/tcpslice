@@ -26,7 +26,7 @@ linux_task:
   only_if: $CIRRUS_BRANCH != 'coverity_scan'
   container:
     cpu: 2
-    memory: 1G
+    memory: 2G
     image: ubuntu:22.04
   env:
     DEBIAN_FRONTEND: noninteractive # libnids-dev -> tzdata -> debconf
@@ -35,6 +35,7 @@ linux_task:
     - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang gcc >/dev/null
     - apt-get -qy install flex bison libdbus-1-dev libbluetooth-dev libnl-genl-3-dev libibverbs-dev >/dev/null # for libpcap
     - apt-get -qy install git bc >/dev/null # for build_matrix.sh and build.sh
+    - apt-get -qy install shellcheck >/dev/null
     - apt list --installed 'lib*-dev'
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./autogen.sh
