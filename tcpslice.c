@@ -112,7 +112,7 @@ struct state {
  * designed to be easy to parse.  The default is RAW.
  */
 enum stamp_styles { TIMESTAMP_RAW, TIMESTAMP_READABLE, TIMESTAMP_PARSEABLE };
-enum stamp_styles timestamp_style = TIMESTAMP_RAW;
+static enum stamp_styles timestamp_style = TIMESTAMP_RAW;
 
 /* Let's for now define that as far as tcpslice command-line argument parsing
  * of raw timestamps goes, valid Unix time is the non-negative range of a
@@ -161,7 +161,8 @@ pcap_dumper_t *global_dumper = 0;
 extern  char *optarg;
 extern  int optind, opterr;
 
-int snaplen = 0;	/* needed by search.c, extract_slice() */
+extern int snaplen;	/* needed by search.c, extract_slice() */
+int snaplen = 0;
 
 int
 main(int argc, char **argv)
