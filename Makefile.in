@@ -255,7 +255,7 @@ whitespacecheck:
 	fi
 
 depend:
-	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC) $(LIBNETDISSECT_SRC)
+	$(MKDEP) -c "$(CC)" -m "$(DEPENDENCY_CFLAG)" -s "$(srcdir)" $(DEFS) $(INCLS) $(SRC)
 
 shellcheck:
 	shellcheck -f gcc -e SC2006 build.sh build_matrix.sh build_common.sh .ci-coverity-scan-build.sh
