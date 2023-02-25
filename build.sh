@@ -5,6 +5,9 @@
 : "${CC:=gcc}"
 : "${TCPSLICE_TAINTED:=no}"
 : "${MAKE_BIN:=make}"
+# At least one OS (AIX 7) where this software can build does not have at least
+# one command (mktemp) required for a successful run of "make releasetar".
+: "${TEST_RELEASETAR:=yes}"
 
 . ./build_common.sh
 # Install directory prefix
@@ -28,7 +31,7 @@ run_after_echo "$MAKE_BIN" -s ${CFLAGS:+CFLAGS="$CFLAGS"}
 print_so_deps tcpslice
 run_after_echo ./tcpslice -h
 run_after_echo "$MAKE_BIN" install
-run_after_echo "$MAKE_BIN" releasetar
+[ "$TEST_RELEASETAR" = yes ] && run_after_echo "$MAKE_BIN" releasetar
 handle_matrix_debug
 if [ "$DELETE_PREFIX" = yes ]; then
     run_after_echo rm -rf "$PREFIX"
