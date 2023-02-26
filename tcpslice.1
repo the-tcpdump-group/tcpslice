@@ -122,7 +122,7 @@ Times may also be specified in terms of years (y), months (m), days (d),
 hours (h), minutes (m), seconds (s), and microseconds(u).  For example,
 the Unix timestamp 654321098.7654 discussed above could also be expressed
 as
-.B 1990y9m25d20h51m38s765400u.
+.BR 1990y9m25d20h51m38s765400u .
 2 or 4 digit years may be used; 2 digits can specify years from 1970 to
 2069.
 .LP
@@ -142,10 +142,10 @@ For example, suppose that the input file has a
 of the Unix timestamp mentioned above, i.e., 38 seconds and 765,400 microseconds
 after 8:51PM PDT, Sept. 25, 1990.  To specify 9:36PM PDT (exactly) on the
 same date we could use
-.B 21h36m.
+.BR 21h36m .
 To specify a range from 9:36PM PDT through 1:54AM PDT the next day we
 could use
-.B 21h36m 26d1h54m.
+.BR "21h36m 26d1h54m" .
 .LP
 Relative times can also be specified when using the
 .I ymdhmsu
@@ -165,7 +165,7 @@ specifies a range from 10:00PM PDT on that date through 11:10PM PDT, and
 specifies a range from 38.7654 seconds after 9:51PM PDT through 38.7654
 seconds after 11:01PM PDT.  The first hour of the file could be extracted
 using
-.B +0 +1h.
+.BR "+0 +1h" .
 .LP
 Note that with the
 .I ymdhmsu
@@ -237,7 +237,9 @@ specifies the times you think it does.  If one of
 or
 .B \-t
 has been specified then the times are dumped in the corresponding
-format; otherwise, raw format (\fB\-R\fP) is used.
+format; otherwise,
+.B -R
+(raw format) is used.
 .TP
 .BI \-e " seconds"
 Specify a number of
@@ -375,10 +377,19 @@ or the
 .I ymdhmsu
 format discussed above can be confused with a start/end time (regardless if
 the date and the time are valid in the latter case).  Such filenames can be
-specified with a leading `./'; for example, specify the file `1976y07m04d'
-as `./1976y07m04d' and `00000123' as `./00000123'.  Alternatively, renaming
-the files to `1976y07m04d.pcap' and `00000123.pcap' respectively would
-resolve this ambiguity.
+specified with a leading `./'; for example, specify the file
+.B 1976y07m04d
+as
+.B ./1976y07m04d
+and
+.B 00000123
+as
+.BR ./00000123 .
+Alternatively, renaming the files to
+.B 1976y07m04d.pcap
+and
+.B 00000123.pcap
+respectively would resolve this ambiguity.
 .LP
 .I tcpslice
 cannot read its input from \fIstdin\fP, since it uses random-access
