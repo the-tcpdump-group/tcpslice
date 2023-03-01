@@ -93,7 +93,7 @@ TAGHDR = \
 
 TAGFILES = $(SRC) $(HDR) $(TAGHDR)
 
-CLEANFILES = $(PROG) $(OBJ)
+CLEANFILES = $(PROG) $(OBJ) instrument-functions.o
 
 EXTRA_DIST = \
 	CHANGES \
