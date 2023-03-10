@@ -103,18 +103,26 @@ static void print_debug(void *this_fn, void *call_site, action_type action)
 
 	/* If no errors, this block should be executed one time */
 	if (!abfd) {
-		char pgm_name[1024];
+/*
+ * Should this be some system #define?
+ *
+ * Or can we do a stat() on the symlink and get the path length from
+ * that, and allocate it dynamically?
+ */
+#define READLINK_PATH_LEN	1024
+/* +1 for a trailing '\0', which readlink() doesn't provide */
+		char pgm_name[READLINK_PATH_LEN + 1];
 		long symsize;
 
 		if (!stat(ND_FILE_FLAG_GLOBAL, &statbuf))
 			print_only_global = 1;
 
-		ssize_t ret = readlink("/proc/self/exe", pgm_name, sizeof(pgm_name));
+		ssize_t ret = readlink("/proc/self/exe", pgm_name, READLINK_PATH_LEN);
 		if (ret == -1) {
 			perror("failed to find executable\n");
 			return;
 		}
-		pgm_name[ret] = 0;
+		pgm_name[ret] = '\0';
 
 		bfd_init();
 
