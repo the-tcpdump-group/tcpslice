@@ -14,5 +14,3 @@
 /autom4te.cache/
 /*.o
 *~
-/instrument_functions_global.devel
-/instrument_functions_off.devel

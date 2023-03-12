@@ -121,18 +121,6 @@ $(PROG): $(OBJ) @V_PCAPDEP@
 	@rm -f $@
 	$(CC) $(FULL_CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
 
-instrument_all: $(PROG)
-	@rm -f instrument_functions_global.devel
-	@rm -f instrument_functions_off.devel
-
-instrument_global: $(PROG)
-	@touch instrument_functions_global.devel
-	@rm -f instrument_functions_off.devel
-
-instrument_off: $(PROG)
-	@touch instrument_functions_off.devel
-	@rm -f instrument_functions_global.devel
-
 install: all
 	[ -d "$(DESTDIR)$(bindir)" ] || \
 	    (mkdir -p "$(DESTDIR)$(bindir)"; chmod 755 "$(DESTDIR)$(bindir)")
