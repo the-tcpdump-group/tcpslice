@@ -32,8 +32,6 @@ AC_LBL_C_INIT(V_CCOPT, V_INCLS)
 
 AC_CHECK_HEADERS(fcntl.h)
 
-tcpslice_telloseeko=yes
-
 #
 # Try to arrange for large file support.
 #
