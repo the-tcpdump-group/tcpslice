@@ -13,6 +13,7 @@ v1.7 ...
 - Fix a build error on Haiku.
 - Do the version number the same way as in tcpdump and libpcap.
 - Lose unused missing/strlcpy.c.
+- Use posix_fadvise() on input files if available.
 
 v1.6 Thu 20 Oct 21:22:28 BST 2022
 

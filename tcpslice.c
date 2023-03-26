@@ -781,6 +781,15 @@ open_files(char *filenames[], const int numfiles)
 		s->p = pcap_open_offline(s->filename, errbuf);
 		if (! s->p)
 			error( "bad pcap file %s: %s", s->filename, errbuf );
+
+#ifdef HAVE_POSIX_FADVISE
+		int padv_err, fd = fileno(pcap_file(s->p));
+		if (0 != (padv_err = posix_fadvise(fd, 0, 0, POSIX_FADV_RANDOM)))
+			warning("warning: posix_fadvise() failed: %s", strerror(padv_err));
+		if (0 != (padv_err = posix_fadvise(fd, 0, 0, POSIX_FADV_NOREUSE)))
+			warning("warning: posix_fadvise() failed: %s", strerror(padv_err));
+#endif
+
 		if (track_sessions)
 			sessions_nids_init(s->p);
 

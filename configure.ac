@@ -38,6 +38,9 @@ AC_CHECK_HEADERS(fcntl.h)
 AC_SYS_LARGEFILE
 AC_FUNC_FSEEKO
 
+# Haiku, OpenBSD, Solaris 9 and Solaris 10 don't have posix_fadvise().
+AC_CHECK_FUNCS([posix_fadvise])
+
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
 
 AC_MSG_CHECKING([whether to enable the instrument functions code])
