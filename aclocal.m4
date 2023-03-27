@@ -98,6 +98,9 @@ AC_DEFUN(AC_LBL_C_INIT,
 		    # This is assumed either to be GCC or clang, both
 		    # of which use -Werror to force warnings to be errors.
 		    #
+		    # XXX - they also both cause GCC to be set to yes,
+		    # so we should never get here in the first place.
+		    #
 		    ac_lbl_cc_force_warning_errors=-Werror
 		    ;;
 
@@ -174,7 +177,6 @@ AC_DEFUN(AC_LBL_C_INIT,
 		    #
 		    ac_lbl_cc_force_warning_errors=-errwarn
 		    ;;
-
 	    esac
 	    $1="$$1 -O"
     fi
@@ -640,7 +642,6 @@ AC_DEFUN(AC_LBL_LIBPCAP,
             # when linking statically, because it makes calls to
             # routines in those libraries, so we'll need to link with
             # them, because we'll be linking statically with it.
-            #
             #
             # If it supports --static-pcap-only. use that, as we will be
             # linking with a static libpcap but won't be linking
