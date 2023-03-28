@@ -43,6 +43,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
 
 #if HAVE_STDINT_H
 #include <stdint.h>
@@ -783,7 +784,13 @@ open_files(char *filenames[], const int numfiles)
 			error( "bad pcap file %s: %s", s->filename, errbuf );
 
 #ifdef HAVE_POSIX_FADVISE
-		int padv_err, fd = fileno(pcap_file(s->p));
+		FILE *pf = pcap_file(s->p);
+		if (pf == NULL)
+			error("pcap_file() failed");
+		int fd = fileno(pf);
+		if (fd == -1)
+			error("fileno() failed: %s", strerror(errno));
+		int padv_err;
 		if (0 != (padv_err = posix_fadvise(fd, 0, 0, POSIX_FADV_RANDOM)))
 			warning("warning: posix_fadvise() failed: %s", strerror(padv_err));
 		if (0 != (padv_err = posix_fadvise(fd, 0, 0, POSIX_FADV_NOREUSE)))
