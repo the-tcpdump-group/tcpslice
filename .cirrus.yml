@@ -14,9 +14,9 @@ freebsd_task:
       - image_family: freebsd-13-2
   env:
     IGNORE_OSVERSION: yes
-    MATRIX_CC: clang16 gcc12
+    MATRIX_CC: clang15 gcc12
   script:
-    - pkg install -qy autoconf gcc12 llvm16
+    - pkg install -qy autoconf gcc12 llvm15
     - pkg install -qy git-tiny # for build_matrix.sh
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
@@ -40,7 +40,7 @@ linux_task:
     - apt list --installed 'lib*-dev'
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./autogen.sh
-    - ./configure --quiet # build the Makefile
+    - CC=gcc-12 ./configure --quiet # build the Makefile
     - make releasecheck
     - make whitespacecheck
     - make shellcheck
