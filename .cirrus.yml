@@ -11,12 +11,12 @@ freebsd_task:
     memory: 2G
     matrix:
       - image_family: freebsd-12-4
-      - image_family: freebsd-13-1
+      - image_family: freebsd-13-2
   env:
     IGNORE_OSVERSION: yes
-    MATRIX_CC: clang14 gcc12
+    MATRIX_CC: clang16 gcc12
   script:
-    - pkg install -qy autoconf gcc12 llvm14
+    - pkg install -qy autoconf gcc12 llvm16
     - pkg install -qy git-tiny # for build_matrix.sh
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
@@ -30,9 +30,10 @@ linux_task:
     image: ubuntu:22.04
   env:
     DEBIAN_FRONTEND: noninteractive # libnids-dev -> tzdata -> debconf
+    MATRIX_CC: gcc-12 clang-15
   script:
     - apt-get -qy update >/dev/null
-    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang gcc >/dev/null
+    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang-15 gcc-12 >/dev/null
     - apt-get -qy install flex bison libdbus-1-dev libbluetooth-dev libnl-genl-3-dev libibverbs-dev >/dev/null # for libpcap
     - apt-get -qy install git bc >/dev/null # for build_matrix.sh and build.sh
     - apt-get -qy install shellcheck >/dev/null
