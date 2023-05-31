@@ -143,17 +143,17 @@ struct parseable_token_t {
 static unsigned char timestamp_input_format_correct(const char *str);
 static struct timeval parse_time(const char *time_string, struct timeval base_time);
 static void fill_tm(const char *time_string, const int is_delta, struct tm *t, time_t *usecs_addr);
-static struct timeval lowest_start_time(const struct state *states, int numfiles);
-static struct timeval latest_end_time(const struct state *states, int numfiles);
-static struct state *open_files(char *filenames[], const int numfiles);
-static u_char validate_files(struct state[], const int);
-static void close_files(struct state[], const int);
-static void extract_slice(struct state *states, const int numfiles,
+static struct timeval lowest_start_time(const struct state *states, size_t numfiles);
+static struct timeval latest_end_time(const struct state *states, size_t numfiles);
+static struct state *open_files(char *filenames[], const size_t numfiles);
+static u_char validate_files(struct state[], const size_t);
+static void close_files(struct state[], const size_t);
+static void extract_slice(struct state *states, const size_t numfiles,
 			const char *write_file_name,
 			const struct timeval *start_time, struct timeval *stop_time,
 			const int keep_dups, const int relative_time_merge,
 			const struct timeval *base_time);
-static void dump_times(const struct state *states, int numfiles);
+static void dump_times(const struct state *states, size_t numfiles);
 static void print_usage(FILE *);
 
 
@@ -173,7 +173,7 @@ main(int argc, char **argv)
 	int keep_dups = 0;
 	int report_times = 0;
 	int relative_time_merge = 0;
-	int numfiles;
+	size_t numfiles;
 	char *start_time_string = NULL;
 	char *stop_time_string = NULL;
 	const char *write_file_name = "-";	/* default is stdout */
@@ -213,8 +213,7 @@ main(int argc, char **argv)
 
 		case 'h':
 			print_usage(stdout);
-			exit(0);
-			break;
+			return 0;
 
 		case 'l':
 			relative_time_merge = 1;
@@ -251,7 +250,7 @@ main(int argc, char **argv)
 		default:
 			(void)fprintf(stderr, "Error: invalid command-line option and/or argument!\n");
 			print_usage(stderr);
-			exit(-1);
+			return -1;
 			/* NOTREACHED */
 		}
 
@@ -278,7 +277,7 @@ main(int argc, char **argv)
 	if (optind >= argc)
 		error("at least one input file must be given");
 
-	numfiles = argc - optind;
+	numfiles = (size_t)(argc - optind);
 
 	if ( numfiles == 1 )
 		keep_dups = 1;	/* no dups can occur, so don't do the work */
@@ -469,6 +468,7 @@ timestamp_parseable_format_correct(const char *str)
 		for (i = 0; i < numtokens - 1; i++)
 			if (token[i].unit <= token[i + 1].unit)
 				return 0;
+		return 1;
 	}
 
 	return numtokens > 0;
@@ -549,7 +549,7 @@ parse_time(const char *time_string, struct timeval base_time)
 
 		if ( time_ptr )
 			{ /* microseconds are specified, too */
-			int num_digits = strlen( time_ptr + 1 );
+			size_t num_digits = strlen( time_ptr + 1 );
 			result.tv_usec = atoi( time_ptr + 1 );
 
 			/* turn 123.456 into 123 seconds plus 456000 usec */
@@ -706,11 +706,11 @@ fill_tm(const char *time_string, const int is_delta, struct tm *t, time_t *usecs
 
 /* Of all the files, what is the lowest start time. */
 static struct timeval
-lowest_start_time(const struct state *states, int numfiles)
+lowest_start_time(const struct state *states, size_t numfiles)
 {
 	struct timeval min_time = states->file_start_time;
 
-	while (numfiles--) {
+	for (; numfiles; numfiles--) {
 		if (sf_timestamp_less_than(&states->file_start_time, &min_time)) {
 			min_time = states->file_start_time;
 		}
@@ -721,11 +721,11 @@ lowest_start_time(const struct state *states, int numfiles)
 
 /* Of all the files, what is the latest end time. */
 static struct timeval
-latest_end_time(const struct state *states, int numfiles)
+latest_end_time(const struct state *states, size_t numfiles)
 {
 	struct timeval max_time = states->file_stop_time;
 
-	while (numfiles--) {
+	for (; numfiles; numfiles--) {
 		if (sf_timestamp_less_than(&max_time, &states->file_stop_time)) {
 			max_time = states->file_stop_time;
 		}
@@ -760,12 +760,12 @@ get_next_packet(struct state *s)
 }
 
 static struct state *
-open_files(char *filenames[], const int numfiles)
+open_files(char *filenames[], const size_t numfiles)
 {
 	struct state *states;
 	struct state *s;
 	char errbuf[PCAP_ERRBUF_SIZE];
-	int i;
+	size_t i;
 
 	if (numfiles == 0)
 		error("no input files specified");
@@ -773,7 +773,7 @@ open_files(char *filenames[], const int numfiles)
 	/* allocate memory for all the files */
 	states = (struct state *) calloc(numfiles, sizeof(struct state));
 	if (! states)
-		error("unable to allocate memory for %d input files", numfiles);
+		error("unable to allocate memory for %zu input files", numfiles);
 
 	for (i = 0; i < numfiles; ++i) {
 		s = &states[i];
@@ -825,10 +825,11 @@ open_files(char *filenames[], const int numfiles)
 
 /* Return 0 on no errors. */
 static u_char
-validate_files(struct state states[], const int numfiles)
+validate_files(struct state states[], const size_t numfiles)
 {
 	u_char ret = 0;
-	int i, first_dlt, this_dlt;
+	size_t i;
+	int first_dlt, this_dlt;
 
 	for (i = 0; i < numfiles; i++) {
 		this_dlt = pcap_datalink(states[i].p);
@@ -852,9 +853,9 @@ validate_files(struct state states[], const int numfiles)
 }
 
 static void
-close_files(struct state states[], const int numfiles)
+close_files(struct state states[], const size_t numfiles)
 {
-	int i;
+	size_t i;
 
 	for (i = 0; i < numfiles; i++)
 		if (!states[i].done)
@@ -871,14 +872,14 @@ close_files(struct state states[], const int numfiles)
  * that of the last packet written to the output.
  */
 static void
-extract_slice(struct state *states, const int numfiles, const char *write_file_name,
+extract_slice(struct state *states, const size_t numfiles, const char *write_file_name,
 		const struct timeval *start_time, struct timeval *stop_time,
 		const int keep_dups, const int relative_time_merge,
 		const struct timeval *base_time)
 {
 	struct state *s, *min_state;
 	struct timeval temp1, temp2, relative_start, relative_stop;
-	int i;
+	size_t i;
 
 	struct state *last_state;	/* remember the last packet */
 	struct pcap_pkthdr last_hdr;	/* in order to remove duplicates */
@@ -1032,8 +1033,8 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 		if (!bonus_time)
 			if ( keep_dups ||
 			     min_state == last_state ||
-			     memcmp(&last_hdr, &min_state->hdr, sizeof(last_hdr)) ||
-			     memcmp(last_pkt, min_state->pkt, last_hdr.caplen) ) {
+			     memcmp(&last_hdr, &min_state->hdr, sizeof(last_hdr)) != 0 ||
+			     memcmp(last_pkt, min_state->pkt, last_hdr.caplen) != 0 ) {
 				pcap_dump((u_char *) global_dumper, &min_state->hdr, min_state->pkt);
 
 				if ( ! keep_dups ) {
@@ -1101,9 +1102,9 @@ timestamp_to_string(const struct timeval *timestamp)
  * and last packets in the file.
  */
 static void
-dump_times(const struct state *states, int numfiles)
+dump_times(const struct state *states, size_t numfiles)
 {
-	for (; numfiles--; states++) {
+	for (; numfiles; numfiles--, states++) {
 		printf( "%s\t%s\t%s\n",
 			states->filename,
 			timestamp_to_string( &states->file_start_time ),

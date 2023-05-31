@@ -77,7 +77,7 @@ static void print_debug(void *this_fn, void *call_site, action_type action)
 	static int instrument_set;
 	static int instrument_off;
 	static int instrument_global;
-	int i;
+	long i;
 
 	if (!instrument_set) {
 		static char *instrument_type;
@@ -158,16 +158,11 @@ static void print_debug(void *this_fn, void *call_site, action_type action)
 
 	if (instrument_global) {
 		symbol_info syminfo;
-		int found;
-
-		i = 0;
-		found = 0;
-		while (i < symcount && !found) {
+		int found = 0;
+		for (i = 0; i < symcount && !found; i++) {
 			bfd_get_symbol_info(abfd, symtab[i], &syminfo);
-			if ((void *)syminfo.value == this_fn) {
+			if ((void *)syminfo.value == this_fn)
 				found = 1;
-			}
-			i++;
 		}
 		/* type == 'T' for a global function */
 		if (found == 1 && syminfo.type != 'T')

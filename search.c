@@ -163,7 +163,7 @@ extract_header( pcap_t *p, const u_char *buf, struct pcap_pkthdr *hdr )
 	if ( pcap_minor_version( p ) < 3 ||
 	     (pcap_minor_version( p ) == 3 && hdr->caplen > hdr->len) )
 		{
-		int t = hdr->caplen;
+		bpf_u_int32 t = hdr->caplen;
 		hdr->caplen = hdr->len;
 		hdr->len = t;
 		}
@@ -202,7 +202,7 @@ extract_header( pcap_t *p, const u_char *buf, struct pcap_pkthdr *hdr )
 #define HEADER_DEFINITELY 3
 
 static int
-find_header( pcap_t *p, u_char *buf, const int buf_len,
+find_header( pcap_t *p, u_char *buf, const u_int buf_len,
 		const time_t first_time, const time_t last_time,
 		u_char **hdrpos_addr, struct pcap_pkthdr *return_hdr )
 {
@@ -312,7 +312,7 @@ sf_find_end( pcap_t *p, const struct timeval *first_timestamp,
 {
 	time_t first_time = first_timestamp->tv_sec;
 	int64_t len_file;
-	int num_bytes;
+	int64_t num_bytes;
 	u_char *buf, *bufpos, *bufend;
 	u_char *hdrpos;
 	struct pcap_pkthdr hdr, successor_hdr;
@@ -325,18 +325,18 @@ sf_find_end( pcap_t *p, const struct timeval *first_timestamp,
 	len_file = ftell64( pcap_file (p) );
 	if ( len_file < 0 )
 		return 0;
-	/* Casting a non-negative int64_t to uint64_t always works as expected. */
-	if ( (uint64_t) len_file < MAX_BYTES_FOR_DEFINITE_HEADER )
+
+	if ( len_file < (int64_t) MAX_BYTES_FOR_DEFINITE_HEADER )
 		num_bytes = len_file;
 	else
-		num_bytes = MAX_BYTES_FOR_DEFINITE_HEADER;
+		num_bytes = (int64_t) MAX_BYTES_FOR_DEFINITE_HEADER;
 
 	/* Allow enough room for at least two full (untruncated) packets,
 	 * perhaps followed by a truncated packet, so we have a shot at
 	 * finding a "definite" header and following its chain to the
 	 * end of the file.
 	 */
-	if ( fseek64( pcap_file( p ), -(int64_t) num_bytes, SEEK_END ) < 0 )
+	if ( fseek64( pcap_file( p ), -num_bytes, SEEK_END ) < 0 )
 		return 0;
 
 	buf = (u_char *)malloc((u_int) num_bytes);
@@ -350,7 +350,7 @@ sf_find_end( pcap_t *p, const struct timeval *first_timestamp,
 	if ( fread( (char *) bufpos, num_bytes, 1, pcap_file( p ) ) != 1 )
 		goto done;
 
-	if ( find_header( p, bufpos, num_bytes,
+	if ( find_header( p, bufpos, (u_int) num_bytes,
 			  first_time, 0L, &hdrpos, &hdr ) != HEADER_DEFINITELY )
 		goto done;
 
