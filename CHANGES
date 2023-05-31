@@ -10,6 +10,7 @@ v1.7 ...
 - Makefile.in: Add some missing files in the distclean target.
 - autoconf: Add autogen.sh, remove configure and config.h.in.
 - autoconf: Require at least autoconf 2.69.
+- autoconf: Update install-sh script to the latest available version.
 - Fix a build error on Haiku.
 - Do the version number the same way as in tcpdump and libpcap.
 - Lose unused missing/strlcpy.c.
