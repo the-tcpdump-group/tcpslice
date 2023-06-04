@@ -442,7 +442,7 @@ sessions_add(const uint8_t t, const struct tuple4 *addr, const struct session *p
 
   if (!(t & sessions_track_types))
     return NULL;
-  elt = calloc(1, sizeof (struct session));
+  elt = (struct session *) calloc(1, sizeof(struct session));
   elt->addr = *addr;
   elt->type = t;
   elt->id = ++counter;

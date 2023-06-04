@@ -771,10 +771,9 @@ open_files(char *filenames[], const int numfiles)
 		error("no input files specified");
 
 	/* allocate memory for all the files */
-	states = (struct state *) malloc(sizeof(struct state) * numfiles);
+	states = (struct state *) calloc(numfiles, sizeof(struct state));
 	if (! states)
 		error("unable to allocate memory for %d input files", numfiles);
-	memset(states, 0, sizeof(struct state) * numfiles);
 
 	for (i = 0; i < numfiles; ++i) {
 		s = &states[i];
@@ -891,12 +890,10 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 	last_state = 0;
 	last_hdr.ts.tv_sec = last_hdr.ts.tv_usec = 0;
 	last_hdr.caplen = last_hdr.len = 0;
-	last_pkt = (u_char*) malloc(snaplen);
+	last_pkt = (u_char *) calloc(1, snaplen);
 
 	if (! last_pkt)
 		error("out of memory");
-
-	memset(last_pkt, 0, snaplen);
 
 	timersub(start_time, base_time, &relative_start);
 	timersub(stop_time, base_time, &relative_stop);
