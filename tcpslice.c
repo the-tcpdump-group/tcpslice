@@ -1055,7 +1055,7 @@ extract_slice(struct state *states, const int numfiles, const char *write_file_n
 
 /* Translates a timestamp to the time format specified by the user.
  * Returns a pointer to the translation residing in a static buffer.
- * There are two such buffers, which are alternated on subseqeuent
+ * There are two such buffers, which are alternated on subsequent
  * calls, so two calls may be made to this routine without worrying
  * about the results of the first call being overwritten by the
  * results of the second.
