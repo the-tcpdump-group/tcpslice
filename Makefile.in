@@ -139,7 +139,7 @@ lint:
 	    grep -v 'possible pointer alignment problem'
 
 clean:
-	rm -f $(CLEANFILES) $(PROG)-`cat VERSION`.tar* \
+	rm -f $(CLEANFILES) $(PROG)-`cat $(srcdir)/VERSION`.tar* \
 	config.h.in~ configure~ configure.ac~
 
 distclean: clean
@@ -182,7 +182,7 @@ TAGS: $(TAGFILES)
 # their temporary directories.
 #
 releasetar:
-	@TAG=$(PROG)-`cat VERSION` && \
+	@TAG=$(PROG)-`cat $(srcdir)/VERSION` && \
 	if [ ! -d .git ]; then echo 'Not in a git clone, stop.'; exit 1; fi && \
 	TMPTESTFILE=`mktemp -t tmptestfile_XXXXXXXX` && \
 	rm -f "$$TMPTESTFILE" && \
@@ -208,7 +208,7 @@ releasetar:
 	rm -rf "$$AUTORECONF_DIR"
 
 releasecheck: releasetar
-	@TAG=$(PROG)-`cat VERSION` && \
+	@TAG=$(PROG)-`cat $(srcdir)/VERSION` && \
 	INSTALL_DIR=/tmp/install_"$$TAG"_$$$$ && \
 	DIR=`pwd` && \
 	cd /tmp && \
