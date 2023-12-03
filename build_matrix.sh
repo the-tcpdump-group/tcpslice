@@ -37,7 +37,7 @@ for CC in $MATRIX_CC; do
         continue
     fi
     for BUILD_LIBPCAP in $MATRIX_BUILD_LIBPCAP; do
-        COUNT=`increment $COUNT`
+        COUNT=`increment "$COUNT"`
         echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="  >&2
         if [ "$BUILD_LIBPCAP" = yes ]; then
             echo_magenta "Build libpcap (CMAKE=no)" >&2
