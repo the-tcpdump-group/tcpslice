@@ -10,8 +10,8 @@ freebsd_task:
     cpu: 2
     memory: 2G
     matrix:
-      - image_family: freebsd-12-4
       - image_family: freebsd-13-2
+      - image_family: freebsd-14-0
   env:
     IGNORE_OSVERSION: yes
     MATRIX_CC: clang15 gcc12
