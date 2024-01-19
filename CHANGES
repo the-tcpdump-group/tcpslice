@@ -10,114 +10,87 @@ v1.7 ...
 - Makefile.in: Add some missing files in the distclean target.
 - autoconf: Add autogen.sh, remove configure and config.h.in.
 - autoconf: Require at least autoconf 2.69.
+- autoconf: Address most warnings from Autoconf 2.71.
 - autoconf: Update install-sh script to the latest available version.
+- autoconf: Update config.{guess,sub}, timestamps 2023-01-01,2023-01-21.
 - Fix a build error on Haiku.
 - Do the version number the same way as in tcpdump and libpcap.
 - Lose unused missing/strlcpy.c.
 - Use posix_fadvise() on input files if available.
+- Prefer calloc() over malloc().
 - Fix --static-pcap-only test on Solaris 10.
 - autoconf: replace --with-system-libpcap with --disable-local-libpcap.
 - autoconf: Find a local libpcap even with rcX directory suffix
 - configure: special-case macOS /usr/bin/pcap-config
 - On Solaris, for 64-bit builds, use the 64-bit pcap-config.
 - configure: don't use egrep, use $EGREP.
+- Add some warning flags for Clang 13 or newer.
+- Fix some warnings with -Wmissing-variable-declarations.
+- Make various improvements to the intrument functions.
+- autoconf: Remove many obsolete elements, including workarounds for BSD/OS,
+  Solaris, Ultrix and possibly other OSes.
+- autoconf: Refine reporting of os-proto.h.
+- tcpslice(1): Use bold font more consistently.
 
 v1.6 Thu 20 Oct 21:22:28 BST 2022
 
 - Call pcap_dump_close() on the output file.
-
 - Implement new flags in ./configure: --enable-instrument-functions,
   --without-libnids, --without-libosipparser2 and --without-libooh323c.
-
 - autoconf: Add the option to print functions and files names
-
 - Update config.{guess,sub}, timestamps 2022-01-09,2022-01-03
-
 - configure: use pcap-config --static-pcap-only if available
-
 - Remove awk code from mkdep.
-
 - Refine the man page.
-
 - Refine the documentation files.
 
 v1.5 Thu 30 Dec 20:53:17 GMT 2021
 
 - CVE-2021-41043: Fix a use-after-free in extract_slice().
-
 - Deallocate input resources to plug a leak.
-
 - Require every input file to have the same DLT.
-
 - Compare the first and the last timestamps of input.
-
 - Get the initial value right in latest_end_time().
-
 - Makefile.in: Quote some pathnames properly.
-
 - Handle some build errors better.
-
 - Fix "make releasetar" on AIX and Solaris.
-
 - Address all compiler warnings (Linux, NetBSD 9.2 and Solaris).
-
 - Improve CI build matrix scripts.
 
 v1.4 Tue 15 Jun 08:30:11 BST 2021
 
 - Install into bindir, not sbindir.
-
 - Refine some C code style.
-
 - Address many warnings from GCC, Clang and cppcheck.
-
 - Fix wording in an error message.
-
 - Update MAX_REASONABLE_PACKET_LENGTH to 262144.
-
 - Tell libooh323c in the "-h" message.
-
 - Update config.{guess,sub}, timestamps 2021-01-25,2021-03-10.
-
 - Fix parallel build with FreeBSD make.
-
 - Fix building with OpenBSD libpcap.
 
 v1.3 Wed 19 Aug 19:00:47 BST 2020
 
 - Update to modern autotools and remove some obsolete code.
-
 - Remove dependency on libpcap pcap-int.h.
-
 - Merge a patch from Fedora package.
-
 - Fix compiling on Solaris.
-
 - Fix compile errors with libosip2 4.1.0.
-
 - Address a number of compiler warnings and add error checks.
-
 - Fix formatting of some error messages.
-
 - Improve printing of the usage message and add a "-h" option.
-
 - Improve handling of time command-line arguments.
-
 - Update documentation files.
 
 v1.2 ...
 
 - Use pcap_sf_pkthdr for portable savefiles.
-
 - Use ftello/fseeko on systems which support it to handle files larger
   than 2 gigabytes.
-
 - Fix y2k bugs in date parsing.
-
 - Introduce merging based on timestamp instead of simple concatenation
   new "-l" flag merges based on relative instead of absolute time
   new "-D" flag allows duplicate packets to come through
-
   Note that there's no flag to get the original concatenation behavior.
 
 v1.1 Wed Jun 23 17:19:32 PDT 1999
