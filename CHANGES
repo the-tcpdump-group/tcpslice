@@ -28,7 +28,7 @@ v1.7 ...
 - Fix some warnings with -Wmissing-variable-declarations.
 - Make various improvements to the intrument functions.
 - autoconf: Remove many obsolete elements, including workarounds for BSD/OS,
-  Solaris, Ultrix and possibly other OSes.
+  IRIX, OSF/1, Solaris, Ultrix and possibly other OSes.
 - autoconf: Refine reporting of os-proto.h.
 - tcpslice(1): Use bold font more consistently.
 

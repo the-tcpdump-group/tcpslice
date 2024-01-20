@@ -65,7 +65,6 @@
 
 #include "tcpslice.h"
 #include "gmt2local.h"
-#include "machdep.h"
 #include "sessions.h"
 
 /* For Solaris before 11. */
@@ -178,18 +177,7 @@ main(int argc, char **argv)
 	char *stop_time_string = NULL;
 	const char *write_file_name = "-";	/* default is stdout */
 	struct timeval first_time, start_time, stop_time;
-	char ebuf[PCAP_ERRBUF_SIZE];
 	struct state *states;
-
-	/*
-	 * On platforms where the CPU doesn't support unaligned loads,
-	 * force unaligned accesses to abort with SIGBUS, rather than
-	 * being fixed up (slowly) by the OS kernel; on those platforms,
-	 * misaligned accesses are bugs, and we want tcpslice to crash so
-	 * that the bugs are reported.
-	 */
-	if (abort_on_misalignment(ebuf, sizeof(ebuf)) < 0)
-		error("%s", ebuf);
 
 	opterr = 0;
 	while ((op = getopt(argc, argv, "dDe:f:hlRrs:tvw:")) != EOF)

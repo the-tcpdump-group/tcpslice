@@ -69,7 +69,7 @@ DEPENDENCY_CFLAG = @DEPENDENCY_CFLAG@
 	@rm -f $@
 	$(CC) $(FULL_CFLAGS) -c $(srcdir)/$*.c
 
-CSRC =	tcpslice.c gmt2local.c gwtm2secs.c machdep.c search.c \
+CSRC =	tcpslice.c gmt2local.c gwtm2secs.c search.c \
 	seek-tell.c sessions.c util.c
 LOCALSRC = @LOCALSRC@
 LIBOBJS = @LIBOBJS@
@@ -81,7 +81,6 @@ HDR = \
 	compiler-tests.h \
 	diag-control.h \
 	gmt2local.h \
-	machdep.h \
 	sessions.h \
 	tcpslice.h \
 	varattrs.h
