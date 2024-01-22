@@ -55,7 +55,7 @@ gwtm2secs.c	- GMT to Unix timestamp conversion
 install-sh	- BSD style install script
 instrument-functions.c - instrumentation of functions
 lbl/os-*.h	- os dependent defines and prototypes (currently none)
-missing/*	- replacements for missing library functions
+missing/*	- replacements for missing library functions (currently none)
 mkdep		- construct Makefile dependency list
 search.c	- fast savefile search routines
 seek-tell.c	- fseek64() and ftell64() routines
