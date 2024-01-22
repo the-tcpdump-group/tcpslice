@@ -26,7 +26,7 @@ v1.7 ...
 - configure: don't use egrep, use $EGREP.
 - Add some warning flags for Clang 13 or newer.
 - Fix some warnings with -Wmissing-variable-declarations.
-- Make various improvements to the intrument functions.
+- Make various improvements to the instrument functions.
 - autoconf: Remove many obsolete elements, including workarounds for BSD/OS,
   IRIX, OSF/1, Solaris, Ultrix and possibly other OSes.
 - autoconf: Refine reporting of os-proto.h.
