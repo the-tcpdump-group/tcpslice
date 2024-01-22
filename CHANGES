@@ -12,7 +12,7 @@ v1.7 ...
 - autoconf: Require at least autoconf 2.69.
 - autoconf: Address most warnings from Autoconf 2.71.
 - autoconf: Update install-sh script to the latest available version.
-- autoconf: Update config.{guess,sub}, timestamps 2023-01-01,2023-01-21.
+- autoconf: Update config.{guess,sub}, timestamps 2024-01-01
 - Fix a build error on Haiku.
 - Do the version number the same way as in tcpdump and libpcap.
 - Lose unused missing/strlcpy.c.
