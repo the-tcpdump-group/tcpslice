@@ -14,7 +14,7 @@ dnl
 #
 
 AC_PREREQ([2.69])
-AC_INIT([tcpslice],[m4_esyscmd_s(cat VERSION)])
+AC_INIT([tcpslice],[m4_esyscmd_s(cat VERSION)],[https://github.com/the-tcpdump-group/tcpslice/issues])
 AC_CONFIG_SRCDIR(tcpslice.c)
 
 AC_CANONICAL_HOST
