@@ -1,3 +1,5 @@
+v1.8 ...
+
 v1.7 Tue 23 Jan 12:31:18 GMT 2024
 
 - Use "git archive" for the "make releasetar" process.
