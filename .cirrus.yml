@@ -16,7 +16,7 @@ freebsd_task:
     IGNORE_OSVERSION: yes
     MATRIX_CC: clang15 gcc12
   script:
-    - pkg install -qy autoconf gcc12 llvm15
+    - pkg install -qy autoconf gcc13 llvm17
     - pkg install -qy git-tiny # for build_matrix.sh
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
