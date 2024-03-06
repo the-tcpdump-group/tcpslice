@@ -14,7 +14,7 @@ freebsd_task:
       - image_family: freebsd-14-0
   env:
     IGNORE_OSVERSION: yes
-    MATRIX_CC: clang15 gcc12
+    MATRIX_CC: clang17 gcc13
   script:
     - pkg install -qy autoconf gcc13 llvm17
     - pkg install -qy git-tiny # for build_matrix.sh
