@@ -27,6 +27,14 @@ run_after_echo "$MAKE_BIN" -s clean
 # some specific OS).
 
 [ "$TCPSLICE_TAINTED" != yes ] && CFLAGS=`cc_werr_cflags`
+
+case `cc_id`/`os_id` in
+clang-*/SunOS-5.11)
+    # Work around https://www.illumos.org/issues/16369
+    [ `uname -o` = illumos ] && grep -Fq OpenIndiana /etc/release && CFLAGS="-Wno-fuse-ld-path${CFLAGS:+ $CFLAGS}"
+    ;;
+esac
+
 run_after_echo "$MAKE_BIN" -s ${CFLAGS:+CFLAGS="$CFLAGS"}
 print_so_deps tcpslice
 run_after_echo ./tcpslice -h
