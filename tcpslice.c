@@ -1130,6 +1130,11 @@ print_usage(FILE *f)
 
 #endif /* HAVE_LIBNIDS */
 
+#if defined(SIZEOF_VOID_P) && defined(SIZEOF_TIME_T)
+	(void)fprintf (f, "%u-bit build, %u-bit time_t\n",
+		       SIZEOF_VOID_P * 8, SIZEOF_TIME_T * 8);
+#endif
+
 	(void)fprintf(f,
 	              "Usage: tcpslice [-DdhlRrtv] [-w file]\n"
 	              "                [ -s types [ -e seconds ] [ -f format ] ]\n"

@@ -31,6 +31,15 @@ fi
 AC_LBL_C_INIT(V_CCOPT, V_INCLS)
 
 AC_CHECK_HEADERS(fcntl.h)
+#
+# Get the size of a void *, to know whether this is a 32-bit or 64-bit build.
+#
+AC_CHECK_SIZEOF([void *])
+
+#
+# Get the size of a time_t, to know whether it's 32-bit or 64-bit.
+#
+AC_CHECK_SIZEOF([time_t],,[#include <time.h>])
 
 #
 # Try to arrange for large file support.
