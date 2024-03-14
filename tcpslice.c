@@ -27,6 +27,11 @@
 #include <config.h>
 #endif
 
+// For fileno() and getopt().
+#if defined(__SUNPRO_C) && ! defined(__EXTENSIONS__)
+#define __EXTENSIONS__
+#endif
+
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -202,7 +207,7 @@ main(int argc, char **argv)
 		case 'h':
 			print_usage(stdout);
 			exit(0);
-			break;
+			/* NOTREACHED */
 
 		case 'l':
 			relative_time_merge = 1;

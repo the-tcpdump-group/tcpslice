@@ -25,6 +25,11 @@
 #include <config.h>
 #endif
 
+// For fseeko() and ftello().
+#if defined(__SUNPRO_C) && ! defined(__EXTENSIONS__)
+#define __EXTENSIONS__
+#endif
+
 #include <stdio.h>
 #include <errno.h>
 
