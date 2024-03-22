@@ -17,7 +17,7 @@
 .\" WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
 .\" MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 .\"
-.TH TCPSLICE 1  "01 January 2022"
+.TH TCPSLICE 1  "22 March 2024"
 .SH NAME
 tcpslice \- extract pieces of and/or merge together pcap files
 .SH SYNOPSIS
@@ -52,10 +52,14 @@ tcpslice \- extract pieces of and/or merge together pcap files
 .SH DESCRIPTION
 .LP
 .I Tcpslice
-is a program for extracting portions of packet-trace files generated using
+is a program for extracting portions of
+.B .pcap
+(but not
+.BR .pcapng )
+files produced using
 .BR tcpdump (1)'s
 .B \-w
-flag.
+flag or many other programs.
 It can also be used to merge together several such files, as discussed
 below.
 .LP
@@ -120,7 +124,9 @@ through 500 seconds after the
 .LP
 Times may also be specified in terms of years (y), months (m), days (d),
 hours (h), minutes (m), seconds (s), and microseconds(u).  For example,
-the Unix timestamp 654321098.7654 discussed above could also be expressed
+the Unix timestamp
+.B 654321098.7654
+discussed above could also be expressed
 as
 .BR 1990y9m25d20h51m38s765400u .
 2 or 4 digit years may be used; 2 digits can specify years from 1970 to
@@ -394,6 +400,10 @@ respectively would resolve this ambiguity.
 .I tcpslice
 cannot read its input from \fIstdin\fP, since it uses random-access
 to rummage through its input files.
+.LP
+.I tcpslice
+cannot process an otherwise valid input file that contains fewer than two
+packets.
 .LP
 .I tcpslice
 refuses to write to its output if it is a terminal
