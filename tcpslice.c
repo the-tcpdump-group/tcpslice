@@ -38,9 +38,7 @@
 #include <sys/time.h>
 
 #include <ctype.h>
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
 #include <memory.h>
 #include <pcap.h>
 #include <stdio.h>
@@ -49,13 +47,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
-
-#if HAVE_STDINT_H
 #include <stdint.h>
-#endif
-#ifndef INT32_MAX
-#define INT32_MAX (2147483647)
-#endif
 
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"

@@ -30,7 +30,6 @@ if test "$ac_cv_prog_cc_c99" = "no"; then
 fi
 AC_LBL_C_INIT(V_CCOPT, V_INCLS)
 
-AC_CHECK_HEADERS(fcntl.h)
 #
 # Get the size of a void *, to know whether this is a 32-bit or 64-bit build.
 #
