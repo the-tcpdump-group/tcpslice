@@ -23,9 +23,7 @@
  * tcpslice - extract pieces of and/or glue together pcap files
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 // For fileno() and getopt().
 #if defined(__SUNPRO_C) && ! defined(__EXTENSIONS__)
