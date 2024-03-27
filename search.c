@@ -23,9 +23,7 @@
  * search.c - supports fast searching through pcap files for timestamps
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <sys/types.h>
 
