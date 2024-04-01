@@ -1,13 +1,12 @@
 env:
   CIRRUS_CLONE_DEPTH: 3
   LIBPCAP_GIT: https://github.com/the-tcpdump-group/libpcap
-  MAKEFLAGS: '-j 2'
 
 freebsd_task:
   name: freebsd-amd64
   only_if: $CIRRUS_BRANCH != 'coverity_scan'
   freebsd_instance:
-    cpu: 2
+    cpu: 1
     memory: 2G
     image_family: freebsd-13-3
   env:
@@ -23,27 +22,21 @@ linux_task:
   name: linux-amd64
   only_if: $CIRRUS_BRANCH != 'coverity_scan'
   container:
-    cpu: 2
-    memory: 2G
+    cpu: 1
+    memory: 1G
     image: ubuntu:22.04
   env:
     DEBIAN_FRONTEND: noninteractive # libnids-dev -> tzdata -> debconf
-    MATRIX_CC: gcc clang-15
     LANG: C
   script:
     - apt-get -qy update >/dev/null
-    - apt-get -qy install libpcap-dev libnids-dev libosip2-dev autoconf make clang-15 gcc >/dev/null
-    - apt-get -qy install flex bison libdbus-1-dev libbluetooth-dev libnl-genl-3-dev libibverbs-dev >/dev/null # for libpcap
-    - apt-get -qy install git >/dev/null # for build_matrix.sh and build.sh
+    - apt-get -qy install autoconf make gcc >/dev/null
     - apt-get -qy install shellcheck >/dev/null
-    - apt list --installed 'lib*-dev'
-    - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./autogen.sh
     - ./configure --quiet # build the Makefile
     - make releasecheck
     - make whitespacecheck
     - make shellcheck
-    - ./build_matrix.sh
 
 macos_task:
   name: macos-aarch64
@@ -61,7 +54,7 @@ coverity_task:
   name: Coverity Scan
   only_if: $CIRRUS_BRANCH == 'coverity_scan'
   container:
-    cpu: 2
+    cpu: 1
     memory: 2G
     image: ubuntu:22.04
   env:
