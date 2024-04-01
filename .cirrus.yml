@@ -30,6 +30,7 @@ linux_task:
     LANG: C
   script:
     - apt-get -qy update >/dev/null
+    - apt-get -qy install git >/dev/null # for "make releasecheck"
     - apt-get -qy install autoconf make gcc libpcap-dev >/dev/null
     - apt-get -qy install shellcheck >/dev/null
     - ./autogen.sh
