@@ -218,7 +218,7 @@ releasecheck: releasetar
 	echo "[$@] $$ touch .devel" && \
 	touch .devel && \
 	echo "[$@] $$ ./configure --enable-instrument-functions --quiet --prefix=$$INSTALL_DIR" && \
-	./configure --quiet --prefix="$$INSTALL_DIR" && \
+	./configure --enable-instrument-functions --quiet --prefix="$$INSTALL_DIR" && \
 	echo '[$@] $$ make -s' && \
 	make -s && \
 	echo '[$@] $$ make -s install' && \
