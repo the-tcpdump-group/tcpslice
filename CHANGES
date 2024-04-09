@@ -1,6 +1,11 @@
 v1.8 ...
 - Address a few warnings from Sun C.
 - Clarify the man page further.
+- Update -h (help) option to print 32/64-bit build and time_t size.
+- Update the error message when checking for pcap_loop().
+- Makefile.in: Update the .c.o build rule (Remove hacks for old SunOS 4).
+- Makefile.in: Fix the depend target.
+- mkdep: Exit with a non-zero status if a command fails.
 
 v1.7 Tue 23 Jan 12:31:18 GMT 2024
 
