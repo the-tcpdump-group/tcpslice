@@ -6,6 +6,7 @@ v1.8 ...
 - Makefile.in: Update the .c.o build rule (Remove hacks for old SunOS 4).
 - Makefile.in: Fix the depend target.
 - mkdep: Exit with a non-zero status if a command fails.
+- autogen.sh: Allow to configure Autoconf warnings.
 
 v1.7 Tue 23 Jan 12:31:18 GMT 2024
 
