@@ -7,6 +7,7 @@ v1.8 ...
 - Makefile.in: Fix the depend target.
 - mkdep: Exit with a non-zero status if a command fails.
 - autogen.sh: Allow to configure Autoconf warnings.
+- autogen.sh: Delete all trailing blank lines at end of configure.
 
 v1.7 Tue 23 Jan 12:31:18 GMT 2024
 
