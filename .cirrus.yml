@@ -24,9 +24,8 @@ linux_task:
   container:
     cpu: 1
     memory: 1G
-    image: ubuntu:22.04
+    image: ubuntu:24.04
   env:
-    DEBIAN_FRONTEND: noninteractive # libnids-dev -> tzdata -> debconf
     LANG: C
   script:
     - apt-get -qy update >/dev/null
@@ -34,7 +33,8 @@ linux_task:
     - apt-get -qy install autoconf make gcc libpcap-dev >/dev/null
     - apt-get -qy install shellcheck >/dev/null
     - ./autogen.sh
-    - ./configure --quiet # build the Makefile
+    # build the Makefile
+    - ./configure --quiet --without-libnids --without-libosipparser2 --without-libooh323c
     - make releasecheck
     - make whitespacecheck
     - make shellcheck
@@ -57,8 +57,9 @@ coverity_task:
   container:
     cpu: 1
     memory: 2G
-    image: ubuntu:22.04
+    image: ubuntu:24.04
   env:
+    # libnids-dev -> tzdata -> debconf
     DEBIAN_FRONTEND: noninteractive
     COVERITY_SCAN_PROJECT_NAME: $CIRRUS_REPO_FULL_NAME
     COVERITY_SCAN_TOKEN: ENCRYPTED[1f7a6aa7e3fd93d9556938b29df39e43e510fc3083f41bcd2283c7a7afe62dd31d00e19717d64d955c5fdd7916451d27]
