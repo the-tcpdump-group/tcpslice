@@ -62,6 +62,7 @@ coverity_task:
   env:
     # libnids-dev -> tzdata -> debconf
     DEBIAN_FRONTEND: noninteractive
+    LANG: C
     COVERITY_SCAN_PROJECT_NAME: $CIRRUS_REPO_FULL_NAME
     COVERITY_SCAN_TOKEN: ENCRYPTED[1f7a6aa7e3fd93d9556938b29df39e43e510fc3083f41bcd2283c7a7afe62dd31d00e19717d64d955c5fdd7916451d27]
     COVERITY_SCAN_BUILD_COMMAND_PREPEND: ./configure --enable-instrument-functions
