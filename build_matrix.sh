@@ -28,7 +28,7 @@ COUNT=0
 export TCPSLICE_TAINTED
 export MAKE_BIN
 
-run_after_echo git show --oneline -s
+run_after_echo git show --oneline -s | cat
 touch .devel
 for CC in $MATRIX_CC; do
     export CC
