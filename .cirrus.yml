@@ -52,27 +52,6 @@ macos_task:
     - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
     - ./build_matrix.sh
 
-haiku_task:
-  name: haiku-amd64
-  only_if: $CIRRUS_BRANCH != 'coverity_scan'
-  compute_engine_instance:
-    image_project: haiku-inc
-    # R1/beta5 is currently broken (Haiku bug #18962)
-    image: family/haiku-r1beta4-x64
-    cpu: 1
-    memory: 1G
-    disk: 10
-  env:
-    # R1/beta4 repositories have been shut down, hence build using the
-    # pre-installed packages only.
-    MATRIX_CC: gcc
-    MATRIX_CMAKE: no
-    MATRIX_BUILD_LIBPCAP: yes
-  script:
-    - pwd; df; sysinfo
-    - git -C .. clone --depth ${CIRRUS_CLONE_DEPTH} --branch=master --quiet ${LIBPCAP_GIT}
-    - ./build_matrix.sh
-
 coverity_task:
   name: Coverity Scan
   only_if: $CIRRUS_BRANCH == 'coverity_scan'
