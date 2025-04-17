@@ -536,7 +536,7 @@ parse_time(const char *time_string, struct timeval base_time)
 			result.tv_usec = atoi( time_ptr + 1 );
 
 			/* turn 123.456 into 123 seconds plus 456000 usec */
-			while ( num_digits++ < 6 )
+			while ( num_digits++ < TS_RAW_US_MAX_DIGITS )
 				result.tv_usec *= 10;
 			}
 
