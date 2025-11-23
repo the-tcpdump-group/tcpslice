@@ -76,7 +76,6 @@ OBJ =	$(SRC:.c=.o) $(LOCALSRC:.c=.o) $(LIBOBJS)
 HDR = \
 	compiler-tests.h \
 	diag-control.h \
-	gmt2local.h \
 	sessions.h \
 	tcpslice.h \
 	varattrs.h

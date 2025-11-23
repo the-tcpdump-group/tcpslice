@@ -99,6 +99,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <stdint.h>
 #include <pcap.h>
 
 #define IS_LEAP_YEAR(year)	\
@@ -117,6 +118,7 @@
 
 extern const int days_in_month[];
 time_t			gwtm2secs( const struct tm *tm );
+int32_t			gmt2local(time_t);
 
 int			sf_find_end( struct pcap *p, const struct timeval *first_timestamp,
 					struct timeval *last_timestamp );

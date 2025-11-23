@@ -1,4 +1,5 @@
 v1.9 ...
+- Merge gmt2local.h into tcpslice.h.
 
 v1.8 Fri 20 Sep 19:13:31 BST 2024
 

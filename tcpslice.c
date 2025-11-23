@@ -45,7 +45,6 @@
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
-#include <stdint.h>
 
 #ifdef HAVE_OS_PROTO_H
 #include "os-proto.h"
@@ -59,7 +58,6 @@
 #endif /* HAVE_LIBNIDS */
 
 #include "tcpslice.h"
-#include "gmt2local.h"
 #include "sessions.h"
 
 /* For Solaris before 11. */

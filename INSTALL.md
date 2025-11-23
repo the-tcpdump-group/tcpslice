@@ -50,7 +50,6 @@ config.sub	- autoconf support
 configure.ac	- configure script source
 diag-control.h	- diagnostic control #defines
 gmt2local.c	- time conversion routines
-gmt2local.h	- time conversion prototypes
 gwtm2secs.c	- GMT to Unix timestamp conversion
 install-sh	- BSD style install script
 instrument-functions.c - instrumentation of functions

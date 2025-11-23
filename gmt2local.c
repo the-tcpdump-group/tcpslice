@@ -31,7 +31,7 @@
 #include "os-proto.h"
 #endif
 
-#include "gmt2local.h"
+#include "tcpslice.h"
 
 /*
  * Returns the difference between gmt and local time in seconds.
