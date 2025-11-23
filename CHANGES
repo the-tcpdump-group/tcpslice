@@ -1,6 +1,7 @@
 v1.9 ...
 
 v1.8 Fri 20 Sep 19:13:31 BST 2024
+
 - Address a few warnings from Sun C.
 - Clarify the man page further.
 - Update -h (help) option to print 32/64-bit build and time_t size.
