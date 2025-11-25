@@ -42,7 +42,7 @@ for CC in $MATRIX_CC; do
         echo_magenta "===== SETUP $COUNT: CC=$CC BUILD_LIBPCAP=$BUILD_LIBPCAP ====="  >&2
         if [ "$BUILD_LIBPCAP" = yes ]; then
             echo_magenta "Build libpcap (CMAKE=no)" >&2
-            (cd ../libpcap && CMAKE=no ./build.sh)
+            (cd ../libpcap && CMAKE=no TESTRUN_SHORT=1 ./build.sh)
         else
             echo_magenta 'Use system libpcap' >&2
             purge_directory "$PREFIX"
