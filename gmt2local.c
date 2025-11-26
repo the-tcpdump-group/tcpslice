@@ -63,9 +63,9 @@ gmt2local(time_t t)
 	    (loc->tm_min - gmt->tm_min) * 60;
 
 	/*
-	 * If the year or julian day is different, we span 00:00 GMT
+	 * If the year or Julian day is different, we span 00:00 GMT
 	 * and must add or subtract a day. Check the year first to
-	 * avoid problems when the julian day wraps.
+	 * avoid problems when the Julian day wraps.
 	 */
 	dir = loc->tm_year - gmt->tm_year;
 	if (dir == 0)
