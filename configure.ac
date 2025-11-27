@@ -2,6 +2,7 @@ dnl Copyright (c) 2000, 2001, 2006, 2013, 2020, 2021, 2022, 2023, 2024, 2025
 dnl	The Tcpdump Group and contributors.  All rights reserved.
 dnl Copyright (c) 1995, 1996, 1997, 1999
 dnl	The Regents of the University of California.  All rights reserved.
+
 dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
