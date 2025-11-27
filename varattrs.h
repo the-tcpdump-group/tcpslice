@@ -1,6 +1,7 @@
 /* -*- Mode: c; tab-width: 8; indent-tabs-mode: 1; c-basic-offset: 8; -*- */
 /*
- * Copyright (c) 2018 The Tcpdump Group
+ * Copyright (c) 2018, 2020
+ *	The Tcpdump Group and contributors.  All rights reserved.
  *
  * SPDX-License-Identifier: BSD-2-Clause
  *

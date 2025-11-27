@@ -1,6 +1,8 @@
 /*
- * Copyright (c) 2006 Sebastien Raveau <sebastien.raveau@epita.fr>
- * All rights reserved.
+ * Copyright (c) 2020
+ *	The Tcpdump Group and contributors.  All rights reserved.
+ * Copyright (c) 2006
+ *	Sebastien Raveau <sebastien.raveau@epita.fr>.  All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *

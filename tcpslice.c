@@ -1,4 +1,7 @@
 /*
+ * Copyright (c) 2000, 2001, 2003, 2006, 2013, 2020, 2021, 2022, 2023, 2024,
+ *	2025
+ *	The Tcpdump Group and contributors.  All rights reserved.
  * Copyright (c) 1991, 1992, 1993, 1995, 1996, 1997, 1999, 2000
  *	The Regents of the University of California.  All rights reserved.
  *
