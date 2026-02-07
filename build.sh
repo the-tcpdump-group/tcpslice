@@ -1,5 +1,11 @@
 #!/bin/sh -e
 
+# Same as in libpcap.
+if [ -n "$TARGET" ] && [ -z "$CC" ]; then
+    echo "Error: CC must be set if TARGET is set." >&2
+    exit 1
+fi
+
 # This script runs one build with the setup environment variable CC (usually
 # "gcc" or "clang").
 : "${CC:=gcc}"
@@ -19,7 +25,7 @@ fi
 
 print_cc_version
 run_after_echo ./autogen.sh
-run_after_echo ./configure --prefix="$PREFIX"
+run_after_echo ./configure ${TARGET:+--host=$TARGET} --prefix="$PREFIX"
 run_after_echo "$MAKE_BIN" -s clean
 
 # If necessary, set TCPSLICE_TAINTED here to exempt particular builds from
@@ -37,7 +43,7 @@ esac
 
 run_after_echo "$MAKE_BIN" -s ${CFLAGS:+CFLAGS="$CFLAGS"}
 print_so_deps tcpslice
-run_after_echo ./tcpslice -h
+[ -z "$TARGET" ] && run_after_echo ./tcpslice -h
 run_after_echo "$MAKE_BIN" install
 [ "$TEST_RELEASETAR" = yes ] && run_after_echo "$MAKE_BIN" releasetar
 handle_matrix_debug
