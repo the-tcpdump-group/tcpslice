@@ -1068,8 +1068,8 @@ timestamp_to_string(const struct timeval *timestamp)
 
 	    case TIMESTAMP_RAW:
 		snprintf( buf, DATEBUFSIZE, "%u.%06u",
-		    (u_int32_t)timestamp->tv_sec,
-		    (u_int32_t)timestamp->tv_usec );
+		    (uint32_t)timestamp->tv_sec,
+		    (uint32_t)timestamp->tv_usec );
 		break;
 
 	    case TIMESTAMP_READABLE:
@@ -1083,7 +1083,7 @@ timestamp_to_string(const struct timeval *timestamp)
 		snprintf( buf, DATEBUFSIZE, "%04dy%02dm%02dd%02dh%02dm%02ds%06uu",
 			t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
 			t->tm_hour, t->tm_min, t->tm_sec,
-			(u_int32_t)timestamp->tv_usec );
+			(uint32_t)timestamp->tv_usec );
 		break;
 
 	}
