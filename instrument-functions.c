@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023
+ * Copyright (c) 2022, 2023, 2025
  *	The Tcpdump Group and contributors.  All rights reserved.
  *
  * SPDX-License-Identifier: BSD-2-Clause
@@ -33,7 +33,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+/*
+ * The binutils bfd header has a weird inclusion guard, requiring this
+ * macro to be defined. Some distributions patch the guard out, others
+ * don't.
+ */
+#define PACKAGE "binutils-bfd.h-guard-workaround"
 #include <bfd.h>
+#undef PACKAGE
 
 /*
  * Generate instrumentation calls for entry and exit to functions.
