@@ -536,10 +536,8 @@ parse_time(const char *time_string, struct timeval base_time)
 
 	if (timestamp_raw_format_correct(time_string))
 		{ /* interpret as a raw timestamp or timestamp offset */
-		char *time_ptr;
-
 		result.tv_sec = atoi( time_string );
-		time_ptr = strchr( time_string, '.' );
+		const char *time_ptr = strchr( time_string, '.' );
 
 		if ( time_ptr )
 			{ /* microseconds are specified, too */
