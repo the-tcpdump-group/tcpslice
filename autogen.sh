@@ -30,8 +30,7 @@ echo "$AUTORECONF identification: $AUTORECONFVERSION"
 # to silence that.
 #
 # Also handle a possible out-of-tree invocation correctly.
-THISFILE=`realpath "$0"`
-SRCDIR="`dirname "$THISFILE"`"
+SRCDIR="`dirname "$0"`"
 env ${AUTOCONF_WARNINGS:+WARNINGS="$AUTOCONF_WARNINGS"} "$AUTORECONF" -f "$SRCDIR"
 
 # Autoconf 2.71 adds a blank line after the final "exit 0" on Linux, but not
@@ -40,7 +39,7 @@ env ${AUTOCONF_WARNINGS:+WARNINGS="$AUTOCONF_WARNINGS"} "$AUTORECONF" -f "$SRCDI
 # "delete all trailing blank lines at end of file (works on all seds)".  Don't
 # use mktemp(1) because AIX does not have it.
 CONFIGURE_OLD="$SRCDIR/configure"
-CONFIGURE_NEW="configure.new$$"
+CONFIGURE_NEW="$SRCDIR/configure.new$$"
 sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' <"$CONFIGURE_OLD" >"$CONFIGURE_NEW"
 # The "cat" replaces the file contents, but keeps the permissions intact.
 cmp -s "$CONFIGURE_OLD" "$CONFIGURE_NEW" || cat "$CONFIGURE_NEW" >"$CONFIGURE_OLD"
