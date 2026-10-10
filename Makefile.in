@@ -30,6 +30,7 @@ VPATH = @srcdir@
 CC = @CC@
 MKDEP = @MKDEP@
 PROG = tcpslice
+VER = @PACKAGE_VERSION@
 CCOPT = @V_CCOPT@
 INCLS = -I. @V_INCLS@
 DEFS = @DEFS@ @CPPFLAGS@ @V_DEFS@
@@ -123,7 +124,7 @@ lint:
 	    grep -v 'possible pointer alignment problem'
 
 clean:
-	rm -f $(CLEANFILES) $(PROG)-`cat $(srcdir)/VERSION`.tar* \
+	rm -f $(CLEANFILES) $(PROG)-$(VER).tar* \
 	config.h.in~ configure~ configure.ac~
 
 distclean: clean
@@ -166,7 +167,7 @@ TAGS: $(TAGFILES)
 # their temporary directories.
 #
 releasetar:
-	@TAG=$(PROG)-`cat $(srcdir)/VERSION` && \
+	@TAG=$(PROG)-$(VER) && \
 	if [ ! -d .git ]; then echo 'Not in a git clone, stop.'; exit 1; fi && \
 	TMPTESTFILE=`mktemp -t tmptestfile_XXXXXXXX` && \
 	rm -f "$$TMPTESTFILE" && \
@@ -192,7 +193,7 @@ releasetar:
 	rm -rf "$$AUTORECONF_DIR"
 
 releasecheck: releasetar
-	@TAG=$(PROG)-`cat $(srcdir)/VERSION` && \
+	@TAG=$(PROG)-$(VER) && \
 	INSTALL_DIR=/tmp/install_"$$TAG"_$$$$ && \
 	DIR=`pwd` && \
 	cd /tmp && \
