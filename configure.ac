@@ -172,6 +172,7 @@ AC_SUBST(LOCALSRC)
 AC_PROG_INSTALL
 
 AC_CONFIG_HEADERS([config.h])
+AH_TOP([#define TCPSLICE_CONFIG_H])
 
 AC_CONFIG_COMMANDS([.devel],[[if test -f .devel; then
 	echo timestamp > stamp-h

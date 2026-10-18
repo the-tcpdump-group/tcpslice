@@ -12,6 +12,9 @@
  */
 
 #include <config.h>
+#ifndef TCPSLICE_CONFIG_H
+#error "The included config.h header is not from the tcpslice build."
+#endif
 
 // For fileno() and getopt().
 #if defined(__SUNPRO_C) && ! defined(__EXTENSIONS__)
