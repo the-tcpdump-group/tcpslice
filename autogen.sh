@@ -31,7 +31,7 @@ echo "$AUTORECONF identification: $AUTORECONFVERSION"
 #
 # Also handle a possible out-of-tree invocation correctly.
 SRCDIR="`dirname "$0"`"
-env ${AUTOCONF_WARNINGS:+WARNINGS="$AUTOCONF_WARNINGS"} "$AUTORECONF" -f "$SRCDIR"
+env ${AUTOCONF_WARNINGS:+WARNINGS="$AUTOCONF_WARNINGS"} LANG=C "$AUTORECONF" -f "$SRCDIR"
 
 # Autoconf 2.71 adds a blank line after the final "exit 0" on Linux, but not
 # on OpenBSD.  Remove this difference to make it easier to compare the result
