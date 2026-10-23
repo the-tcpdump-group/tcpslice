@@ -6,6 +6,7 @@ v1.9 ...
 - mkdep: Use mktemp(1) if it is available.
 - mkdep: Propagate compiler errors.
 - Require config.h to be from the tcpslice build.
+- In autogen.sh use mktemp(1) if available.
 
 v1.8 Fri 20 Sep 19:13:31 BST 2024
 
